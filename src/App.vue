@@ -10,5 +10,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+  #q-app{
+    background-color: #e9f2ff;
+  }
 </style>

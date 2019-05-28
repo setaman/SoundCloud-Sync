@@ -1,5 +1,5 @@
 {
-  "name": "SoundCloud-Sync",
+  "name": "soundcloud-sync",
   "version": "0.0.1",
   "description": "A Quasar Framework app",
   "productName": "Quasar App",
@@ -7,7 +7,7 @@
   "author": "Sergej Atamantschuk",
   "private": false,
   "scripts": {
-    "lint": "eslint --ext .js,.vue src",
+    "lint": "eslint --ext .js,.vue src --fix",
     "dev-e": "quasar dev -m electron",
     "test": "echo \"No test specified\" && exit 0"
   },

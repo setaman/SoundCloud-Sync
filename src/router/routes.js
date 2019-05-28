@@ -4,8 +4,22 @@ const routes = [
     path: '/',
     component: () => import('layouts/Home.vue'),
     name: 'home',
+    redirect: {
+      name: 'likes'
+    },
     children: [
-      { path: '', name: 'index', component: () => import('pages/Index.vue') }
+      { path: 'likes',
+        name: 'likes',
+        component: () => import('pages/Likes.vue')
+      },
+      { path: 'followings',
+        name: 'followings',
+        component: () => import('pages/Followings.vue')
+      },
+      { path: 'playlists',
+        name: 'playlists',
+        component: () => import('pages/Playlists.vue')
+      }
     ]
   }
 ]

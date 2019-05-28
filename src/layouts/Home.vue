@@ -1,47 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-header reveal elevated>
-      <q-toolbar inset class="wrap text-primary bg-white q-gutter-md">
-          <div class="col-6">
-            <q-card class="my-card bg-secondary text-white">
-              <q-card-section>
-                <div class="text-h6">Our Changing Planet</div>
-                <div class="text-subtitle2">by John Doe</div>
-              </q-card-section>
-
-              <q-card-section>
-                Hui
-              </q-card-section>
-
-              <q-separator dark />
-
-              <q-card-actions>
-                <q-btn flat>Action 1</q-btn>
-                <q-btn flat>Action 2</q-btn>
-              </q-card-actions>
-            </q-card>
-          </div>
-          <div class="col-6">
-            <q-card class="my-card bg-secondary text-white">
-              <q-card-section>
-                <div class="text-h6">Our Changing Planet</div>
-                <div class="text-subtitle2">by John Doe</div>
-              </q-card-section>
-
-              <q-card-section>
-                Hui
-              </q-card-section>
-
-              <q-separator dark />
-
-              <q-card-actions>
-                <q-btn flat>Action 1</q-btn>
-                <q-btn flat>Action 2</q-btn>
-              </q-card-actions>
-            </q-card>
-          </div>
+    <q-header id="head">
+      <q-toolbar inset color="#3a588d" class="wrap text-primary bg-transparent q-gutter-md">
+          <head-container/>
       </q-toolbar>
     </q-header>
+    <navigation/>
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -49,20 +13,19 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
-
+import HeadContainer from 'components/Head/HeadContainer'
+import Navigation from 'components/Navigation'
 export default {
   name: 'Home',
-  data () {
-    return {
-      leftDrawerOpen: this.$q.platform.is.desktop
-    }
-  },
-  methods: {
-    openURL
-  }
+  components: { Navigation, HeadContainer },
+  data: () => ({}),
+  methods: {}
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+  #head {
+    background: #3a588d !important;
+    border-radius: 0 0 50px 50px;
+  }
 </style>
