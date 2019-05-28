@@ -1,1 +1,1 @@
-# SoundCloud-Sync
+# Quasar App
