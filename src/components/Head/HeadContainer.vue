@@ -1,13 +1,16 @@
 <template>
   <div id="head-container" class="row">
-    <div class="col-6">col1</div>
-    <div class="col-6">col2</div>
+    <user-one/>
+    <user-two/>
   </div>
 </template>
 
 <script>
+import UserOne from './UserOne'
+import UserTwo from './UserTwo'
 export default {
-  name: 'HeadContainer'
+  name: 'HeadContainer',
+  components: { UserTwo, UserOne }
 }
 </script>
 

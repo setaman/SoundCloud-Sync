@@ -1,9 +1,7 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
-    <q-header id="head">
-      <q-toolbar inset color="#3a588d" class="wrap text-primary bg-transparent q-gutter-md">
+  <q-layout view="hhh Lpr lFf">
+    <q-header id="head" reveal>
           <head-container/>
-      </q-toolbar>
     </q-header>
     <navigation/>
     <q-page-container>
@@ -25,7 +23,8 @@ export default {
 
 <style lang="scss" scoped>
   #head {
-    background: #3a588d !important;
+    background: #187dff !important;
     border-radius: 0 0 50px 50px;
+    overflow: hidden;
   }
 </style>
