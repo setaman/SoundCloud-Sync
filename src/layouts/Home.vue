@@ -1,11 +1,13 @@
 <template>
   <q-layout view="hhh Lpr lFf">
-    <q-header id="head" reveal>
-          <head-container/>
+    <q-header id="head">
+      <head-container/>
     </q-header>
-    <navigation/>
     <q-page-container>
-      <router-view />
+
+      <navigation/>
+
+      <router-view/>
     </q-page-container>
   </q-layout>
 </template>
@@ -13,6 +15,7 @@
 <script>
 import HeadContainer from 'components/Head/HeadContainer'
 import Navigation from 'components/Navigation'
+
 export default {
   name: 'Home',
   components: { Navigation, HeadContainer },
@@ -23,7 +26,7 @@ export default {
 
 <style lang="scss" scoped>
   #head {
-    background: #187dff !important;
+    background: white !important;
     border-radius: 0 0 50px 50px;
     overflow: hidden;
   }

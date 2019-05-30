@@ -11,7 +11,9 @@ export default {
 </script>
 
 <style lang="scss">
+  @import url('https://fonts.googleapis.com/css?family=Quicksand:300,400,700&display=swap');
   #q-app{
     background-color: #e9f2ff;
+    font-family: Quicksand, serif;
   }
 </style>

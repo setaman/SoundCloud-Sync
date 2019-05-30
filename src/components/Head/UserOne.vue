@@ -1,11 +1,12 @@
 <template>
-<div id="user-one-container" class="col-7">
-  <cover url="https://i1.sndcdn.com/visuals-000000347068-Tx4Gls-original.jpg"/>
-  <div class="row q-gutter-md full-height flex-center relative-position z-top">
-    <div class="col-5">
-      CONTETN
+<div id="user-one-container" class="col-6">
+  <div class="row justify-center items-center full-height q-col-gutter-sm relative-position z-top q-pa-xl">
+    <div class="col-xs-12 col-sm-12 col-md-10">
+      <div class="row wrap q-gutter-md">
+        <user-statistics/>
+      </div>
     </div>
-    <div class="col-2">
+    <div class="col-xs-12 col-sm-12 col-md-2 flex flex-center">
       <user-avatar/>
     </div>
   </div>
@@ -14,20 +15,18 @@
 
 <script>
 import UserAvatar from '../UserAvatar'
-import Cover from './Cover'
+import UserStatistics from './UserStatistics'
 export default {
   name: 'UserOne',
-  components: { Cover, UserAvatar }
+  components: { UserStatistics, UserAvatar }
 }
 </script>
 
 <style scoped lang="scss">
   #user-one-container {
-    background:  url("https://i1.sndcdn.com/visuals-000000347068-Tx4Gls-original.jpg");
     position: relative;
     overflow: hidden;
     z-index: 10;
-    clip-path: polygon(0 0, 100% 0%, 73% 100%, 0% 100%);
   }
 
 </style>
