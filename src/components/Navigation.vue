@@ -28,6 +28,14 @@
           exact
           class="text-cyan"
         />
+        <q-route-tab
+          name="settings"
+          label="settings"
+          icon="settings"
+          to="/settings"
+          exact
+          class="text-cyan"
+        />
       </q-tabs>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <q-page>
-    <div row>
-      <div col-12>
+    <div class="row">
+      <div class="col-12">
         <h2>{{items.length}}</h2>
         <q-btn @click="getLikes">
           load

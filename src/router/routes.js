@@ -21,6 +21,11 @@ const routes = [
         component: () => import('pages/Playlists.vue')
       }
     ]
+  },
+  {
+    path: '/settings',
+    component: () => import('layouts/Settings.vue'),
+    name: 'settings'
   }
 ]
 

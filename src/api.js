@@ -2,14 +2,12 @@ import axios from 'axios/index'
 
 export const getUserTracks = async (userId, clientId) => {
   const tracks = []
-  let u = '621489099'
-  let cId = 'Q11Oe0rIPEuxvMeMbdXV7qaowYzlaESv'
   try {
     let response = await axios.get(
-      `https://api-v2.soundcloud.com/users/${u}/track_likes`,
+      `https://api-v2.soundcloud.com/users/${userId}/track_likes`,
       {
         params: {
-          client_id: cId,
+          client_id: clientId,
           offset: 0,
           limit: 200
         }
@@ -19,7 +17,7 @@ export const getUserTracks = async (userId, clientId) => {
     while (response.data.next_href) {
       response = await axios.get(`${response.data.next_href}`, {
         params: {
-          client_id: cId
+          client_id: clientId
         }
       })
       tracks.push(...response.data.collection)
@@ -30,6 +28,51 @@ export const getUserTracks = async (userId, clientId) => {
     return new Promise((resolve, reject) => reject())
   }
 }
+
+export const getUserFollowings = async (userId, clientId) => {
+  const followings = []
+  try {
+    let response = await axios.get(
+      `https://api-v2.soundcloud.com/users/${userId}/followings`,
+      {
+        params: {
+          client_id: clientId,
+          offset: 0,
+          limit: 200
+        }
+      }
+    )
+    followings.push(...response.data.collection)
+    while (response.data.next_href) {
+      response = await axios.get(`${response.data.next_href}`, {
+        params: {
+          client_id: clientId
+        }
+      })
+      followings.push(...response.data.collection)
+    }
+    return new Promise(resolve => resolve(followings))
+  } catch (e) {
+    console.error(e)
+    return new Promise((resolve, reject) => reject())
+  }
+}
+
+export const getUserById = (userId, clientId) =>
+  axios.get(`https://api.soundcloud.com/users/${userId}`, {
+    params: {
+      client_id: clientId
+    }
+  })
+
+export const addUserFollowing = (followingId, token) =>
+  axios.post(
+    `https://api-v2.soundcloud.com/me/followings/${followingId}`,
+    {},
+    {
+      headers: { Authorization: `OAuth ${token}` }
+    }
+  )
 
 /*
 export const getUserByUrl = (user_name, client_id) =>
@@ -51,42 +94,4 @@ export const addUserTrack = (user_id, client_id, track_id, token) =>
       headers: { Authorization: `OAuth ${token}` }
     }
   )
-
-export const addUserFollowing = (user_id, following_id, token) =>
-  axios.post(
-    `https://api-v2.soundcloud.com/me/followings/${following_id}`,
-    {},
-    {
-      headers: { Authorization: `OAuth ${token}` }
-    }
-  )
-
-export const getUserFollowings = async (user_id, client_id) => {
-  const followings = []
-  try {
-    let response = await axios.get(
-      `https://api-v2.soundcloud.com/users/${user_id}/followings`,
-      {
-        params: {
-          client_id,
-          offset: 0,
-          limit: 200
-        }
-      }
-    )
-    followings.push(...response.data.collection)
-    while (response.data.next_href) {
-      response = await axios.get(`${response.data.next_href}`, {
-        params: {
-          client_id
-        }
-      })
-      followings.push(...response.data.collection)
-    }
-    return new Promise(resolve => resolve(followings))
-  } catch (e) {
-    console.error(e)
-    return new Promise((resolve, reject) => reject())
-  }
-}
 */
