@@ -6,7 +6,7 @@
           <q-icon name="favorite" class="text-red-5" style="font-size: 2em;"></q-icon>
         </div>
         <div class="stat-value flex flex-center text-uppercase">
-          481
+          {{likes}}
         </div>
         <div class="stat-title flex flex-center text-uppercase">
           likes
@@ -17,7 +17,7 @@
           <q-icon name="person" class="text-blue-7" style="font-size: 2em;"></q-icon>
         </div>
         <div class="stat-value flex flex-center text-uppercase">
-          34
+          {{followings}}
         </div>
         <div class="stat-title flex flex-center text-uppercase">
           followings
@@ -28,7 +28,7 @@
           <q-icon name="list" class="text-cyan-7" style="font-size: 2em;"></q-icon>
         </div>
         <div class="stat-value flex flex-center text-uppercase">
-          23
+          {{playlists}}
         </div>
         <div class="stat-title flex flex-center text-uppercase">
           playlists
@@ -40,7 +40,21 @@
 
 <script>
 export default {
-  name: 'UserStatistics'
+  name: 'UserStatistics',
+  props: {
+    likes: {
+      type: Number,
+      default: 0
+    },
+    followings: {
+      type: Number,
+      default: 0
+    },
+    playlists: {
+      type: Number,
+      default: 0
+    }
+  }
 }
 </script>
 

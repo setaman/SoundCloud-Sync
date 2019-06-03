@@ -1,17 +1,21 @@
 <template>
     <div class="user-avatar-container">
       <q-avatar size="100px">
-        <img src="https://cdn.quasar.dev/img/avatar.png">
+        <img :src="url">
       </q-avatar>
     </div>
 </template>
 
 <script>
 export default {
-  name: 'UserAvatar'
+  name: 'UserAvatar',
+  props: {
+    url: {
+      type: String
+    }
+  }
 }
 </script>
 
 <style scoped>
-
 </style>

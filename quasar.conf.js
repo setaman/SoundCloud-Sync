@@ -49,6 +49,9 @@ module.exports = function (ctx) {
         'QCardSection',
         'QCardActions',
         'QSeparator',
+        'QStepper',
+        'QStep',
+        'QStepperNavigation',
         'QTabs',
         'QTab',
         'QRouteTab'
