@@ -91,22 +91,22 @@ export default {
       userId: '242833986',
       clientId: 'u8j5bvKLMEY0eVwyQGQMQWC0ArjMYDOz',
       username: '',
-      userUrl: '',
+      permalink_url: '',
       token: '2-290343-242833986-m8W383xIw0w3r0',
       cover: '',
-      avatar: '',
+      avatar_url: '',
       likes: [],
       followings: [],
       playlists: []
     },
     userTwo: {
       username: '',
-      userUrl: '',
+      permalink_url: '',
       userId: '644611317',
       clientId: 'u8j5bvKLMEY0eVwyQGQMQWC0ArjMYDOz',
       token: '2-290343-242833986-m8W383xIw0w3invalid',
       cover: '',
-      avatar: '',
+      avatar_url: '',
       likes: [],
       followings: [],
       playlists: []
@@ -126,7 +126,6 @@ export default {
           })
           p.then(response => {
             console.log(response)
-            this.notifySuccess(`Successful connected to ${response.data.username}`, response.data.avatar_url)
           })
           return p
         }))
@@ -150,6 +149,7 @@ export default {
         this.userTwo.followings = followings[1]
         await this.checkUsersToken()
         this.loaded = true
+        this.notifySuccess(`Successful connected to users`, '')
       } catch (e) {
         console.info(e)
       } finally {
@@ -171,7 +171,6 @@ export default {
         })
         p.then(response => {
           console.log(response)
-          this.notifySuccess(`${currentUser.username} has ${response.length} Likes`, currentUser.avatar_url)
         })
         return p
       }))
@@ -192,7 +191,6 @@ export default {
         })
         p.then(response => {
           console.log(response)
-          this.notifySuccess(`${currentUser.username} has ${response.length} followings`, currentUser.avatar_url)
         })
         return p
       }))
@@ -212,12 +210,11 @@ export default {
           if (e.response.status === 401) {
             this.notifyError(`Token for ${currentUser.username} seems to be invalid`, currentUser.avatar_url)
           } else if (e.response.status === 404) {
-            this.notifySuccess(`Token successful validated for ${currentUser.username}`, currentUser.avatar_url)
+            // this.notifySuccess(`Token successful validated for ${currentUser.username}`, currentUser.avatar_url)
           }
         })
         p.then(response => {
           console.log(response)
-          this.notifySuccess(`Token successful validated for ${currentUser.username}`, currentUser.avatar_url)
         })
         return p
       }))

@@ -1,9 +1,20 @@
+import store from '../store/index'
+
+const requireUsersData = (to, from, next) => {
+  if (store.state.users.userOne.userId && store.state.users.userTwo.userId) {
+    next()
+    return
+  }
+  // redirect to settings form
+  next('/settings')
+}
 
 const routes = [
   {
     path: '/',
     component: () => import('layouts/Home.vue'),
     name: 'home',
+    beforeEnter: requireUsersData,
     redirect: {
       name: 'likes'
     },

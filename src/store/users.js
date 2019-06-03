@@ -1,16 +1,16 @@
-import { setValue, deleteValue } from './electron-store'
+import { setValue, deleteValue, getValue } from './electron-store'
 
 const userPlaceholder = {
   userId: '',
   username: '',
-  userUrl: '',
+  permalink_url: '',
   clientId: '',
   token: '',
   cover: '',
-  avatar: '',
   likes: [],
   followings: [],
-  playlists: []
+  playlists: [],
+  avatar_url: ''
 }
 
 const state = {
@@ -22,6 +22,7 @@ const SET_USER_ONE = 'SET_USER_ONE'
 const REMOVE_USER_ONE = 'REMOVE_USER_ONE'
 const SET_USER_TWO = 'SET_USER_TWO'
 const REMOVE_USER_TWO = 'REMOVE_USER_TWO'
+const INIT = 'INIT'
 
 // mutations
 const mutations = {
@@ -40,6 +41,15 @@ const mutations = {
   [REMOVE_USER_TWO] (state) {
     deleteValue('userTwo')
     state.userTwo = userPlaceholder
+  },
+  [INIT] (state) {
+    const userOne = getValue('userOne')
+    const userTwo = getValue('userTwo')
+    state.userOne = userOne || userPlaceholder
+    state.userTwo = userTwo || userPlaceholder
+
+    console.log(state.userOne)
+    console.log(state.userTwo)
   }
 }
 
@@ -58,6 +68,10 @@ const actions = {
 
   removeUserTwo ({ commit }) {
     commit(REMOVE_USER_TWO)
+  },
+
+  init ({ commit }) {
+    commit(INIT)
   }
 }
 

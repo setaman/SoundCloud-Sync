@@ -9,17 +9,15 @@ Vue.use(Vuex)
  * If not building with SSR mode, you can
  * directly export the Store instantiation
  */
+const Store = new Vuex.Store({
+  modules: {
+    users
+  },
+  // enable strict mode (adds overhead!)
+  // for dev mode only
+  strict: process.env.DEV
+})
 
-export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    modules: {
-      users
-    },
+Store.dispatch('init')
 
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: process.env.DEV
-  })
-
-  return Store
-}
+export default Store
