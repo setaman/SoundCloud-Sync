@@ -18,6 +18,6 @@ const Store = new Vuex.Store({
   strict: process.env.DEV
 })
 
-Store.dispatch('init')
+Store.dispatch('loadPersistedUsers')
 
 export default Store

@@ -27,7 +27,7 @@ export default {
     return {
       dialog: {
         open: false
-      },
+      }
     }
   },
   computed: {

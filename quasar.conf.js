@@ -49,6 +49,7 @@ module.exports = function (ctx) {
         'QCardSection',
         'QCardActions',
         'QSeparator',
+        'QSpinnerAudio',
         'QStepper',
         'QStep',
         'QStepperNavigation',

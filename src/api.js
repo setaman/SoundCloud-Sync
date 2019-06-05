@@ -25,7 +25,7 @@ export const getUserTracks = async (userId, clientId) => {
     return new Promise(resolve => resolve(tracks))
   } catch (e) {
     console.error(e)
-    return new Promise((resolve, reject) => reject())
+    return new Promise((resolve, reject) => reject(e))
   }
 }
 
@@ -54,7 +54,7 @@ export const getUserFollowings = async (userId, clientId) => {
     return new Promise(resolve => resolve(followings))
   } catch (e) {
     console.error(e)
-    return new Promise((resolve, reject) => reject())
+    return new Promise((resolve, reject) => reject(e))
   }
 }
 

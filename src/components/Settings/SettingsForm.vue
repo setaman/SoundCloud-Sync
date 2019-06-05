@@ -34,7 +34,7 @@
               </div>
             </div>
             <div class="col-xs-12">
-              <q-btn :loading="isLoading" rounded size="lg" class="full-width" color="green" @click="loadUsersData">
+              <q-btn :loading="isLoading" rounded size="lg" class="full-width" color="primary" @click="loadData">
                 check data
               </q-btn>
             </div>
@@ -75,9 +75,9 @@
 </template>
 
 <script>
-import { getUserById, getUserTracks, getUserFollowings, addUserFollowing } from '../../api'
 import UserAvatar from '../UserAvatar'
 import UserStatistics from '../Head/UserStatistics'
+import loadUserData from '../../utils/loaduserData'
 
 export default {
   name: 'SettingsForm',
@@ -86,8 +86,8 @@ export default {
     step: 1,
     loaded: false,
     saved: false,
-    isLoading: false,
-    userOne: {
+    isLoading: false
+    /* userOne: {
       userId: '242833986',
       clientId: 'u8j5bvKLMEY0eVwyQGQMQWC0ArjMYDOz',
       username: '',
@@ -104,122 +104,47 @@ export default {
       permalink_url: '',
       userId: '644611317',
       clientId: 'u8j5bvKLMEY0eVwyQGQMQWC0ArjMYDOz',
-      token: '2-290343-242833986-m8W383xIw0w3invalid',
+      token: '2-290353-644611317-lyc8BTMSvhmoWW',
       cover: '',
       avatar_url: '',
       likes: [],
       followings: [],
       playlists: []
-    }
+    } */
   }),
   methods: {
-    async loadUsersData () {
+
+    async loadData () {
       this.isLoading = true
-      try {
-        let promises = [ getUserById(this.userOne.userId, this.userOne.clientId),
-          getUserById(this.userTwo.userId, this.userTwo.clientId)]
+      const result = await Promise.all([loadUserData(this.userOne.userId, this.userOne.clientId, this.userOne.token),
+        loadUserData(this.userTwo.userId, this.userTwo.clientId, this.userTwo.token)
+      ])
 
-        const users = await Promise.all(promises.map(p => {
-          p.catch(e => {
-            console.log(e)
-            this.notifyError(e)
-          })
-          p.then(response => {
-            console.log(response)
-          })
-          return p
-        }))
-
-        const dataOne = users[0].data
-        const dataTwo = users[1].data
-
-        for (const prop of [ 'avatar_url', 'username', 'permalink_url' ]) {
-          this.userOne[prop] = dataOne[prop]
-        }
-
-        for (const prop of [ 'avatar_url', 'username', 'permalink_url' ]) {
-          this.userTwo[prop] = dataTwo[prop]
-        }
-
-        const likes = await this.loadUsersLikes()
-        this.userOne.likes = likes[0]
-        this.userTwo.likes = likes[1]
-        const followings = await this.loadUsersFollowings()
-        this.userOne.followings = followings[0]
-        this.userTwo.followings = followings[1]
-        await this.checkUsersToken()
-        this.loaded = true
-        this.notifySuccess(`Successful connected to users`, '')
-      } catch (e) {
-        console.info(e)
-      } finally {
-        this.step = 2
-        this.isLoading = false
-      }
-    },
-
-    async loadUsersLikes () {
-      let promises = [ getUserTracks(this.userOne.userId, this.userOne.clientId),
-        getUserTracks(this.userTwo.userId, this.userTwo.clientId)]
-
-      const likes = await Promise.all(promises.map((p, i) => {
-        const currentUser = i === 0 ? this.userOne : this.userTwo
-        console.log('CURRENT', i, currentUser)
-        p.catch(e => {
-          console.log(e)
-          this.notifyError(e)
-        })
-        p.then(response => {
-          console.log(response)
-        })
-        return p
-      }))
-
-      console.log(likes)
-      return likes
-    },
-
-    async loadUsersFollowings () {
-      let promises = [ getUserFollowings(this.userOne.userId, this.userOne.clientId),
-        getUserFollowings(this.userTwo.userId, this.userTwo.clientId)]
-
-      const followings = await Promise.all(promises.map((p, i) => {
-        const currentUser = i === 0 ? this.userOne : this.userTwo
-        p.catch(e => {
-          console.log(e)
-          this.notifyError(e)
-        })
-        p.then(response => {
-          console.log(response)
-        })
-        return p
-      }))
-
-      console.log(followings)
-      return followings
-    },
-
-    async checkUsersToken () {
-      let promises = [ addUserFollowing('', this.userOne.token),
-        addUserFollowing('', this.userTwo.token)]
-
-      await Promise.all(promises.map((p, i) => {
-        const currentUser = i === 0 ? this.userOne : this.userTwo
-        p.catch(e => {
-          console.log(e.response.status)
-          if (e.response.status === 401) {
-            this.notifyError(`Token for ${currentUser.username} seems to be invalid`, currentUser.avatar_url)
-          } else if (e.response.status === 404) {
-            // this.notifySuccess(`Token successful validated for ${currentUser.username}`, currentUser.avatar_url)
+      if (result[0].errors.length > 0 || result[1].errors.length > 0) {
+        for (const data of result) {
+          for (const error of data.errors) {
+            this.notifyError(error)
           }
-        })
-        p.then(response => {
-          console.log(response)
-        })
-        return p
-      }))
-    },
+        }
+      } else {
+        this.notifySuccess('Data successful loaded')
+        this.loaded = true
+        this.step = 2
+      }
 
+      console.log(result)
+
+      const loadedUserOne = result.find(data => data.user.userId === this.userOne.userId)
+      const loadedUserTwo = result.find(data => data.user.userId === this.userTwo.userId)
+
+      console.log(loadedUserOne)
+      console.log(loadedUserTwo)
+
+      this.userOne = { ...this.userOne, ...loadedUserOne.user }
+      this.userTwo = { ...this.userTwo, ...loadedUserTwo.user }
+
+      this.isLoading = false
+    },
     notifySuccess (message, avatar) {
       this.$q.notify({
         message,
@@ -241,6 +166,24 @@ export default {
       this.$store.dispatch('setUserOne', this.userOne)
       this.$store.dispatch('setUserTwo', this.userTwo)
       console.log(this.$store.state)
+    }
+  },
+  computed: {
+    userOne: {
+      get () {
+        return this.$store.state.users.userOne
+      },
+      set (val) {
+        this.$store.dispatch('setUserOne', val)
+      }
+    },
+    userTwo: {
+      get () {
+        return this.$store.state.users.userTwo
+      },
+      set (val) {
+        this.$store.dispatch('setUserTwo', val)
+      }
     }
   }
 }

@@ -12,9 +12,15 @@ const requireUsersData = (to, from, next) => {
 const routes = [
   {
     path: '/',
+    component: () => import('layouts/Welcome.vue'),
+    name: 'welcome',
+    beforeEnter: requireUsersData
+  },
+  {
+    path: '/home',
     component: () => import('layouts/Home.vue'),
     name: 'home',
-    beforeEnter: requireUsersData,
+    // beforeEnter: requireUsersData,
     redirect: {
       name: 'likes'
     },

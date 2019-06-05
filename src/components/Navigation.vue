@@ -8,7 +8,7 @@
           icon="favorite"
           label="favorite"
           name="likes"
-          to="/likes"
+          to="/home/likes"
           exact
           class="text-red"
         />
@@ -16,7 +16,7 @@
           name="followings"
           label="followings"
           icon="person"
-          to="/followings"
+          to="/home/followings"
           exact
           class="text-primary"
         />
@@ -24,7 +24,7 @@
           name="playlist"
           label="playlist"
           icon="person"
-          to="/playlists"
+          to="/home/playlists"
           exact
           class="text-cyan"
         />
@@ -35,6 +35,14 @@
           to="/settings"
           exact
           class="text-cyan"
+        />
+        <q-route-tab
+          name="welcome"
+          label="welcome"
+          icon="home"
+          to="/"
+          exact
+          class="text-red-10"
         />
       </q-tabs>
     </div>

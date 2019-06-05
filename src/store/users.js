@@ -1,4 +1,5 @@
 import { setValue, deleteValue, getValue } from './electron-store'
+import loadUserData from '../utils/loaduserData'
 
 const userPlaceholder = {
   userId: '',
@@ -15,14 +16,16 @@ const userPlaceholder = {
 
 const state = {
   userOne: userPlaceholder,
-  userTwo: userPlaceholder
+  userTwo: userPlaceholder,
+  isInitialized: false
 }
 
 const SET_USER_ONE = 'SET_USER_ONE'
 const REMOVE_USER_ONE = 'REMOVE_USER_ONE'
 const SET_USER_TWO = 'SET_USER_TWO'
 const REMOVE_USER_TWO = 'REMOVE_USER_TWO'
-const INIT = 'INIT'
+const LOAD_USERS_DATA = 'LOAD_USERS_DATA'
+const LOAD_PERSISTED_USERS = 'LOAD_PERSISTED_USERS'
 
 // mutations
 const mutations = {
@@ -41,15 +44,6 @@ const mutations = {
   [REMOVE_USER_TWO] (state) {
     deleteValue('userTwo')
     state.userTwo = userPlaceholder
-  },
-  [INIT] (state) {
-    const userOne = getValue('userOne')
-    const userTwo = getValue('userTwo')
-    state.userOne = userOne || userPlaceholder
-    state.userTwo = userTwo || userPlaceholder
-
-    console.log(state.userOne)
-    console.log(state.userTwo)
   }
 }
 
@@ -70,8 +64,37 @@ const actions = {
     commit(REMOVE_USER_TWO)
   },
 
-  init ({ commit }) {
-    commit(INIT)
+  loadPersistedUsers ({ commit }) {
+    const userOne = getValue('userOne')
+    const userTwo = getValue('userTwo')
+
+    commit(SET_USER_ONE, userOne)
+    commit(SET_USER_TWO, userTwo)
+  },
+
+  async loadUsersData ({ commit, state }) {
+    if (state.userOne.userId && state.userTwo.userId) {
+      const result = await Promise.all([loadUserData(state.userOne.userId, state.userOne.clientId, state.userOne.token),
+        loadUserData(state.userTwo.userId, state.userTwo.clientId, state.userTwo.token)
+      ])
+
+      if (result[0].errors.length > 0 || result[1].errors.length > 0) {
+        return new Promise((resolve, reject) => reject('Somme error occurred while loading data!'))
+      }
+
+      const loadedUserOne = result.find(data => data.user.userId === state.userOne.userId)
+      const loadedUserTwo = result.find(data => data.user.userId === state.userTwo.userId)
+
+      console.log(loadedUserOne)
+      console.log(loadedUserTwo)
+
+      const userOne = { ...state.userOne, ...loadedUserOne.user }
+      const userTwo = { ...state.userTwo, ...loadedUserTwo.user }
+
+      // updated users data
+      commit(SET_USER_ONE, userOne)
+      commit(SET_USER_TWO, userTwo)
+    }
   }
 }
 
