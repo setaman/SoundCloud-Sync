@@ -46,7 +46,7 @@
 
       <q-card-actions align="right">
         <q-btn color="primary" size="md" :disabled="!inputIsValid" rounded :loading="isLoading" @click="getUser">load data</q-btn>
-        <q-btn color="green" size="md" rounded :disabled="!isValid" :loading="isLoading" @click="getUser">save data</q-btn>
+        <q-btn color="green" size="md" rounded :disabled="!isValid" :loading="isLoading" @click="persistUser"  v-close-popup>save data</q-btn>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -88,7 +88,10 @@ export default {
       token: this.user.token,
       avatar: this.user.avatar_url,
       username: this.user.username,
-      url: this.user.permalink_url
+      url: this.user.permalink_url,
+      likes: [],
+      followings: [],
+      playlists: []
     }
   },
   computed: {
@@ -131,6 +134,8 @@ export default {
           this.avatar = avatar_url
           this.username = username
           this.url = permalink_url
+          this.likes = likes
+          this.followings = followings
 
           this.notifySuccess('Data successful loaded')
           this.isValid = true
@@ -141,11 +146,19 @@ export default {
         this.isLoading = false
       }
     },
-
-    checkCredentialsChanges () {
-
+    persistUser () {
+      this.$emit('save', {
+        userId: this.userId,
+        clientId: this.clientId,
+        token: this.token,
+        avatar_url: this.avatar,
+        permalink_url: this.url,
+        username: this.username,
+        likes: this.likes,
+        followings: this.followings,
+        playlists: this.playlists
+      })
     },
-
     openUserLinkInBrowser () {
       shell.openExternal(this.url)
     }
