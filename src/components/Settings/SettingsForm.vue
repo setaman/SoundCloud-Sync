@@ -87,30 +87,6 @@ export default {
     loaded: false,
     saved: false,
     isLoading: false
-    /* userOne: {
-      userId: '242833986',
-      clientId: 'u8j5bvKLMEY0eVwyQGQMQWC0ArjMYDOz',
-      username: '',
-      permalink_url: '',
-      token: '2-290343-242833986-m8W383xIw0w3r0',
-      cover: '',
-      avatar_url: '',
-      likes: [],
-      followings: [],
-      playlists: []
-    },
-    userTwo: {
-      username: '',
-      permalink_url: '',
-      userId: '644611317',
-      clientId: 'u8j5bvKLMEY0eVwyQGQMQWC0ArjMYDOz',
-      token: '2-290353-644611317-lyc8BTMSvhmoWW',
-      cover: '',
-      avatar_url: '',
-      likes: [],
-      followings: [],
-      playlists: []
-    } */
   }),
   methods: {
 
