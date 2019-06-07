@@ -113,9 +113,6 @@ export default {
       const loadedUserOne = result.find(data => data.user.userId === this.userOne.userId)
       const loadedUserTwo = result.find(data => data.user.userId === this.userTwo.userId)
 
-      console.log(loadedUserOne)
-      console.log(loadedUserTwo)
-
       this.userOne = { ...this.userOne, ...loadedUserOne.user }
       this.userTwo = { ...this.userTwo, ...loadedUserTwo.user }
 
@@ -141,7 +138,7 @@ export default {
     persistData () {
       this.$store.dispatch('setUserOne', this.userOne)
       this.$store.dispatch('setUserTwo', this.userTwo)
-      console.log(this.$store.state)
+      this.$router.push('home')
     }
   },
   computed: {

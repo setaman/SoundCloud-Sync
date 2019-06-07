@@ -1,25 +1,15 @@
 <template>
   <q-page>
-    <div class="row">
-      <div class="col-12">
-        <h2>{{items.length}}</h2>
-        <q-btn @click="getLikes">
-          load
-        </q-btn>
-        <q-list bordered separator>
-          <q-item v-for="(item, i) in items" :key="i" clickable v-ripple>
-            <q-item-section>{{item}}</q-item-section>
-          </q-item>
-        </q-list>
-      </div>
-    </div>
+    <lists-group :items-one="[]" :items-two="[]"/>
   </q-page>
 </template>
 <script>
 import { getUserTracks } from '../api'
+import ListsGroup from '../components/ListsGroup/ListsGroup'
 
 export default {
   name: 'Likes',
+  components: { ListsGroup },
   data: () => ({
     items: []
   }),
