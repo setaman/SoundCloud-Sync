@@ -62,6 +62,7 @@ const actions = {
     commit(REMOVE_USER_TWO)
   },
 
+  // load users data on app start
   loadPersistedUsers ({ commit }) {
     const userOne = getValue('userOne')
     const userTwo = getValue('userTwo')

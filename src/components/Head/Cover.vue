@@ -1,14 +1,16 @@
 <template>
   <div class="cover-container">
-    <div class="user-one-cover cover-image">
+    <div class="user-one-cover cover-image" :style="bgImageOne">
       <q-img
+        v-if="urlOne"
         :src="urlOne"
         spinner-color="white"
         style="height: 400px; max-width: 100%; min-width: 60vw"
       />
     </div>
-    <div class="user-two-cover cover-image">
+    <div class="user-two-cover cover-image" :style="bgImageTwo">
       <q-img
+        v-if="urlTwo"
         :src="urlTwo"
         spinner-color="white"
         style="height: 400px; max-width: 100%; min-width: 60vw"
@@ -23,11 +25,19 @@ export default {
   props: {
     urlOne: {
       type: String,
-      required: true
+      required: false
     },
     urlTwo: {
       type: String,
-      required: true
+      required: false
+    },
+    bgImageOne: {
+      type: String,
+      required: false
+    },
+    bgImageTwo: {
+      type: String,
+      required: false
     }
   }
 }
@@ -52,11 +62,14 @@ export default {
     left: 0;
     clip-path: polygon(0 0, 100% 0%, 73% 100%, 0% 100%);
     z-index: 2;
+    filter: brightness(0.7) blur(0px);
   }
 
   .user-two-cover {
     right: 0;
     width: 65vw;
+    filter: brightness(0.7) blur(2px);
+
   }
 
 </style>

@@ -18,6 +18,7 @@ const Store = new Vuex.Store({
   strict: process.env.DEV
 })
 
+// load persisted users data on app start
 Store.dispatch('loadPersistedUsers')
 
 export default Store

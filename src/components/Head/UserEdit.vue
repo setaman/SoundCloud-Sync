@@ -1,11 +1,8 @@
-<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+<template>
 
   <q-dialog v-model="dialog.open">
     <q-card>
-      <div class="user-cover">
-        <q-img style="height: 150px;"
-               :src="avatar"/>
-      </div>
+      <div class="user-cover" :style="bgImage"></div>
       <div class="user-avatar">
         <div class="text-center">
           <user-avatar :url="avatar"/>
@@ -17,7 +14,7 @@
 
       <q-card-section>
         <div class="row q-col-gutter-md q-pt-xl q-mt-md">
-          <div class="form-header col text-h6 ellipsis">Provide connection data</div>
+          <div class="form-header col text-h6 ellipsis">Edit user connection data</div>
           <div class="col-xs-12">
             <q-input outlined v-model="userId" label="User id*" :error="isInvalidUserId" bottom-slots>
               <template v-slot:error>
@@ -46,7 +43,7 @@
 
       <q-card-actions align="right">
         <q-btn color="primary" size="md" :disabled="!inputIsValid" rounded :loading="isLoading" @click="getUser">load data</q-btn>
-        <q-btn color="green" size="md" rounded :disabled="!isValid" :loading="isLoading" @click="persistUser"  v-close-popup>save data</q-btn>
+        <q-btn color="green" size="md" rounded :disabled="!isValid" :loading="isLoading" @click="emitSaveEvent" v-close-popup>save data</q-btn>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -57,6 +54,7 @@ import UserAvatar from '../UserAvatar'
 import loadUserData from '../../utils/loaduserData'
 import { shell } from 'electron'
 import NotificationMixin from '../notificationMixin'
+import getBackgroundImage from '../../utils/generateBackgroundImage'
 
 export default {
   name: 'UserEdit',
@@ -80,6 +78,8 @@ export default {
       initialToken: this.user.token,
 
       inputErrorMsg: 'This field is required',
+
+      bgImage: '',
 
       isLoading: false,
       isValid: false,
@@ -146,7 +146,7 @@ export default {
         this.isLoading = false
       }
     },
-    persistUser () {
+    emitSaveEvent () {
       this.$emit('save', {
         userId: this.userId,
         clientId: this.clientId,
@@ -161,13 +161,22 @@ export default {
     },
     openUserLinkInBrowser () {
       shell.openExternal(this.url)
+    },
+    async backgroundImage () {
+      // eslint-disable-next-line no-return-await
+      this.bgImage = await getBackgroundImage(this.avatar)
     }
+  },
+  mounted () {
+    console.log('MOUNT')
+    this.backgroundImage()
   }
 }
 </script>
 
 <style scoped lang="scss">
   .user-cover {
+    height: 150px;
     border-bottom-left-radius: 50px !important;
     border-bottom-right-radius: 50px !important;
     overflow: hidden;
