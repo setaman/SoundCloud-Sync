@@ -1,20 +1,18 @@
 <template>
-    <section class="list-group-section">
+    <section class="list-group-section q-pa-lg">
       <div>
         <Container group-name="1" :get-child-payload="getChildPayload1" @drop="onDrop('items1', $event)">
           <Draggable v-for="item in items1" :key="item.id">
-            <div class="draggable-item">
-              {{item.data}}
-            </div>
+            <list-item/>
           </Draggable>
         </Container>
       </div>
       <div>Hello</div>
       <div>
-        <Container group-name="1" :get-child-payload="getChildPayload2" @drop="onDrop('items1', $event)">
+        <Container group-name="1" behaviour="copy" :get-child-payload="getChildPayload2" @drop="onDrop('items1', $event)">
           <Draggable v-for="item in items2" :key="item.id">
             <div class="draggable-item">
-              {{item.data}}
+              <list-item/>
             </div>
           </Draggable>
         </Container>
@@ -25,6 +23,7 @@
 
 <script>
 import { Container, Draggable } from 'vue-smooth-dnd'
+import ListItem from './ListItem'
 
 const generateItems = (count, creator) => {
   const result = []
@@ -36,7 +35,7 @@ const generateItems = (count, creator) => {
 
 export default {
   name: 'ListsGroup',
-  components: { Container, Draggable },
+  components: { ListItem, Container, Draggable },
   props: {
     itemsOne: {
       type: Array,
@@ -80,6 +79,7 @@ export default {
 <style scoped lang="scss">
   .list-group-section {
     display: grid;
-    grid-template-columns: minmax(400px, 1fr) minmax(300px, 400px) minmax(400px, 1fr);
+    grid-template-columns: minmax(400px, 1fr) minmax(200px, 300px) minmax(400px, 1fr);
+    grid-column-gap: 16px;
   }
 </style>

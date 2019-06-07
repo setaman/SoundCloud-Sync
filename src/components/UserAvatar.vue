@@ -1,6 +1,6 @@
 <template>
     <div class="user-avatar-container">
-      <q-avatar size="100px">
+      <q-avatar :size="size">
         <img :src="url">
       </q-avatar>
     </div>
@@ -12,6 +12,11 @@ export default {
   props: {
     url: {
       type: String
+    },
+    size: {
+      type: String,
+      required: false,
+      default: '100px'
     }
   }
 }
