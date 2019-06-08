@@ -32,6 +32,7 @@ module.exports = function (ctx) {
         'QDialog',
         'QPageContainer',
         'QPage',
+        'QScrollObserver',
         'QPageSticky',
         'QToolbar',
         'QToolbarTitle',
