@@ -52,7 +52,7 @@ async function getLikes (userId, clientId) {
   try {
     const likes = await getUserTracks(userId, clientId)
 
-    return { likes, likesError: null }
+    return { likes: likes.map((item, order) => ({ ...item.track, status: 'waiting', order })), likesError: null }
   } catch (e) {
     console.info('LIKES ERROR', e.response)
     if (e.response.status === 401) {
@@ -68,7 +68,7 @@ async function getFollowings (userId, clientId) {
   try {
     const followings = await getUserFollowings(userId, clientId)
 
-    return { followings, followingsError: null }
+    return { followings: followings.map((following, order) => ({ ...following, status: 'waiting', order })), followingsError: null }
   } catch (e) {
     console.info('FOLLOWINGS ERROR', e)
     if (e.response.status === 401) {

@@ -1,41 +1,60 @@
 <template>
-    <section class="list-group-section q-pa-lg">
-      <div>
-        <Container group-name="1" :get-child-payload="getChildPayload1" @drop="onDrop('items1', $event)">
-          <Draggable v-for="item in items1" :key="item.id">
-            <list-item/>
-          </Draggable>
-        </Container>
+  <section class="list-group-section q-pa-lg">
+    <div>
+      <list-controls :filters.sync="filtersOne" :selected="filteredItemsOne.length" :max="itemsOne.length"/>
+      <div class="q-pt-md q-pb-sm">
+        <divider></divider>
       </div>
-      <div>Hello</div>
-      <div>
-        <Container group-name="1" behaviour="copy" :get-child-payload="getChildPayload2" @drop="onDrop('items1', $event)">
-          <Draggable v-for="item in items2" :key="item.id">
-            <div class="draggable-item">
-              <list-item/>
-            </div>
-          </Draggable>
-        </Container>
+      <q-infinite-scroll @load="onLoad" :scroll-target="$refs.scrollTargetRef">
+        <list-items-transition ref="scrollTargetRef">
+          <list-item v-for="item in loadedItemsOne" :key="item.id" :item="item"/>
+        </list-items-transition>
+        <template v-slot:loading>
+          <div class="row justify-center q-my-md">
+            <q-spinner-audio
+              color="orange"
+              size="2em"
+            />
+          </div>
+        </template>
+      </q-infinite-scroll>
+    </div>
+    <div>Sync</div>
+    <div>
+      <list-controls :filters.sync="filtersTwo" :selected="filteredItemsOne.length" :max="itemsTwo.length"/>
+      <div class="q-pt-md q-pb-sm">
+        <divider></divider>
       </div>
+      <q-infinite-scroll @load="onLoad">
+        <list-item v-for="item in loadedItemsTwo" :key="item.id" :item="item"/>
+        <template v-slot:loading>
+          <div class="row justify-center q-my-md">
+            <q-spinner-audio
+              color="orange"
+              size="2em"
+            />
+          </div>
+        </template>
+      </q-infinite-scroll>
+    </div>
 
-    </section>
+  </section>
 </template>
 
 <script>
-import { Container, Draggable } from 'vue-smooth-dnd'
 import ListItem from './ListItem'
+import ListItemsTransition from '../Transitions/ListItemsTransition'
+import ListControls from './ListControls'
+import Divider from '../Base/Divider'
 
-const generateItems = (count, creator) => {
-  const result = []
-  for (let i = 0; i < count; i++) {
-    result.push(creator(i))
-  }
-  return result
-}
+const STATUS_SYNCHRONIZED = 'synchronized'
+const STATUS_WAITING = 'waiting'
+const STATUS_EXIST = 'exist'
+const STATUS_ERROR = 'error'
 
 export default {
   name: 'ListsGroup',
-  components: { ListItem, Container, Draggable },
+  components: { Divider, ListControls, ListItemsTransition, ListItem },
   props: {
     itemsOne: {
       type: Array,
@@ -47,30 +66,95 @@ export default {
     }
   },
   data: () => ({
-    items1: generateItems(15, i => ({
-      id: '1' + i,
-      data: `Draggable 1 - ${i}`
-    })),
-    items2: generateItems(15, i => ({
-      id: '2' + i,
-      data: `Draggable 2 - ${i}`
-    }))
+    offset: 30,
+    filtersOne: {
+      title: '',
+      status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR],
+      sort: 'Oldest',
+      all: true
+    },
+    filtersTwo: {
+      title: '',
+      status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR],
+      sort: 'Oldest',
+      all: true
+    }
   }),
+  computed: {
+    loadedItemsOne () {
+      return this.filteredItemsOne.slice(0, this.offset)
+    },
+    filteredItemsOne () {
+      return this.sortItems(this.filterItems(this.itemsOne))
+    },
+    loadedItemsTwo () {
+      return this.itemsTwo.slice(0, this.offset)
+    }
+  },
   methods: {
-    onDrop (collection, dropResult) {
-      console.log(collection, dropResult)
+    onLoad (index, done) {
+      if (this.offset < this.itemsOne.length || this.offset < this.itemsTwo.length) {
+        this.offset = this.offset * 2
+        console.log('LOAD', this.offset)
+      }
+      done()
     },
-    getChildPayload1 (index) {
-      return this.items1[index]
+    filterItems (items) {
+      let filteredItems = items.filter(item =>
+        this.filtersOne.status.join(' ').includes(item.status)
+      )
+
+      if (this.filtersOne.title) {
+        filteredItems = filteredItems.filter(item => item.title.toLowerCase().includes(this.filtersOne.title.toLowerCase()))
+      }
+
+      return filteredItems
     },
-    getChildPayload2 (index) {
-      return this.items2[index]
-    },
-    getChildPayload3 (index) {
-      return this.items3[index]
-    },
-    getChildPayload4 (index) {
-      return this.items4[index]
+    sortItems (items) {
+      if (items.length === 0) {
+        return []
+      }
+      switch (this.filtersOne.sort.toLowerCase()) {
+        case 'oldest':
+          return items.sort((a, b) => {
+            if (a.order < b.order) {
+              return 1
+            }
+            if (a.order > b.order) {
+              return -1
+            }
+            return 0
+          })
+        case 'newest':
+          return items.sort((a, b) => {
+            if (a.order < b.order) {
+              return -1
+            }
+            if (a.order > b.order) {
+              return 1
+            }
+            return 0
+          })
+        case 'a to z':
+          return items.sort((a, b) => {
+            if (a.url < b.url) {
+              return -1
+            }
+            if (a.url > b.url) {
+              return 1
+            }
+            return 0
+          })
+        case 'status':
+          return [
+            ...items.filter(item => item.status === STATUS_SYNCHRONIZED),
+            ...items.filter(item => item.status === STATUS_WAITING),
+            ...items.filter(item => item.status === STATUS_EXIST),
+            ...items.filter(item => item.status === STATUS_ERROR)
+          ]
+        default:
+          return items
+      }
     }
   }
 }

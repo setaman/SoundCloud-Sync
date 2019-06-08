@@ -1,6 +1,6 @@
 <template>
 <div id="user-one-container" class="col-6">
-  <user-edit :dialog.sync="dialog" :user="userOne"/>
+  <user-edit :dialog.sync="dialog" :user="userOne" @save="persistUser"/>
   <div class="row justify-center items-center full-height q-col-gutter-sm relative-position z-top q-pa-xl">
     <div class="col-xs-12 col-sm-12 col-md-10">
       <div class="row wrap q-gutter-md">
@@ -33,6 +33,11 @@ export default {
   computed: {
     userOne () {
       return this.$store.state.users.userOne
+    }
+  },
+  methods: {
+    persistUser (user) {
+      this.$store.dispatch('setUserOne', user)
     }
   }
 }

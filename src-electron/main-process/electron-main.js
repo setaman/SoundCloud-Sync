@@ -15,6 +15,7 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
+    title: 'SoundCloud Sync',
     width: 1000,
     height: 600,
     useContentSize: true,

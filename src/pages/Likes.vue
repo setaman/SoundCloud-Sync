@@ -1,10 +1,9 @@
 <template>
   <q-page>
-    <lists-group :items-one="[]" :items-two="[]"/>
+    <lists-group :items-one="likesUserOne" :items-two="likesUserTwo"/>
   </q-page>
 </template>
 <script>
-import { getUserTracks } from '../api'
 import ListsGroup from '../components/ListsGroup/ListsGroup'
 
 export default {
@@ -14,18 +13,12 @@ export default {
     items: []
   }),
   computed: {
-    likes () {
-      return this.items
+    likesUserOne () {
+      return this.$store.state.users.userOne.likes
+    },
+    likesUserTwo () {
+      return this.$store.state.users.userTwo.likes
     }
-  },
-  methods: {
-    async getLikes () {
-      let response = await getUserTracks()
-      this.items = response.map(item => item.track.title)
-    }
-  },
-  mounted () {
-    // this.getLikes()
   }
 }
 </script>
