@@ -1,8 +1,8 @@
 <template>
     <div class="list-item">
-      <div class="flex flex-center">
-        <q-checkbox v-model="val" />
-      </div>
+     <!-- <div class="flex flex-center">
+        &lt;!&ndash;<q-checkbox v-model="val" />&ndash;&gt;
+      </div>-->
       <div class="list-item-content">
         <div class="list-item-avatar shadow-8" :style="randomGradient">
           <user-avatar v-if="avatar" size="50px" :url="avatar"/>
@@ -66,9 +66,10 @@ export default {
   .list-item {
     margin: 8px 0;
     display: grid;
-    grid-template-columns: 40px 1fr 40px;
+    grid-template-columns: /*40px */1fr 40px;
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 50px;
+    box-shadow: 7px 9px 32px 1px rgba(0, 0, 0, 0.05);
     background: white;
     position: relative;
     overflow: hidden;
