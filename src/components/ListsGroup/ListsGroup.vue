@@ -35,7 +35,12 @@
           </template>
         </q-infinite-scroll>
       </div>
-      <div>Sync</div>
+      <div class="text-center">
+        <vue-ellipse-progress :progress="55" font-size="2rem" :animation="{type: 'rs', delay: 1000, duration: 700}">
+          <span slot="legend-value">%</span>
+          <q-btn round flat size="lg" color="primary" icon="sync" slot="legend-capture"/>
+        </vue-ellipse-progress>
+      </div>
       <div>
         <q-infinite-scroll @load="onLoad">
           <list-item v-for="item in loadedItemsTwo" :key="item.id" :item="item"/>
