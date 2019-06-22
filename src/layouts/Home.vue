@@ -28,6 +28,8 @@ export default {
   #head {
     background: white !important;
     border-radius: 0 0 50px 50px;
+    border: 5px #241d46 solid;
+    border-top: none;
     overflow: hidden;
   }
 </style>

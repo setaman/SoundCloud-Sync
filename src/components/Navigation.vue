@@ -1,69 +1,93 @@
 <template>
-  <div id="navigation" class="row q-col-gutter-lg-md">
-    <div class="col">
-      <q-tabs dense
-              no-caps
-              inline-label>
-        <q-route-tab
-          icon="favorite"
-          label="favorite"
-          name="likes"
-          to="/home/likes"
-          exact
-          class="text-red"
-        />
-        <q-route-tab
-          name="followings"
-          label="followings"
-          icon="person"
-          to="/home/followings"
-          exact
-          class="text-primary"
-        />
-        <q-route-tab
-          name="playlist"
-          label="playlist"
-          icon="person"
-          to="/home/playlists"
-          exact
-          class="text-cyan"
-        />
-        <q-route-tab
-          name="settings"
-          label="settings"
-          icon="settings"
-          to="/settings"
-          exact
-          class="text-cyan"
-        />
-        <q-route-tab
-          name="welcome"
-          label="welcome"
-          icon="home"
-          to="/"
-          exact
-          class="text-red-10"
-        />
-      </q-tabs>
+  <div id="navigation-container">
+    <div id="navigation" class="q-pb-xl" :class="{'fixed-nav': position >= 200}">
+      <div id="navigation-divider"></div>
+      <q-scroll-observer @scroll="onScroll" />
+      <div class="flex flex-center">
+        <div id="navigation-items-container">
+          <div class="" v-for="(item, i) in routes" :key="i">
+            <drop-button :active="item.route === currentRoute">
+              <q-btn slot="button" :to="item.route" round flat :color="item.color" :icon="item.icon" />
+            </drop-button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import ScrollMixin from './scrollObserverMixin'
+import DropButton from './Base/DropButton'
 export default {
-  name: 'Navigation'
+  name: 'Navigation',
+  components: { DropButton },
+  mixins: [ScrollMixin],
+  data: () => ({
+    activeRouteIndex: 0,
+    routes: [
+      {
+        route: '/home/likes',
+        icon: 'favorite',
+        title: 'likes',
+        color: 'red'
+      },
+      {
+        route: '/home/followings',
+        icon: 'group',
+        title: 'likes',
+        color: 'info'
+      },
+      {
+        route: '/home/playlists',
+        icon: 'list',
+        title: 'playlists',
+        color: 'cyan'
+      },
+      {
+        route: '/',
+        icon: 'settings',
+        title: 'home',
+        color: 'orange'
+      }
+    ]
+  }),
+  computed: {
+    currentRoute () {
+      return this.$route.fullPath
+    }
+  }
 }
 </script>
 
 <style scoped lang="scss">
+  #navigation-container {
+    height: 127px;
+  }
+  #navigation-divider {
+    height: 50px;
+  }
   #navigation{
+    transition: 1s;
     position: relative;
-    background: white;
-    //z-index: 2001;
     width: 100vw;
-    border-radius: 0 0 50px 50px;
     top: -50px;
-    padding: 70px 30px 0px 30px;
+    background-image: linear-gradient(to bottom, white 50%, transparent 100%);
+    &.fixed-nav {
+      position: fixed;
+      // top: -75px;
+      left: 0;
+      width: 100%;
+      z-index: 2000;
+      #navigation-divider {
+        border-bottom: 53px #241d46 solid;
+      }
+    }
+  }
+  #navigation-items-container {
+    display: grid;
+    grid-template-columns: repeat(4, 160px);
+    column-gap: 10px;
   }
 
 </style>

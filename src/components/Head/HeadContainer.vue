@@ -50,7 +50,7 @@ export default {
 
 <style scoped lang="scss">
   #head-container{
-    height: 400px;
+    height: 200px;
     width: 100%;
     position: relative;
     .cover {

@@ -1,77 +1,97 @@
 <template>
-    <section class="list-group-section">
+  <section class="list-group-section q-px-lg">
+    <div class="lists-group-content">
       <div>
-        <Container group-name="1" :get-child-payload="getChildPayload1" @drop="onDrop('items1', $event)">
-          <Draggable v-for="item in items1" :key="item.id">
-            <div class="draggable-item">
-              {{item.data}}
-            </div>
-          </Draggable>
-        </Container>
+        <slot name="list-one"></slot>
       </div>
-      <div>Hello</div>
+      <div class="relative-position">
+        <slot name="list-sync-controls"></slot>
+      </div>
       <div>
-        <Container group-name="1" :get-child-payload="getChildPayload2" @drop="onDrop('items1', $event)">
-          <Draggable v-for="item in items2" :key="item.id">
-            <div class="draggable-item">
-              {{item.data}}
-            </div>
-          </Draggable>
-        </Container>
+        <slot name="list-two"></slot>
       </div>
-
-    </section>
+    </div>
+    <div class="q-py-lg">
+      <divider></divider>
+    </div>
+  </section>
 </template>
 
 <script>
-import { Container, Draggable } from 'vue-smooth-dnd'
+import Divider from '../Base/Divider'
+import ScrollMixin from '../scrollObserverMixin'
 
-const generateItems = (count, creator) => {
-  const result = []
-  for (let i = 0; i < count; i++) {
-    result.push(creator(i))
-  }
-  return result
-}
+const STATUS_SYNCHRONIZED = 'synchronized'
+const STATUS_WAITING = 'waiting'
+const STATUS_EXIST = 'exist'
+const STATUS_ERROR = 'error'
 
 export default {
   name: 'ListsGroup',
-  components: { Container, Draggable },
-  props: {
-    itemsOne: {
-      type: Array,
-      required: true
-    },
-    itemsTwo: {
-      type: Array,
-      required: true
-    }
-  },
+  mixins: [ScrollMixin],
+  components: { Divider },
   data: () => ({
-    items1: generateItems(15, i => ({
-      id: '1' + i,
-      data: `Draggable 1 - ${i}`
-    })),
-    items2: generateItems(15, i => ({
-      id: '2' + i,
-      data: `Draggable 2 - ${i}`
-    }))
+    offset: 30,
+    checkedItems: []
   }),
+  computed: {},
   methods: {
-    onDrop (collection, dropResult) {
-      console.log(collection, dropResult)
+    filterItems (items) {
+      let filteredItems = items.filter(item =>
+        this.filtersOne.status.join(' ').includes(item.status)
+      )
+
+      if (this.filtersOne.title) {
+        filteredItems = filteredItems.filter(item => item.title.toLowerCase().includes(this.filtersOne.title.toLowerCase()))
+      }
+
+      return filteredItems
     },
-    getChildPayload1 (index) {
-      return this.items1[index]
-    },
-    getChildPayload2 (index) {
-      return this.items2[index]
-    },
-    getChildPayload3 (index) {
-      return this.items3[index]
-    },
-    getChildPayload4 (index) {
-      return this.items4[index]
+    sortItems (items) {
+      if (items.length === 0) {
+        return []
+      }
+      switch (this.filtersOne.sort.toLowerCase()) {
+        case 'oldest':
+          return items.sort((a, b) => {
+            if (a.order < b.order) {
+              return 1
+            }
+            if (a.order > b.order) {
+              return -1
+            }
+            return 0
+          })
+        case 'newest':
+          return items.sort((a, b) => {
+            if (a.order < b.order) {
+              return -1
+            }
+            if (a.order > b.order) {
+              return 1
+            }
+            return 0
+          })
+        case 'a to z':
+          return items.sort((a, b) => {
+            if (a.url < b.url) {
+              return -1
+            }
+            if (a.url > b.url) {
+              return 1
+            }
+            return 0
+          })
+        case 'status':
+          return [
+            ...items.filter(item => item.status === STATUS_SYNCHRONIZED),
+            ...items.filter(item => item.status === STATUS_WAITING),
+            ...items.filter(item => item.status === STATUS_EXIST),
+            ...items.filter(item => item.status === STATUS_ERROR)
+          ]
+        default:
+          return items
+      }
     }
   }
 }
@@ -79,7 +99,20 @@ export default {
 
 <style scoped lang="scss">
   .list-group-section {
+  }
+  .lists-group-head-container {
+    height: 118px;
+    position: relative;
+  }
+  .lists-group-head {
+    transition: 1s;
     display: grid;
-    grid-template-columns: minmax(400px, 1fr) minmax(300px, 400px) minmax(400px, 1fr);
+    grid-template-columns: minmax(300px, 1fr) minmax(200px, 300px) minmax(300px, 1fr);
+    grid-column-gap: 16px;
+  }
+  .lists-group-content {
+    display: grid;
+    grid-template-columns: minmax(300px, 1fr) minmax(200px, 300px) minmax(300px, 1fr);
+    grid-column-gap: 16px;
   }
 </style>

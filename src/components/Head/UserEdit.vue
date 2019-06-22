@@ -42,7 +42,7 @@
       <q-separator/>
 
       <q-card-actions align="right">
-        <q-btn color="primary" size="md" :disabled="!inputIsValid" rounded :loading="isLoading" @click="getUser">load data</q-btn>
+        <q-btn color="primary" size="md" rounded :loading="isLoading" @click="getUser">load data</q-btn>
         <q-btn color="green" size="md" rounded :disabled="!isValid" :loading="isLoading" @click="emitSaveEvent" v-close-popup>save data</q-btn>
       </q-card-actions>
     </q-card>
@@ -94,6 +94,11 @@ export default {
       playlists: []
     }
   },
+  watch: {
+    avatar (newVal) {
+      this.setBackgroundImage()
+    }
+  },
   computed: {
     isInvalidClientId () {
       return this.clientId.length === 0 || (!this.clientIdEdited && (this.userIdEdited || this.tokenEdited))
@@ -116,6 +121,10 @@ export default {
     },
     tokenEdited () {
       return this.token !== this.initialToken
+    },
+    backgroundImage () {
+      this.setBackgroundImage()
+      return this.avatar
     }
   },
   methods: {
@@ -162,13 +171,13 @@ export default {
     openUserLinkInBrowser () {
       shell.openExternal(this.url)
     },
-    async backgroundImage () {
+    async setBackgroundImage () {
       // eslint-disable-next-line no-return-await
       this.bgImage = await getBackgroundImage(this.avatar)
     }
   },
   mounted () {
-    this.backgroundImage()
+    this.setBackgroundImage()
   }
 }
 </script>

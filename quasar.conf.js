@@ -6,7 +6,8 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     boot: [
       'i18n',
-      'axios'
+      'axios',
+      'plugins'
     ],
 
     css: [
@@ -25,12 +26,14 @@ module.exports = function (ctx) {
       // all: true, // --- includes everything; for dev only!
 
       components: [
+        'QCheckbox',
         'QLayout',
         'QHeader',
         'QDrawer',
         'QDialog',
         'QPageContainer',
         'QPage',
+        'QScrollObserver',
         'QPageSticky',
         'QToolbar',
         'QToolbarTitle',
@@ -45,10 +48,12 @@ module.exports = function (ctx) {
         'QItem',
         'QItemSection',
         'QItemLabel',
+        'QInfiniteScroll',
         'QCard',
         'QCardSection',
         'QCardActions',
         'QSeparator',
+        'QSelect',
         'QSpinnerAudio',
         'QStepper',
         'QStep',
