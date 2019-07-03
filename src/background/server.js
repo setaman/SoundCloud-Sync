@@ -19,3 +19,7 @@ app.listen(port, () => {
 app.get('/', (req, res) => {
   res.send('Background server running on ' + port)
 })
+
+app.get('/init', (req, res) => {
+  res.send('Start initialization')
+})
