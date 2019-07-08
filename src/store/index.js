@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import users from './users'
+import initialization from './initialization'
 
 Vue.use(Vuex)
 
@@ -11,7 +12,8 @@ Vue.use(Vuex)
  */
 const Store = new Vuex.Store({
   modules: {
-    users
+    users,
+    initialization
   },
   // enable strict mode (adds overhead!)
   // for dev mode only

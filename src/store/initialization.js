@@ -1,4 +1,3 @@
-
 const state = {
   isInitialized: false,
   isInitializing: false,
@@ -17,6 +16,7 @@ const mutations = {
   [INITIALIZATION_SUCCESS] (state) {
     state.isInitializing = false
     state.isInitialized = true
+    state.isInitializationFailed = false
   },
   [INITIALIZATION_FAIL] (state) {
     state.isInitializing = false
@@ -26,11 +26,11 @@ const mutations = {
 }
 
 const actions = {
-  startItialization ({ commit }, { userOne, userTwo }) {
-    commit(START_INITIALIZATION, { userOne, userTwo })
+  startInitialization ({ commit }) {
+    commit(START_INITIALIZATION)
   },
 
-  faileInitialization ({ commit }) {
+  failInitialization ({ commit }) {
     commit(INITIALIZATION_FAIL)
   },
 

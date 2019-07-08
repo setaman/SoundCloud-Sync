@@ -1,5 +1,5 @@
 import { app, BrowserWindow } from 'electron'
-require('../../src/background/server.js')
+// require('../../src/background/server.js')
 
 /**
  * Set `__statics` path to static files in production;
