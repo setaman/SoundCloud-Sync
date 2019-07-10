@@ -7,10 +7,10 @@ const userPlaceholder = {
   permalink_url: '',
   clientId: '',
   token: '',
+  likes: 0,
+  followings: 0,
+  playlists: 0,
   cover: '',
-  likes: [],
-  followings: [],
-  playlists: [],
   avatar_url: ''
 }
 
@@ -64,36 +64,11 @@ const actions = {
 
   // load users data on app start
   loadPersistedUsers ({ commit }) {
-    const userOne = getValue('userOne')
-    const userTwo = getValue('userTwo')
+    const userOne = getValue('userOne') || userPlaceholder
+    const userTwo = getValue('userTwo') || userPlaceholder
 
     commit(SET_USER_ONE, userOne)
     commit(SET_USER_TWO, userTwo)
-  },
-
-  async loadUsersData ({ commit, state }) {
-    if (state.userOne.userId && state.userTwo.userId) {
-      const result = await Promise.all([loadUserData(state.userOne.userId, state.userOne.clientId, state.userOne.token),
-        loadUserData(state.userTwo.userId, state.userTwo.clientId, state.userTwo.token)
-      ])
-
-      if (result[0].errors.length > 0 || result[1].errors.length > 0) {
-        return new Promise((resolve, reject) => reject('Somme error occurred while loading data!'))
-      }
-
-      const loadedUserOne = result.find(data => data.user.userId === state.userOne.userId)
-      const loadedUserTwo = result.find(data => data.user.userId === state.userTwo.userId)
-
-      console.log(loadedUserOne)
-      console.log(loadedUserTwo)
-
-      const userOne = { ...state.userOne, ...loadedUserOne.user }
-      const userTwo = { ...state.userTwo, ...loadedUserTwo.user }
-
-      // updated users data
-      commit(SET_USER_ONE, userOne)
-      commit(SET_USER_TWO, userTwo)
-    }
   }
 }
 

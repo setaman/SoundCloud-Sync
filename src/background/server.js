@@ -14,8 +14,11 @@ io.on('connection', socket => {
 
     io.emit(SOCKET_INITIALIZATION_START, msg)
     loadUsersData(msg.userOne, msg.userTwo)
-      .then(() => io.emit(SOCKET_INITIALIZATION_SUCCESS))
-      .catch(e => io.emit(SOCKET_INITIALIZATION_FAIL, e))
+      .then((data) => io.emit(SOCKET_INITIALIZATION_SUCCESS, data))
+      .catch(e => {
+        console.log(e)
+        io.emit(SOCKET_INITIALIZATION_FAIL, e)
+      })
   })
 })
 
@@ -31,8 +34,29 @@ const loadUsersData = async (userOne, userTwo) => {
   const loadedUserOne = result.find(data => data.user.userId === userOne.userId)
   const loadedUserTwo = result.find(data => data.user.userId === userTwo.userId)
 
-  console.log(loadedUserOne)
-  console.log(loadedUserTwo)
+  console.log('USER ONE', loadedUserOne.user.username)
+  console.log('USER TWO', loadedUserTwo.user.username)
+
+  return {
+    userOne: {
+      ...userOne,
+      username: loadedUserOne.user.username,
+      avatar_url: loadedUserOne.user.avatar_url,
+      permalink_url: loadedUserOne.user.permalink_url,
+      followings: loadedUserOne.followings.length,
+      likes: loadedUserOne.likes.length,
+      playlists: loadedUserOne.playlists.length
+    },
+    userTwo: {
+      ...userTwo,
+      username: loadedUserTwo.user.username,
+      avatar_url: loadedUserTwo.user.avatar_url,
+      permalink_url: loadedUserTwo.user.permalink_url,
+      followings: loadedUserTwo.followings.length,
+      likes: loadedUserTwo.likes.length,
+      playlists: loadedUserTwo.playlists.length
+    }
+  }
 }
 
 http.listen(port, function () {

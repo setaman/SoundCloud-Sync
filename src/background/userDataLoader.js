@@ -27,6 +27,7 @@ const loadUserData = async (userId, clientId, token) => {
     },
     likes,
     followings,
+    playlists: [],
     errors: errors.filter(e => e)
   }
 }
@@ -39,7 +40,7 @@ async function getUser (userId, clientId) {
 
     return { username, avatar_url, permalink_url, userError: null }
   } catch (e) {
-    console.info('USER ERROR', e)
+    console.info('USER ERROR', e.response)
     if (e.response.status === 401) {
       return { userError: `Client id "${clientId}" seems to be invalid` }
     } else if (e.response.status === 404) {
@@ -85,7 +86,7 @@ async function getFollowings (userId, clientId) {
     })),
     followingsError: null }
   } catch (e) {
-    console.info('FOLLOWINGS ERROR', e)
+    console.info('FOLLOWINGS ERROR', e.response)
     if (e.response.status === 401) {
       return { followingsError: `Client id "${clientId}" seems to be invalid` }
     } else if (e.response.status === 404) {
@@ -100,7 +101,7 @@ async function checkToken (token) {
     await addUserFollowing('', token)
     return { tokenError: null }
   } catch (e) {
-    console.info('TOKEN ERROR', e)
+    console.info('TOKEN ERROR', e.response)
     if (e.response.status === 401) {
       return { tokenError: `Token "${token}" seems to be invalid` }
     } else if (e.response.status === 404) {
