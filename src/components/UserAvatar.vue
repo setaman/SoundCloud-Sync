@@ -19,7 +19,7 @@ export default {
       default: '100px'
     }
   }
-}
+};
 </script>
 
 <style scoped>

@@ -1,24 +1,24 @@
 const state = {
   connected: false
-}
+};
 
-const SOCKET_CONNECT = 'SOCKET_CONNECT'
+const SOCKET_CONNECT = 'SOCKET_CONNECT';
 
 // mutations
 const mutations = {
   [SOCKET_CONNECT] (state) {
-    state.connected = true
+    state.connected = true;
   }
-}
+};
 
 const actions = {
   socket_connect ({ commit }) {
-    commit(SOCKET_CONNECT)
+    commit(SOCKET_CONNECT);
   }
-}
+};
 
 export default {
   state,
   mutations,
   actions
-}
+};

@@ -50,11 +50,11 @@
 </template>
 
 <script>
-import UserAvatar from '../UserAvatar'
-import loadUserData from '../../utils/loaduserData'
-import { shell } from 'electron'
-import NotificationMixin from '../notificationMixin'
-import getBackgroundImage from '../../utils/generateBackgroundImage'
+import UserAvatar from '../UserAvatar';
+import loadUserData from '../../utils/loaduserData';
+import { shell } from 'electron';
+import NotificationMixin from '../notificationMixin';
+import getBackgroundImage from '../../utils/generateBackgroundImage';
 
 export default {
   name: 'UserEdit',
@@ -92,67 +92,67 @@ export default {
       likes: [],
       followings: [],
       playlists: []
-    }
+    };
   },
   watch: {
     avatar (newVal) {
-      this.setBackgroundImage()
+      this.setBackgroundImage();
     }
   },
   computed: {
     isInvalidClientId () {
-      return this.clientId.length === 0 || (!this.clientIdEdited && (this.userIdEdited || this.tokenEdited))
+      return this.clientId.length === 0 || (!this.clientIdEdited && (this.userIdEdited || this.tokenEdited));
     },
     isInvalidUserId () {
-      return (this.userId.length === 0) || (!this.userIdEdited && (this.clientIdEdited || this.tokenEdited))
+      return (this.userId.length === 0) || (!this.userIdEdited && (this.clientIdEdited || this.tokenEdited));
     },
     isInvalidToken () {
-      return this.token.length === 0 || (!this.tokenEdited && (this.userIdEdited || this.clientIdEdited))
+      return this.token.length === 0 || (!this.tokenEdited && (this.userIdEdited || this.clientIdEdited));
     },
     inputIsValid () {
-      return !this.isInvalidClientId && !this.isInvalidUserId && !this.isInvalidToken
+      return !this.isInvalidClientId && !this.isInvalidUserId && !this.isInvalidToken;
     },
 
     userIdEdited () {
-      return this.userId !== this.initialUserId
+      return this.userId !== this.initialUserId;
     },
     clientIdEdited () {
-      return this.clientId !== this.initialClientId
+      return this.clientId !== this.initialClientId;
     },
     tokenEdited () {
-      return this.token !== this.initialToken
+      return this.token !== this.initialToken;
     },
     backgroundImage () {
-      this.setBackgroundImage()
-      return this.avatar
+      this.setBackgroundImage();
+      return this.avatar;
     }
   },
   methods: {
     async getUser () {
-      this.isLoading = true
-      this.isValid = false
+      this.isLoading = true;
+      this.isValid = false;
       try {
-        let response = await loadUserData(this.userId, this.clientId, this.token)
-        console.log(response)
+        let response = await loadUserData(this.userId, this.clientId, this.token);
+        console.log(response);
         if (response.errors.length > 0) {
           for (const error of response.errors) {
-            this.notifyError(error)
+            this.notifyError(error);
           }
         } else {
-          const { avatar_url, followings, likes, permalink_url, username } = response.user
-          this.avatar = avatar_url
-          this.username = username
-          this.url = permalink_url
-          this.likes = likes
-          this.followings = followings
+          const { avatar_url, followings, likes, permalink_url, username } = response.user;
+          this.avatar = avatar_url;
+          this.username = username;
+          this.url = permalink_url;
+          this.likes = likes;
+          this.followings = followings;
 
-          this.notifySuccess('Data successful loaded')
-          this.isValid = true
+          this.notifySuccess('Data successful loaded');
+          this.isValid = true;
         }
       } catch (e) {
-        console.error(e)
+        console.error(e);
       } finally {
-        this.isLoading = false
+        this.isLoading = false;
       }
     },
     emitSaveEvent () {
@@ -166,20 +166,20 @@ export default {
         likes: this.likes,
         followings: this.followings,
         playlists: this.playlists
-      })
+      });
     },
     openUserLinkInBrowser () {
-      shell.openExternal(this.url)
+      shell.openExternal(this.url);
     },
     async setBackgroundImage () {
       // eslint-disable-next-line no-return-await
-      this.bgImage = await getBackgroundImage(this.avatar)
+      this.bgImage = await getBackgroundImage(this.avatar);
     }
   },
   mounted () {
-    this.setBackgroundImage()
+    this.setBackgroundImage();
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

@@ -78,12 +78,12 @@
 </template>
 
 <script>
-import UserAvatar from '../UserAvatar'
-import UserStatistics from '../Head/UserStatistics'
-import notificationMixin from 'src/components/notificationMixin'
-import { SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_SUCCESS } from 'src/utils/socketEvents.js'
+import UserAvatar from '../UserAvatar';
+import UserStatistics from '../Head/UserStatistics';
+import notificationMixin from 'src/components/notificationMixin';
+import { SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_SUCCESS } from 'src/utils/socketEvents.js';
 
-const userPlaceholder = { userId: '', token: '', clientId: '' }
+const userPlaceholder = { userId: '', token: '', clientId: '' };
 
 export default {
   name: 'SettingsForm',
@@ -97,32 +97,32 @@ export default {
       isLoading: false,
       userOne: userPlaceholder,
       userTwo: userPlaceholder
-    }
+    };
   },
   sockets: {
     connect: function () {
-      console.log('socket connected')
+      console.log('socket connected');
     },
     [SOCKET_INITIALIZATION_START] () {
-      this.isLoading = true
-      this.$store.dispatch('startInitialization')
+      this.isLoading = true;
+      this.$store.dispatch('startInitialization');
     },
     [SOCKET_INITIALIZATION_SUCCESS] (usersData) {
-      this.notifySuccess('Data successful loaded')
-      this.$store.dispatch('successInitialization')
-      console.log('USERS', usersData)
-      this.userOne = usersData.userOne
-      this.userTwo = usersData.userTwo
-      this.isLoading = false
-      this.loaded = true
-      this.step = 2
+      this.notifySuccess('Data successful loaded');
+      this.$store.dispatch('successInitialization');
+      console.log('USERS', usersData);
+      this.userOne = usersData.userOne;
+      this.userTwo = usersData.userTwo;
+      this.isLoading = false;
+      this.loaded = true;
+      this.step = 2;
     },
     [SOCKET_INITIALIZATION_FAIL] (msg) {
-      this.isLoading = false
-      this.$store.dispatch('failInitialization')
+      this.isLoading = false;
+      this.$store.dispatch('failInitialization');
       msg.forEach(e => {
-        this.notifyError(e)
-      })
+        this.notifyError(e);
+      });
     }
   },
 
@@ -140,24 +140,24 @@ export default {
           token: this.userTwo.token,
           clientId: this.userTwo.clientId
         }
-      })
+      });
     },
     persistData () {
-      this.$store.dispatch('setUserOne', this.userOne)
-      this.$store.dispatch('setUserTwo', this.userTwo)
-      this.$router.push('home')
+      this.$store.dispatch('setUserOne', this.userOne);
+      this.$store.dispatch('setUserTwo', this.userTwo);
+      this.$router.push('home');
     }
   },
   computed: {
     formIsFilledIn () {
       return this.userOne.userId && this.userOne.token && this.userOne.clientId &&
-        this.userTwo.userId && this.userTwo.token && this.userTwo.clientId
+        this.userTwo.userId && this.userTwo.token && this.userTwo.clientId;
     },
     persistedUserOne () {
-      return this.$store.state.users.userOne
+      return this.$store.state.users.userOne;
     },
     persistedUserTwo () {
-      return this.$store.state.users.userTwo
+      return this.$store.state.users.userTwo;
     }
     /* userOne: {
       get () {
@@ -177,10 +177,10 @@ export default {
     } */
   },
   mounted () {
-    this.userOne = { ...this.persistedUserOne }
-    this.userTwo = { ...this.persistedUserTwo }
+    this.userOne = { ...this.persistedUserOne };
+    this.userTwo = { ...this.persistedUserTwo };
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

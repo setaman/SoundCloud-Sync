@@ -7,7 +7,7 @@
 <script>
 export default {
   name: 'ListItemsTransition'
-}
+};
 </script>
 
 <style scoped>

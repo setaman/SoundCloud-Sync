@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import { SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_SUCCESS } from 'src/utils/socketEvents.js'
-import notificationMixin from 'src/components/notificationMixin'
+import { SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_SUCCESS } from 'src/utils/socketEvents.js';
+import notificationMixin from 'src/components/notificationMixin';
 export default {
   name: 'Welcome',
   mixins: [notificationMixin],
@@ -36,47 +36,47 @@ export default {
   }),
   sockets: {
     connect: function () {
-      console.log('socket connected')
+      console.log('socket connected');
     },
     [SOCKET_INITIALIZATION_START] () {
-      this.msg = 'Loading data...'
-      this.$store.dispatch('startInitialization')
+      this.msg = 'Loading data...';
+      this.$store.dispatch('startInitialization');
     },
     [SOCKET_INITIALIZATION_SUCCESS] () {
-      this.blinking = false
-      this.msg = 'We are ready to go'
-      this.$store.dispatch('successInitialization')
+      this.blinking = false;
+      this.msg = 'We are ready to go';
+      this.$store.dispatch('successInitialization');
       setTimeout(() => {
-        this.$router.push('settings')
-      }, 1500)
+        this.$router.push('settings');
+      }, 1500);
     },
     [SOCKET_INITIALIZATION_FAIL] (msg) {
-      this.blinking = false
-      this.msg = 'Error while loading data'
-      this.$store.dispatch('failInitialization')
+      this.blinking = false;
+      this.msg = 'Error while loading data';
+      this.$store.dispatch('failInitialization');
       msg.forEach(e => {
-        this.notifyError(e)
-      })
+        this.notifyError(e);
+      });
       setTimeout(() => {
-        this.$router.push('settings')
-      }, 3000)
+        this.$router.push('settings');
+      }, 3000);
     }
   },
   computed: {
     userOne () {
-      return this.$store.state.users.userOne
+      return this.$store.state.users.userOne;
     },
     userTwo () {
-      return this.$store.state.users.userTwo
+      return this.$store.state.users.userTwo;
     }
   },
   methods: {
     startInitialization () {
       if (!this.userOne.userId || !this.userTwo.userId) {
         setTimeout(() => {
-          this.$router.push('settings')
-        }, 1000)
-        return
+          this.$router.push('settings');
+        }, 1000);
+        return;
       }
       this.$socket.emit(SOCKET_INITIALIZATION_START, {
         userOne: {
@@ -89,13 +89,13 @@ export default {
           token: this.userTwo.token,
           clientId: this.userTwo.clientId
         }
-      })
+      });
     }
   },
   mounted () {
-    this.startInitialization()
+    this.startInitialization();
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

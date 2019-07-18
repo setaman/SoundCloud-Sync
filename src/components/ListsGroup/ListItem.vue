@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import UserAvatar from '../UserAvatar'
-import { shell } from 'electron'
+import UserAvatar from '../UserAvatar';
+import { shell } from 'electron';
 
 export default {
   name: 'ListItem',
@@ -47,29 +47,29 @@ export default {
         'to right, #4facfe 0%, #00f2fe 100%',
         'to right, #74ebd5 0%, #9face6 100%'
       ]
-    }
+    };
   },
   computed: {
     isChecked () {
-      return this.checkedItems.filter(id => this.item.id === id).length > 0
+      return this.checkedItems.filter(id => this.item.id === id).length > 0;
     },
     avatar () {
-      return this.item.avatar_url || this.item.artwork_url
+      return this.item.avatar_url || this.item.artwork_url;
     },
     randomGradient () {
-      const randomNumber = Math.floor(Math.random() * (4 + 1))
-      return `background-image: linear-gradient(${this.gradients[randomNumber]})`
+      const randomNumber = Math.floor(Math.random() * (4 + 1));
+      return `background-image: linear-gradient(${this.gradients[randomNumber]})`;
     }
   },
   methods: {
     openUserLinkInBrowser () {
-      shell.openExternal(this.item.permalink_url)
+      shell.openExternal(this.item.permalink_url);
     },
     toggleCheck () {
-      !this.isChecked ? this.$emit('checked', this.item.id) : this.$emit('unchecked', this.item.id)
+      !this.isChecked ? this.$emit('checked', this.item.id) : this.$emit('unchecked', this.item.id);
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

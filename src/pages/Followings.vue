@@ -5,11 +5,11 @@
 </template>
 
 <script>
-import ListsGroup from '../components/ListsGroup/ListsGroup'
+import ListsGroup from '../components/ListsGroup/ListsGroup';
 export default {
   name: 'Followings',
   components: { ListsGroup }
-}
+};
 </script>
 
 <style scoped>

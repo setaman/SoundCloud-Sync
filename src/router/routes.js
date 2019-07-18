@@ -1,13 +1,13 @@
-import store from '../store/index'
+import store from '../store/index';
 
 const requireUsersData = (to, from, next) => {
   if (store.state.users.userOne.userId && store.state.users.userTwo.userId) {
-    next()
-    return
+    next();
+    return;
   }
   // redirect to settings form
-  next('/settings')
-}
+  next('/settings');
+};
 
 const routes = [
   {
@@ -44,14 +44,14 @@ const routes = [
     component: () => import('layouts/Settings.vue'),
     name: 'settings'
   }
-]
+];
 
 // Always leave this as last one
 if (process.env.MODE !== 'ssr') {
   routes.push({
     path: '*',
     component: () => import('pages/Error404.vue')
-  })
+  });
 }
 
-export default routes
+export default routes;

@@ -14,7 +14,7 @@ export default {
       default: false
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

@@ -40,7 +40,7 @@ export default {
       required: false
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
