@@ -61,7 +61,8 @@ async function getLikes (userId, clientId) {
       status: STATUS_WAITING,
       order
     })),
-    likesError: null }
+    likesError: null
+    }
   } catch (e) {
     console.info('LIKES ERROR', e.response)
     if (e.response.status === 401) {
