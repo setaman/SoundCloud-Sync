@@ -1,46 +1,39 @@
 <template>
-  <div class="col-xs-12 col-sm-12 col-md-10">
-    <div class="row wrap q-gutter-md">
-      <div class="col">
-        <div class="flex flex-center">
-          <q-icon name="favorite" class="text-red-5" style="font-size: 2em;"></q-icon>
-        </div>
-        <div class="stat-value flex flex-center text-uppercase">
-          {{likes}}
-        </div>
-        <div class="stat-title flex flex-center text-uppercase">
-          likes
-        </div>
-      </div>
-      <div class="col">
-        <div class="flex flex-center">
-          <q-icon name="person" class="text-blue-7" style="font-size: 2em;"></q-icon>
-        </div>
-        <div class="stat-value flex flex-center text-uppercase">
-          {{followings}}
-        </div>
-        <div class="stat-title flex flex-center text-uppercase">
-          followings
-        </div>
-      </div>
-      <div class="col">
-        <div class="flex flex-center">
-          <q-icon name="list" class="text-cyan-7" style="font-size: 2em;"></q-icon>
-        </div>
-        <div class="stat-value flex flex-center text-uppercase">
-          {{playlists}}
-        </div>
-        <div class="stat-title flex flex-center text-uppercase">
-          playlists
-        </div>
-      </div>
+  <div class="row q-pa-xl text-center">
+    <div class="col-5">
+      <user-avatar :url="userOne.avatar_url"/>
+    </div>
+    <div class="col-2">
+      <user-statistics-divider/>
+    </div>
+    <div class="col-5">
+      <user-avatar :url="userTwo.avatar_url"/>
+    </div>
+    <div class="col-12 q-pt-xl">
+      <user-statistics-card title="likes" :value-one="userOne.likes" :value-two="userTwo.likes"/>
+    </div>
+    <div class="col-12 q-pt-xl">
+      <user-statistics-card type="followings" title="followings" :value-one="userOne.followings" :value-two="userTwo.followings"/>
+    </div>
+    <div class="col-12 q-pt-xl">
+      <user-statistics-card type="playlists" title="playlists" :value-one="userOne.playlists" :value-two="userTwo.playlists"/>
+    </div>
+    <div class="col-12 q-pt-xl">
+      <q-btn large rounded size="lg" class="full-width" color="primary">
+        sync all
+      </q-btn>
     </div>
   </div>
 </template>
 
 <script>
+import UserAvatar from './UserAvatar';
+import UserStatisticsCard from './UserStatisticsCard';
+import UserStatisticsDivider from './UserStatisticsDivider';
+
 export default {
   name: 'UserStatistics',
+  components: { UserStatisticsDivider, UserStatisticsCard, UserAvatar },
   props: {
     likes: {
       type: Number,
@@ -53,6 +46,14 @@ export default {
     playlists: {
       type: Number,
       default: 0
+    }
+  },
+  computed: {
+    userOne () {
+      return this.$store.state.users.userOne;
+    },
+    userTwo () {
+      return this.$store.state.users.userTwo;
     }
   }
 };

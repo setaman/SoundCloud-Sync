@@ -1,32 +1,45 @@
 <template>
   <aside id="navigation" class="relative-position" :class="{expanded: expanded}">
-    <div id="navigation-container" class="flex column wrap justify-between" :class="{expanded: expanded}">
-      <div>
-        <div class="flex justify-end q-pt-md q-pr-md">
-          <q-btn round size="large" flat @click="expanded = !expanded">
+    <div id="navigation-container" :class="{expanded: expanded}">
+      <div id="navigation-content" :class="{expanded: expanded}">
+        <transition
+          appear
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+        >
+          <div v-show="expanded" class="full-height flex items-center">
+            <user-statistics/>
+          </div>
+        </transition>
+      </div>
+      <div id="navigation-items-container" class="flex column wrap justify-between">
+        <div>
+          <div class="flex justify-end q-pt-md q-pr-md">
+            <q-btn round size="large" flat @click="expanded = !expanded">
         <span class="navigation-burger" :class="{expanded: expanded}">
         </span>
-            <span class="navigation-burger" :class="{expanded: expanded}">
+              <span class="navigation-burger" :class="{expanded: expanded}">
         </span>
-          </q-btn>
-        </div>
+            </q-btn>
+          </div>
 
-        <div>
+          <div>
+          </div>
         </div>
-      </div>
-      <div class="flex justify-end">
-        <ul>
-          <li v-for="(route, i) in routes" :key="`${i}_${route.title}`">
-            <router-link :to="route.route" class="navigation-item" :class="[route.title]">
-              {{route.title}}
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/settings" class="navigation-item settings">
-              <q-icon name="settings" size="large"></q-icon>
-            </router-link>
-          </li>
-        </ul>
+        <div class="flex justify-end">
+          <ul>
+            <li v-for="(route, i) in routes" :key="`${i}_${route.title}`">
+              <router-link :to="route.route" class="navigation-item" :class="[route.title]">
+                {{route.title}}
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/settings" class="navigation-item settings">
+                <q-icon name="settings" size="large"></q-icon>
+              </router-link>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </aside>
@@ -35,14 +48,15 @@
 <script>
 import ScrollMixin from '../scrollObserverMixin';
 import DropButton from '../Base/DropButton';
+import UserStatistics from './UserStatistics';
 
 export default {
   name: 'Navigation',
-  components: { DropButton },
+  components: { UserStatistics, DropButton },
   mixins: [ScrollMixin],
   data: () => ({
     activeRouteIndex: 0,
-    expanded: false,
+    expanded: true,
     routes: [
       {
         route: '/home/likes',
@@ -85,22 +99,46 @@ export default {
   #navigation {
     transition: 0.5s;
     max-height: 100vh;
+    background: $c_bg;
+    overflow: hidden;
     width: $base_width;
     &.expanded {
       width: $expanded_width;
     }
   }
 
-  #navigation-container {
-    transition: 0.5s;
-    background: $c_bg;
-    height: 100vh;
+  #navigation-container{
     position: fixed;
-    overflow: hidden;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 80px;
+    z-index: 9999;
+    background: $c_bg;
+    transition: 0.5s;
     width: $base_width;
     &.expanded {
       width: $expanded_width;
     }
+  }
+
+  #navigation-content {
+    z-index: 9999;
+    width: 0;
+    transition: 0.5s;
+    overflow: hidden;
+    white-space: nowrap;
+    background: $c_bg;
+    &.expanded {
+      width: $expanded_width - 80;
+    }
+  }
+
+  #navigation-items-container {
+    height: 100vh;
+    // position: fixed;
+    overflow: hidden;
+    width: $base_width;
+    background: $c_bg;
     ul {
       margin: 0;
       padding: 0;
