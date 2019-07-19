@@ -7,7 +7,7 @@ export default {
         color: 'green',
         avatar,
         position: 'top-right'
-      })
+      });
     },
 
     notifyError (message) {
@@ -15,7 +15,7 @@ export default {
         message,
         color: 'red',
         position: 'top-right'
-      })
+      });
     }
   }
-}
+};

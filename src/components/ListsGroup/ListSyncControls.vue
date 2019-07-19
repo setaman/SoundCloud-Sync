@@ -31,7 +31,7 @@
 <script>
 export default {
   name: 'ListSyncControls'
-}
+};
 </script>
 
 <style scoped lang="scss">

@@ -17,8 +17,8 @@
 </template>
 
 <script>
-import ScrollMixin from './scrollObserverMixin'
-import DropButton from './Base/DropButton'
+import ScrollMixin from './scrollObserverMixin';
+import DropButton from './Base/DropButton';
 export default {
   name: 'Navigation',
   components: { DropButton },
@@ -54,10 +54,10 @@ export default {
   }),
   computed: {
     currentRoute () {
-      return this.$route.fullPath
+      return this.$route.fullPath;
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

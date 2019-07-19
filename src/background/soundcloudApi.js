@@ -1,6 +1,6 @@
-import axios from 'axios/index';
+const axios = require('axios');
 
-export const getUserTracks = async (userId, clientId) => {
+const getUserTracks = async (userId, clientId) => {
   const tracks = [];
   try {
     let response = await axios.get(
@@ -29,7 +29,7 @@ export const getUserTracks = async (userId, clientId) => {
   }
 };
 
-export const getUserFollowings = async (userId, clientId) => {
+const getUserFollowings = async (userId, clientId) => {
   const followings = [];
   try {
     let response = await axios.get(
@@ -58,14 +58,14 @@ export const getUserFollowings = async (userId, clientId) => {
   }
 };
 
-export const getUserById = (userId, clientId) =>
+const getUserById = (userId, clientId) =>
   axios.get(`https://api.soundcloud.com/users/${userId}`, {
     params: {
       client_id: clientId
     }
   });
 
-export const addUserFollowing = (followingId, token) =>
+const addUserFollowing = (followingId, token) =>
   axios.post(
     `https://api-v2.soundcloud.com/me/followings/${followingId}`,
     {},
@@ -74,24 +74,9 @@ export const addUserFollowing = (followingId, token) =>
     }
   );
 
-/*
-export const getUserByUrl = (user_name, client_id) =>
-  axios.get(`http://api.soundcloud.com/resolve`, {
-    params: {
-      client_id,
-      url: `https://soundcloud.com/${user_name}`
-    }
-  })
-
-export const addUserTrack = (user_id, client_id, track_id, token) =>
-  axios.put(
-    `https://api-v2.soundcloud.com/users/${user_id}/track_likes/${track_id}`,
-    {},
-    {
-      params: {
-        client_id
-      },
-      headers: { Authorization: `OAuth ${token}` }
-    }
-  )
-*/
+module.exports = {
+  getUserTracks,
+  getUserFollowings,
+  getUserById,
+  addUserFollowing
+};

@@ -9,11 +9,11 @@
 </template>
 
 <script>
-import SettingsForm from '../components/Settings/SettingsForm'
+import SettingsForm from '../components/Settings/SettingsForm';
 export default {
   name: 'SettingsPage',
   components: { SettingsForm }
-}
+};
 </script>
 
 <style scoped lang="scss">

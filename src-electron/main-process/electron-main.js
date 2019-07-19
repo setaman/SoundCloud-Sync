@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron'
+// require('../../src/background/server.js')
 
 /**
  * Set `__statics` path to static files in production;
@@ -17,7 +18,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     title: 'SoundCloud Sync',
     width: 1000,
-    height: 600,
+    height: 800,
     useContentSize: true,
     webPreferences: {
       webSecurity: false

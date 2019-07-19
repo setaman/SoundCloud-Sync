@@ -45,15 +45,15 @@ export default {
   }),
   watch: {
     selected () {
-      this.filters.all = this.selected === this.max
+      this.filters.all = this.selected === this.max;
     }
   },
   methods: {
     emitAllChecked () {
-      if (this.filters.all) this.$emit('all-checked')
+      if (this.filters.all) this.$emit('all-checked');
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

@@ -7,13 +7,13 @@ export default {
   }),
   computed: {
     position () {
-      return this.scrollInfo.position
+      return this.scrollInfo.position;
     }
   },
   methods: {
     onScroll (info) {
-      this.scrollInfo = info
+      this.scrollInfo = info;
       // console.log(info)
     }
   }
-}
+};

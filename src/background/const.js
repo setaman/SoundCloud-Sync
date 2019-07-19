@@ -7,7 +7,7 @@ const STATUS_WAITING = 'waiting';
 const STATUS_EXIST = 'exist';
 const STATUS_ERROR = 'error';
 
-export {
+module.exports = {
   STATUS_ERROR,
   STATUS_EXIST,
   STATUS_WAITING,

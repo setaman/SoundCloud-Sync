@@ -17,9 +17,9 @@
 </template>
 
 <script>
-import UserAvatar from '../UserAvatar'
-import UserStatistics from './UserStatistics'
-import UserEdit from './UserEdit'
+import UserAvatar from '../UserAvatar';
+import UserStatistics from './UserStatistics';
+import UserEdit from './UserEdit';
 export default {
   name: 'UserOne',
   components: { UserEdit, UserStatistics, UserAvatar },
@@ -28,19 +28,19 @@ export default {
       dialog: {
         open: false
       }
-    }
+    };
   },
   computed: {
     userOne () {
-      return this.$store.state.users.userOne
+      return this.$store.state.users.userOne;
     }
   },
   methods: {
     persistUser (user) {
-      this.$store.dispatch('setUserOne', user)
+      this.$store.dispatch('setUserOne', user);
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

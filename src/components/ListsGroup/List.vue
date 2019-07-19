@@ -21,11 +21,11 @@
 </template>
 
 <script>
-import ListControls from './ListControls'
-import ListItem from './ListItem'
-import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR } from '../../utils/const'
-import Divider from '../Base/Divider'
-import ListItemsTransition from '../Transitions/ListItemsTransition'
+import ListControls from './ListControls';
+import ListItem from './ListItem';
+import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR } from '../../utils/const';
+import Divider from '../Base/Divider';
+import ListItemsTransition from '../Transitions/ListItemsTransition';
 
 export default {
   name: 'List',
@@ -48,50 +48,50 @@ export default {
   }),
   watch: {
     filters () {
-      console.log('FIILTER CHANGES')
-      this.emitFilterChanges()
+      console.log('FIILTER CHANGES');
+      this.emitFilterChanges();
     },
     items () {
-      this.checkedItems = []
-      this.emitSelectedItems()
+      this.checkedItems = [];
+      this.emitSelectedItems();
     }
   },
   computed: {
     selectedItems () {
-      return this.checkedItems.length > 0 ? this.checkedItems : this.items
+      return this.checkedItems.length > 0 ? this.checkedItems : this.items;
     },
     visibleItems () {
-      return this.items.slice(0, this.offset)
+      return this.items.slice(0, this.offset);
     }
   },
   methods: {
     emitSelectedItems () {
-      this.$emit('changes', this.selectedItems)
+      this.$emit('changes', this.selectedItems);
     },
     emitFilterChanges () {
-      this.$emit('filter', this.filters)
+      this.$emit('filter', this.filters);
     },
     onLoad (index, done) {
       if (this.offset < this.items.length) {
-        this.offset = this.offset * 2
-        console.log('LOAD', this.offset)
+        this.offset = this.offset * 2;
+        console.log('LOAD', this.offset);
       }
-      done()
+      done();
     },
     onChecked (itemId) {
-      this.checkedItems.push(itemId)
-      this.emitSelectedItems()
+      this.checkedItems.push(itemId);
+      this.emitSelectedItems();
     },
     onUnchecked (itemId) {
-      const index = this.checkedItems.findIndex(id => id === itemId)
-      this.checkedItems.splice(index, 1)
-      this.emitSelectedItems()
+      const index = this.checkedItems.findIndex(id => id === itemId);
+      this.checkedItems.splice(index, 1);
+      this.emitSelectedItems();
     },
     onAllChecked () {
-      this.checkedItems = []
+      this.checkedItems = [];
     }
   }
-}
+};
 </script>
 
 <style scoped>

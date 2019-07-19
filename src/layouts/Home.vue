@@ -13,15 +13,15 @@
 </template>
 
 <script>
-import HeadContainer from 'components/Head/HeadContainer'
-import Navigation from 'components/Navigation'
+import HeadContainer from 'components/Head/HeadContainer';
+import Navigation from 'components/Navigation';
 
 export default {
   name: 'Home',
   components: { Navigation, HeadContainer },
   data: () => ({}),
   methods: {}
-}
+};
 </script>
 
 <style lang="scss" scoped>

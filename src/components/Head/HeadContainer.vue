@@ -11,10 +11,10 @@
 </template>
 
 <script>
-import UserOne from './UserOne'
-import UserTwo from './UserTwo'
-import Cover from './Cover'
-import getBackgroundImage from '../../utils/generateBackgroundImage'
+import UserOne from './UserOne';
+import UserTwo from './UserTwo';
+import Cover from './Cover';
+import getBackgroundImage from '../../utils/generateBackgroundImage';
 
 export default {
   name: 'HeadContainer',
@@ -26,26 +26,26 @@ export default {
   methods: {
     async backgroundImageOne () {
       // eslint-disable-next-line no-return-await
-      this.bgOne = await getBackgroundImage(this.userOne.avatar_url)
+      this.bgOne = await getBackgroundImage(this.userOne.avatar_url);
     },
     async backgroundImageTwo () {
       // eslint-disable-next-line no-return-await
-      this.bgTwo = await getBackgroundImage(this.userTwo.avatar_url)
+      this.bgTwo = await getBackgroundImage(this.userTwo.avatar_url);
     }
   },
   computed: {
     userOne () {
-      return this.$store.state.users.userOne
+      return this.$store.state.users.userOne;
     },
     userTwo () {
-      return this.$store.state.users.userTwo
+      return this.$store.state.users.userTwo;
     }
   },
   mounted () {
-    this.backgroundImageTwo()
-    this.backgroundImageOne()
+    this.backgroundImageTwo();
+    this.backgroundImageOne();
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

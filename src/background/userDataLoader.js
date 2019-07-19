@@ -1,6 +1,7 @@
-import { getUserById, getUserTracks, getUserFollowings, addUserFollowing } from '../api';
+const { getUserById, getUserFollowings, getUserTracks, addUserFollowing } = require('./soundcloudApi');
+const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, STATUS_WAITING } = require('./const');
 
-export default async (userId, clientId, token) => {
+const loadUserData = async (userId, clientId, token) => {
   const { username, avatar_url, permalink_url, userError } = await getUser(userId, clientId);
   if (userError) {
     return { errors: [userError] };
@@ -19,13 +20,14 @@ export default async (userId, clientId, token) => {
 
   return {
     user: {
-      userId,
       username,
       avatar_url,
       permalink_url,
-      likes,
-      followings
+      userId
     },
+    likes,
+    followings,
+    playlists: [],
     errors: errors.filter(e => e)
   };
 };
@@ -38,7 +40,7 @@ async function getUser (userId, clientId) {
 
     return { username, avatar_url, permalink_url, userError: null };
   } catch (e) {
-    console.info('USER ERROR', e);
+    console.info('USER ERROR', e.response);
     if (e.response.status === 401) {
       return { userError: `Client id "${clientId}" seems to be invalid` };
     } else if (e.response.status === 404) {
@@ -52,7 +54,15 @@ async function getLikes (userId, clientId) {
   try {
     const likes = await getUserTracks(userId, clientId);
 
-    return { likes: likes.map((item, order) => ({ ...item.track, status: 'waiting', order })), likesError: null };
+    return { likes: likes.map((item, order) => ({
+      ...item.track,
+      type: LIST_TYPE_LIKES,
+      userId,
+      status: STATUS_WAITING,
+      order
+    })),
+    likesError: null
+    };
   } catch (e) {
     console.info('LIKES ERROR', e.response);
     if (e.response.status === 401) {
@@ -68,9 +78,16 @@ async function getFollowings (userId, clientId) {
   try {
     const followings = await getUserFollowings(userId, clientId);
 
-    return { followings: followings.map((following, order) => ({ ...following, status: 'waiting', order })), followingsError: null };
+    return { followings: followings.map((following, order) => ({
+      ...following,
+      type: LIST_TYPE_FOLLOWINGS,
+      userId,
+      status: 'waiting',
+      order
+    })),
+    followingsError: null };
   } catch (e) {
-    console.info('FOLLOWINGS ERROR', e);
+    console.info('FOLLOWINGS ERROR', e.response);
     if (e.response.status === 401) {
       return { followingsError: `Client id "${clientId}" seems to be invalid` };
     } else if (e.response.status === 404) {
@@ -85,7 +102,7 @@ async function checkToken (token) {
     await addUserFollowing('', token);
     return { tokenError: null };
   } catch (e) {
-    console.info('TOKEN ERROR', e);
+    console.info('TOKEN ERROR', e.response);
     if (e.response.status === 401) {
       return { tokenError: `Token "${token}" seems to be invalid` };
     } else if (e.response.status === 404) {
@@ -94,3 +111,7 @@ async function checkToken (token) {
     return { tokenError: e };
   }
 }
+
+module.exports = {
+  loadUserData
+};

@@ -18,13 +18,13 @@
 </template>
 
 <script>
-import Divider from '../Base/Divider'
-import ScrollMixin from '../scrollObserverMixin'
+import Divider from '../Base/Divider';
+import ScrollMixin from '../scrollObserverMixin';
 
-const STATUS_SYNCHRONIZED = 'synchronized'
-const STATUS_WAITING = 'waiting'
-const STATUS_EXIST = 'exist'
-const STATUS_ERROR = 'error'
+const STATUS_SYNCHRONIZED = 'synchronized';
+const STATUS_WAITING = 'waiting';
+const STATUS_EXIST = 'exist';
+const STATUS_ERROR = 'error';
 
 export default {
   name: 'ListsGroup',
@@ -39,62 +39,62 @@ export default {
     filterItems (items) {
       let filteredItems = items.filter(item =>
         this.filtersOne.status.join(' ').includes(item.status)
-      )
+      );
 
       if (this.filtersOne.title) {
-        filteredItems = filteredItems.filter(item => item.title.toLowerCase().includes(this.filtersOne.title.toLowerCase()))
+        filteredItems = filteredItems.filter(item => item.title.toLowerCase().includes(this.filtersOne.title.toLowerCase()));
       }
 
-      return filteredItems
+      return filteredItems;
     },
     sortItems (items) {
       if (items.length === 0) {
-        return []
+        return [];
       }
       switch (this.filtersOne.sort.toLowerCase()) {
         case 'oldest':
           return items.sort((a, b) => {
             if (a.order < b.order) {
-              return 1
+              return 1;
             }
             if (a.order > b.order) {
-              return -1
+              return -1;
             }
-            return 0
-          })
+            return 0;
+          });
         case 'newest':
           return items.sort((a, b) => {
             if (a.order < b.order) {
-              return -1
+              return -1;
             }
             if (a.order > b.order) {
-              return 1
+              return 1;
             }
-            return 0
-          })
+            return 0;
+          });
         case 'a to z':
           return items.sort((a, b) => {
             if (a.url < b.url) {
-              return -1
+              return -1;
             }
             if (a.url > b.url) {
-              return 1
+              return 1;
             }
-            return 0
-          })
+            return 0;
+          });
         case 'status':
           return [
             ...items.filter(item => item.status === STATUS_SYNCHRONIZED),
             ...items.filter(item => item.status === STATUS_WAITING),
             ...items.filter(item => item.status === STATUS_EXIST),
             ...items.filter(item => item.status === STATUS_ERROR)
-          ]
+          ];
         default:
-          return items
+          return items;
       }
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

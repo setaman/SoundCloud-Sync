@@ -38,7 +38,7 @@
 <script>
 export default {
   name: 'PageIndex'
-}
+};
 </script>
 <style lang="scss" scoped>
   h1 {

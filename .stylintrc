@@ -31,5 +31,5 @@
   "universal": "never",
   "valid": true,
   "zeroUnits": "never",
-  "zIndexNormalize": false
+  "zIndexNormalize": false,
 }
