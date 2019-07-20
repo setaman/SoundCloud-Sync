@@ -36,8 +36,8 @@ export default {
 
 <style scoped lang="scss">
   .list-group-sync-controls {
-    position: fixed;
-    left: calc(50vw - 105px);
+    //position: fixed;
+    //left: calc(50vw - 105px);
     &.fixed {
       position: fixed;
     }
