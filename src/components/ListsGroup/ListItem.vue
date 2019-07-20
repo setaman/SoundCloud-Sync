@@ -4,8 +4,8 @@
         &lt;!&ndash;<q-checkbox v-model="val" />&ndash;&gt;
       </div>-->
       <div class="list-item-content">
-        <div class="list-item-avatar shadow-8" :style="randomGradient">
-          <user-avatar v-if="avatar" size="50px" :url="avatar"/>
+        <div class="list-item-avatar shadow-8">
+          <user-avatar size="50" :url="avatar || ''"/>
         </div>
         <div class="list-item-title ellipsis">
           <a @click="openUserLinkInBrowser">
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import UserAvatar from '../UserAvatar';
+import UserAvatar from 'components/Navigation/UserAvatar';
 import { shell } from 'electron';
 
 export default {

@@ -40,7 +40,7 @@ async function getUser (userId, clientId) {
 
     return { username, avatar_url, permalink_url, userError: null };
   } catch (e) {
-    console.info('USER ERROR', e.response);
+    console.info('USER ERROR', e);
     if (e.response.status === 401) {
       return { userError: `Client id "${clientId}" seems to be invalid` };
     } else if (e.response.status === 404) {

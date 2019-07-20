@@ -1,9 +1,6 @@
 <template>
-  <q-layout view="hhh Lpr lFf">
-    <q-header id="head">
-      <head-container/>
-    </q-header>
-    <q-page-container>
+  <q-layout view="hhh lpr lFf">
+    <q-page-container id="home">
 
       <navigation/>
 
@@ -13,12 +10,11 @@
 </template>
 
 <script>
-import HeadContainer from 'components/Head/HeadContainer';
-import Navigation from 'components/Navigation';
+import Navigation from 'components/Navigation/Navigation';
 
 export default {
   name: 'Home',
-  components: { Navigation, HeadContainer },
+  components: { Navigation },
   data: () => ({}),
   methods: {}
 };
@@ -31,5 +27,9 @@ export default {
     border: 5px #241d46 solid;
     border-top: none;
     overflow: hidden;
+  }
+  #home {
+    display: grid;
+    grid-template-columns: minmax(80px, max-content) 1fr;
   }
 </style>

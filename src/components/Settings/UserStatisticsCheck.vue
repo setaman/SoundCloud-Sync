@@ -40,7 +40,7 @@
 
 <script>
 export default {
-  name: 'UserStatistics',
+  name: 'UserStatisticsCheck',
   props: {
     likes: {
       type: Number,
