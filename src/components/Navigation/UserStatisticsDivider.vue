@@ -13,8 +13,9 @@ export default {
 .users-statistics-divider {
   display: inline-block;
   height: 100%;
-  //background-image: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-  background-color: rgba(255, 255, 255, 0.5);
+  background-image: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  opacity: 0.5;
+  //background-color: rgba(255, 255, 255, 0.3);
   width: 2px;
   border-radius: 2px;
   min-height: 20px;

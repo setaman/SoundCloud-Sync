@@ -1,5 +1,5 @@
 <template>
-  <div class="row q-pa-xl text-center">
+  <div class="row q-pr-xl text-center">
     <div class="col-5">
       <user-avatar :url="userOne.avatar_url"/>
     </div>
@@ -12,13 +12,13 @@
     <div class="col-12 q-pt-xl">
       <user-statistics-card title="likes" :value-one="userOne.likes" :value-two="userTwo.likes"/>
     </div>
-    <div class="col-12 q-pt-xl">
+    <div class="col-12 q-pt-none">
       <user-statistics-card type="followings" title="followings" :value-one="userOne.followings" :value-two="userTwo.followings"/>
     </div>
-    <div class="col-12 q-pt-xl">
+    <div class="col-12 q-pt-none">
       <user-statistics-card type="playlists" title="playlists" :value-one="userOne.playlists" :value-two="userTwo.playlists"/>
     </div>
-    <div class="col-12 q-pt-xl">
+    <div class="col-12 q-pt-xl q-px-lg">
       <q-btn large rounded size="lg" class="full-width" color="primary">
         sync all
       </q-btn>

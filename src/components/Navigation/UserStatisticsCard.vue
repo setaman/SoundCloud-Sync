@@ -45,16 +45,23 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  $border_radius: 10px;
-  $c_likes: #ff0060;
+  $border_radius: 0px;
+  /*$c_likes: #ff0060;
   $c_followings: #2069ff;
   $c_playlists: #1dd48c;
+  $c_settings: #8344ff;*/
+
+  $c_bg: #231c45;
+  $c_likes: #ff4966;
+  $c_followings: #2069ff;
+  $c_playlists: #26ffae;
   $c_settings: #8344ff;
 
   .user-statistics-card {
     border-radius: $border_radius;
     position: relative;
-    &:before, &:after {
+    clip-path: polygon(0 0, 100% 0%, 75% 100%, 0% 100%);
+    /*&:before, &:after {
       display: block;
       content: '';
       width: 90%;
@@ -69,24 +76,27 @@ export default {
       height: 20px;
       top: -20px;
       left: 10%;
-    }
+    }*/
     &.likes {
-      background-color: rgba($c_likes, 0.7);
-      box-shadow: 0 0 50px 5px rgba($c_likes, 0.3);
+      background-color: rgba($c_likes, 0.1);
+      //box-shadow: 0 0 50px 5px rgba($c_likes, 0.3);
+      color: $c_likes;
       &:before, &:after {
         background-image: linear-gradient(to top, transparent, rgba($c_likes, 0.2));
       }
     }
     &.followings {
-      background-color:  rgba($c_followings,0.7);
-      box-shadow: 0 0 50px 5px rgba($c_followings, 0.3);
+      background-color:  rgba($c_followings,0.1);
+      //box-shadow: 0 0 50px 5px rgba($c_followings, 0.3);
+      color: $c_followings;
       &:before, &:after {
         background-image: linear-gradient(to top, transparent 10%, rgba($c_followings, 0.2));
       }
     }
     &.playlists {
-      background-color: rgba($c_playlists, 0.7);
-      box-shadow: 0 0 50px 5px rgba($c_playlists, 0.3);
+      background-color: rgba($c_playlists, 0.1);
+      //box-shadow: 0 0 50px 5px rgba($c_playlists, 0.3);
+      color: $c_playlists;
       &:before, &:after {
         background-image: linear-gradient(to top, transparent 10%, rgba($c_playlists, 0.2));
       }
@@ -97,14 +107,14 @@ export default {
   }
 
   .user-statistics-card-value {
-    color: white;
+    //color: white;
     font-weight: bold;
     letter-spacing: 0.1rem;
     font-size: 1.7rem;
   }
 
   .user-statistics-card-title {
-    color: white;
+    //color: white;
     //font-weight: bold;
     letter-spacing: 0.2rem;
     font-size: 0.8rem;
