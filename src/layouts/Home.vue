@@ -1,8 +1,5 @@
 <template>
   <q-layout view="hhh lpr lFf">
-    <!--<q-header id="head">
-      <head-container/>
-    </q-header>-->
     <q-page-container id="home">
 
       <navigation/>
@@ -13,12 +10,11 @@
 </template>
 
 <script>
-import HeadContainer from 'components/Head/HeadContainer';
 import Navigation from 'components/Navigation/Navigation';
 
 export default {
   name: 'Home',
-  components: { Navigation, HeadContainer },
+  components: { Navigation },
   data: () => ({}),
   methods: {}
 };

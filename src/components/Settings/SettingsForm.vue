@@ -78,8 +78,8 @@
 </template>
 
 <script>
-import UserAvatar from '../UserAvatar';
-import UserStatistics from '../Head/UserStatistics';
+import UserAvatar from 'components/Navigation/UserAvatar';
+import UserStatistics from 'components/Settings/UserStatisticsCheck';
 import notificationMixin from 'src/components/notificationMixin';
 import { SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_SUCCESS } from 'src/utils/socketEvents.js';
 

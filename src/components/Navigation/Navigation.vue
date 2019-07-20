@@ -126,8 +126,8 @@ export default {
     width: 0;
     transition: 0.5s;
     overflow: hidden;
-    white-space: nowrap;
     background: $c_bg;
+    white-space: nowrap;
     &.expanded {
       width: $expanded_width - 80;
     }

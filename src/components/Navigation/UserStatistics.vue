@@ -1,13 +1,27 @@
 <template>
   <div class="row q-pr-xl text-center">
     <div class="col-5">
-      <user-avatar :url="userOne.avatar_url"/>
+      <div style="max-height: 100px">
+        <user-avatar :url="userOne.avatar_url"/>
+      </div>
+      <p class="ellipsis text-white text-bold q-mt-md q-px-sm">
+        <a class="user-link" :href="userOne.permalink_url">
+          {{ userOne.username.slice(0, 60) }}
+        </a>
+      </p>
     </div>
     <div class="col-2">
       <user-statistics-divider/>
     </div>
     <div class="col-5">
-      <user-avatar :url="userTwo.avatar_url"/>
+      <div style="max-height: 100px">
+        <user-avatar :url="userTwo.avatar_url"/>
+      </div>
+      <p class="ellipsis text-white text-bold q-mt-md q-px-sm">
+        <a class="user-link" :href="userTwo.permalink_url">
+          {{ userTwo.username.slice(0, 60) }}
+        </a>
+      </p>
     </div>
     <div class="col-12 q-pt-xl">
       <user-statistics-card title="likes" :value-one="userOne.likes" :value-two="userTwo.likes"/>
@@ -68,6 +82,15 @@ export default {
   .stat-value {
     font-family: "Quicksand Light", serif;
     font-size: 3rem;
+  }
+
+  .user-link {
+    transition: 0.3s;
+    color: white;
+    text-decoration: none;
+    &:hover{
+      color: #8344ff;
+    }
   }
 
 </style>

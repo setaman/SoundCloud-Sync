@@ -1,24 +1,25 @@
 <template>
-    <div class="user-statistics-card text-center q-pa-md" :class="[type]">
-      <h6 class="user-statistics-card-title q-my-none q-pb-sm text-uppercase text-white">
-        {{ title }}
-      </h6>
-      <div class="user-statistics-card-content flex flex-center">
-        <div>
-          <span class="user-statistics-card-value">
+  <div class="user-statistics-card text-center q-pa-md" :class="[type]">
+    <h6 class="user-statistics-card-title q-my-none q-pb-sm text-uppercase text-white">
+      {{ title }}
+    </h6>
+    <div class="user-statistics-card-content flex flex-center">
+      <div>
+        <span class="user-statistics-card-value">
           {{ valueOne }}
         </span>
-          <user-statistics-divider/>
-          <span class="user-statistics-card-value">
+        <user-statistics-divider/>
+        <span class="user-statistics-card-value">
           {{ valueTwo}}
         </span>
-        </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
 import UserStatisticsDivider from './UserStatisticsDivider';
+
 export default {
   name: 'UserStatisticsCard',
   components: { UserStatisticsDivider },
@@ -81,22 +82,27 @@ export default {
       background-color: rgba($c_likes, 0.1);
       //box-shadow: 0 0 50px 5px rgba($c_likes, 0.3);
       color: $c_likes;
+
       &:before, &:after {
         background-image: linear-gradient(to top, transparent, rgba($c_likes, 0.2));
       }
     }
+
     &.followings {
-      background-color:  rgba($c_followings,0.1);
+      background-color: rgba($c_followings, 0.1);
       //box-shadow: 0 0 50px 5px rgba($c_followings, 0.3);
       color: $c_followings;
+
       &:before, &:after {
         background-image: linear-gradient(to top, transparent 10%, rgba($c_followings, 0.2));
       }
     }
+
     &.playlists {
       background-color: rgba($c_playlists, 0.1);
       //box-shadow: 0 0 50px 5px rgba($c_playlists, 0.3);
       color: $c_playlists;
+
       &:before, &:after {
         background-image: linear-gradient(to top, transparent 10%, rgba($c_playlists, 0.2));
       }

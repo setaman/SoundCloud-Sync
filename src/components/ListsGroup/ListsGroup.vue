@@ -107,12 +107,12 @@ export default {
   .lists-group-head {
     transition: 1s;
     display: grid;
-    grid-template-columns: minmax(300px, 1fr) minmax(200px, 300px) minmax(300px, 1fr);
+    grid-template-columns: minmax(280px, 1fr) minmax(200px, 300px) minmax(280px, 1fr);
     grid-column-gap: 16px;
   }
   .lists-group-content {
     display: grid;
-    grid-template-columns: minmax(300px, 1fr) minmax(200px, 300px) minmax(300px, 1fr);
+    grid-template-columns: minmax(280px, 1fr) minmax(200px, 300px) minmax(280px, 1fr);
     grid-column-gap: 16px;
   }
 </style>
