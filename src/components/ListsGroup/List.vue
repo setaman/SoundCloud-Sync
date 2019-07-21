@@ -2,8 +2,8 @@
 <div>
   <list-controls :filters.sync="filters" :selected="selectedItems.length" :max="items.length" @all-checked="onAllChecked"/>
   <div class="q-pt-md q-pb-sm">
-    {{checkedItems}}
-    {{filters}}
+    <!--{{checkedItems}}
+    {{filters}}-->
     <divider></divider>
   </div>
   <q-infinite-scroll @load="onLoad" :offset="200">

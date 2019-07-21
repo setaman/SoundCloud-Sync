@@ -1,8 +1,8 @@
 <template>
   <q-page class="q-px-lg q-pt-xl q-px-xs-sm">
-    <q-btn @click="getUsersLikes">
+    <!--<q-btn @click="getUsersLikes">
       load likes
-    </q-btn>
+    </q-btn>-->
     <transition
       appear
       enter-active-class="animated fadeIn"

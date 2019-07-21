@@ -47,12 +47,11 @@
 
 <script>
 import ScrollMixin from '../scrollObserverMixin';
-import DropButton from '../Base/DropButton';
 import UserStatistics from './UserStatistics';
 
 export default {
   name: 'Navigation',
-  components: { UserStatistics, DropButton },
+  components: { UserStatistics },
   mixins: [ScrollMixin],
   data: () => ({
     activeRouteIndex: 0,
@@ -78,11 +77,7 @@ export default {
       }
     ]
   }),
-  computed: {
-    currentRoute () {
-      return this.$route.fullPath;
-    }
-  }
+  computed: {}
 };
 </script>
 

@@ -20,6 +20,21 @@
           </q-input>
         </div>
       </div>
+
+      <div class="row list-controls-status-filters q-col-gutter-sm">
+        <div class="col-4 q-pt-none" v-for="(item, i) in statusFilters" :key="i + item">
+          <input checked
+                 class="status-filter"
+                 :class="[item]"
+                 :id="`status-filter-${item}-${_uid}`" name="status-filter-fav"
+                 type="checkbox"
+                 :value="item"
+                 v-model="filters.status">
+          <label class="ellipsis"
+                 :class="[item]"
+                 :for="`status-filter-${item}-${_uid}`">{{ item }}</label>
+        </div>
+      </div>
     </div>
 </template>
 
@@ -42,7 +57,8 @@ export default {
   },
   data: () => ({
     sortOptions: ['Oldest', 'Newest', 'A to Z', 'Status'],
-    allSelected: true
+    allSelected: true,
+    statusFilters: ['waiting', 'synchronized', 'error']
   }),
   watch: {
     selected () {
@@ -59,6 +75,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  $c_bg: #231c45;
+  $c_likes: #ff4966;
+  $c_followings: #2069ff;
+  $c_playlists: #26ffae;
+
   .list-controls {
     background: white;
     border-radius: 8px;
@@ -77,6 +98,70 @@ export default {
       color: #2f72ff;
       display: inline-block;
       margin: 0 5px;
+    }
+  }
+
+  input[type=checkbox].status-filter {
+    opacity: 0;
+    min-width: 0;
+    height: 0;
+    overflow: visible;
+    position: static;
+
+    & + label {
+      display: inline-block;
+      width: 100%;
+      transition: 0.3s;
+      background: transparent;
+      border: 2px gray solid;
+      padding: 1px 10px;
+      text-align: center;
+      border-radius: 2px;
+      color: $c_bg;
+      letter-spacing: 0.1rem;
+      font-weight: bold;
+      margin: 0 2px 2px 0;
+      font-size: 0.8rem;
+      cursor: pointer;
+
+      &.waiting {
+        border-color: #d6d6d6;
+        &:hover {
+          background-color: rgba(#d6d6d6, 0.2);
+        }
+      }
+
+      &.synchronized {
+        border-color: #7ed6ab;
+        &:hover {
+          background-color: rgba(#7ed6ab, 0.2);
+        }
+      }
+
+      &.error {
+        border-color: #ff6a87;
+        &:hover {
+          background-color: rgba(#ff6a87, 0.2);
+        }
+      }
+    }
+
+    &:checked {
+      & + label {
+        font-weight: bold;
+
+        &.waiting {
+          background-color: #d6d6d6;
+        }
+
+        &.synchronized {
+          background-color: #7ed6ab;
+        }
+
+        &.error {
+          background-color: #ff6a87;
+        }
+      }
     }
   }
 
