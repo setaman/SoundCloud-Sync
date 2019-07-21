@@ -10,9 +10,9 @@
     >
       <splash-loading v-if="isLoading"/>
       <lists-group v-else>
-        <list slot="list-one" :items="itemsOne"></list>
+        <list slot="list-one" :items="itemsOne" @filtersChange="onFiltersChangeOne"></list>
         <list-sync-controls slot="list-sync-controls"></list-sync-controls>
-        <list slot="list-two" :items="itemsTwo"></list>
+        <list slot="list-two" :items="itemsTwo" @filtersChange="onFiltersChangeTwo"></list>
       </lists-group>
     </transition>
   </q-page>
@@ -23,6 +23,7 @@ import List from 'components/ListsGroup/List';
 import ListSyncControls from 'components/ListsGroup/ListSyncControls';
 import { SOCKET_GET_USER_LIKES, SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR } from 'src/utils/socketEvents.js';
 import SplashLoading from 'components/Base/SplashLoading';
+import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR } from 'src/utils/const';
 
 export default {
   name: 'Likes',
@@ -62,8 +63,31 @@ export default {
   },
   methods: {
     getUsersLikes () {
-      this.$socket.emit(SOCKET_GET_USER_LIKES, this.userOne.userId);
-      this.$socket.emit(SOCKET_GET_USER_LIKES, this.userTwo.userId);
+      this.$socket.emit(SOCKET_GET_USER_LIKES, {
+        userId: this.userOne.userId,
+        title: '',
+        status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR],
+        sort: ''
+      });
+      this.$socket.emit(SOCKET_GET_USER_LIKES, {
+        userId: this.userTwo.userId,
+        title: '',
+        status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR],
+        sort: ''
+      });
+    },
+    onFiltersChangeOne (filters) {
+      console.log('RELOAD ON CHANGE');
+      this.$socket.emit(SOCKET_GET_USER_LIKES, {
+        userId: this.userOne.userId,
+        ...filters
+      });
+    },
+    onFiltersChangeTwo (filters) {
+      this.$socket.emit(SOCKET_GET_USER_LIKES, {
+        userId: this.userTwo.userId,
+        ...filters
+      });
     },
     onChecked (itemId) {
       this.checkedItems.push(itemId);

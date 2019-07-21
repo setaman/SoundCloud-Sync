@@ -71,7 +71,7 @@ export default {
       this.$emit('selectedChange', this.selectedItems);
     },
     emitFilterChanges () {
-      this.$emit('filterChange', this.filters);
+      this.$emit('filtersChange', this.filters);
     },
     onLoad (index, done) {
       if (this.offset < this.items.length) {

@@ -8,6 +8,9 @@
           <user-avatar size="50" :url="avatar || ''"/>
         </div>
         <div class="list-item-title ellipsis">
+          <p v-if="item.user && item.user.username" class="q-ma-none">
+            {{item.user.username}}
+          </p>
           <a @click="openUserLinkInBrowser">
             {{item.title}}
           </a>
@@ -105,7 +108,7 @@ export default {
   }
 
   .list-item-title {
-    padding-top: 18px;
+    padding-top: 6px;
     a {
       transition: 0.3s;
       color: #2f72ff;
