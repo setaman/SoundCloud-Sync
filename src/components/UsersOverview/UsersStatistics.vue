@@ -1,38 +1,32 @@
 <template>
-  <div class="row q-pr-xl text-center">
-    <div class="col-5">
-      <div style="max-height: 100px">
+  <div id="users-overview" class="shadow-10">
+    <div class="users-overview-head q-pa-lg">
+      <div class="text-center">
         <user-avatar :url="userOne.avatar_url"/>
+        <p class="ellipsis text-white text-bold q-mt-md q-px-sm">
+          <a class="user-link" :href="userOne.permalink_url">
+            {{ userOne.username.slice(0, 60) }}
+          </a>
+        </p>
       </div>
-      <p class="ellipsis text-white text-bold q-mt-md q-px-sm">
-        <a class="user-link" :href="userOne.permalink_url">
-          {{ userOne.username.slice(0, 60) }}
-        </a>
-      </p>
-    </div>
-    <div class="col-2">
-      <user-statistics-divider/>
-    </div>
-    <div class="col-5">
-      <div style="max-height: 100px">
+      <div class="flex flex-center">
+        <user-statistics-divider/>
+      </div>
+      <div class="text-center">
         <user-avatar :url="userTwo.avatar_url"/>
+        <p class="ellipsis text-white text-bold q-mt-md q-px-sm">
+          <a class="user-link" :href="userTwo.permalink_url">
+            {{ userTwo.username.slice(0, 60) }}
+          </a>
+        </p>
       </div>
-      <p class="ellipsis text-white text-bold q-mt-md q-px-sm">
-        <a class="user-link" :href="userTwo.permalink_url">
-          {{ userTwo.username.slice(0, 60) }}
-        </a>
-      </p>
     </div>
-    <div class="col-12 q-pt-xl">
+    <div id="users-overview-stats" class="">
       <user-statistics-card title="likes" :value-one="userOne.likes" :value-two="userTwo.likes"/>
-    </div>
-    <div class="col-12 q-pt-none">
       <user-statistics-card type="followings" title="followings" :value-one="userOne.followings" :value-two="userTwo.followings"/>
-    </div>
-    <div class="col-12 q-pt-none">
       <user-statistics-card type="playlists" title="playlists" :value-one="userOne.playlists" :value-two="userTwo.playlists"/>
     </div>
-    <div class="col-12 q-pt-xl q-px-lg">
+    <div class="col-12 q-pa-xl">
       <q-btn large rounded size="lg" class="full-width" color="primary">
         sync all
       </q-btn>
@@ -41,12 +35,12 @@
 </template>
 
 <script>
-import UserAvatar from './UserAvatar';
-import UserStatisticsCard from './UserStatisticsCard';
-import UserStatisticsDivider from './UserStatisticsDivider';
+import UserAvatar from 'components/Base/UserAvatar';
+import UserStatisticsCard from 'components/UsersOverview/UserStatisticsCard';
+import UserStatisticsDivider from 'components/UsersOverview/UserStatisticsDivider';
 
 export default {
-  name: 'UserStatistics',
+  name: 'UsersStatistics',
   components: { UserStatisticsDivider, UserStatisticsCard, UserAvatar },
   props: {
     likes: {
@@ -74,6 +68,27 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  $c_bg: #231c45;
+  $c_likes: #ff4966;
+  $c_followings: #2069ff;
+  $c_playlists: #26ffae;
+  $c_settings: #8344ff;
+
+  #users-overview {
+    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    background-color: $c_bg;
+  }
+
+  .users-overview-head {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr;
+  }
+
+  #users-overview-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
   .stat-title {
     font-family: "Quicksand Medium", serif;
     letter-spacing: 0.1rem;

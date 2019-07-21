@@ -1,9 +1,8 @@
 <template>
-  <q-layout view="hhh lpr lFf">
-    <q-page-container id="home">
-
-      <navigation/>
-
+  <q-layout view="hhh lpr lFf" id="home">
+    <navigation/>
+    <q-page-container>
+      <user-statistics/>
       <router-view/>
     </q-page-container>
   </q-layout>
@@ -11,10 +10,11 @@
 
 <script>
 import Navigation from 'components/Navigation/Navigation';
+import UserStatistics from 'components/UsersOverview/UsersStatistics';
 
 export default {
   name: 'Home',
-  components: { Navigation },
+  components: { UserStatistics, Navigation },
   data: () => ({}),
   methods: {}
 };
