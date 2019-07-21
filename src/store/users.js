@@ -1,5 +1,4 @@
 import { setValue, deleteValue, getValue } from './electron-store';
-import loadUserData from '../utils/loaduserData';
 
 const userPlaceholder = {
   userId: '',

@@ -2,8 +2,8 @@
 <div>
   <list-controls :filters.sync="filters" :selected="selectedItems.length" :max="items.length" @all-checked="onAllChecked"/>
   <div class="q-pt-md q-pb-sm">
-    {{checkedItems}}
-    {{filters.all}}
+    <!--{{checkedItems}}
+    {{filters}}-->
     <divider></divider>
   </div>
   <q-infinite-scroll @load="onLoad" :offset="200">
@@ -40,16 +40,18 @@ export default {
     filters: {
       title: '',
       status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR],
-      sort: 'Oldest',
-      all: true
+      sort: 'Oldest'
     },
     offset: 30,
     checkedItems: []
   }),
   watch: {
-    filters () {
-      console.log('FIILTER CHANGES');
-      this.emitFilterChanges();
+    filters: {
+      handler () {
+        console.log('FIILTER CHANGES');
+        this.emitFilterChanges();
+      },
+      deep: true
     },
     items () {
       this.checkedItems = [];
@@ -66,10 +68,10 @@ export default {
   },
   methods: {
     emitSelectedItems () {
-      this.$emit('changes', this.selectedItems);
+      this.$emit('selectedChange', this.selectedItems);
     },
     emitFilterChanges () {
-      this.$emit('filter', this.filters);
+      this.$emit('filtersChange', this.filters);
     },
     onLoad (index, done) {
       if (this.offset < this.items.length) {

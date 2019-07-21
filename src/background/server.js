@@ -15,7 +15,7 @@ io.on('connection', socket => {
 
   socket.on(SOCKET_INITIALIZATION_START, msg => init(io, msg));
 
-  socket.on(SOCKET_GET_USER_LIKES, userId => getUserLikes(io, userId));
+  socket.on(SOCKET_GET_USER_LIKES, data => getUserLikes(io, data));
 });
 
 http.listen(port, function () {
