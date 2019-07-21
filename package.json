@@ -1,6 +1,6 @@
 {
   "name": "soundcloud-sync",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "A Quasar Framework app",
   "productName": "SoundCloud Sync",
   "cordovaId": "",

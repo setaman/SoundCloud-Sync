@@ -2,7 +2,7 @@
     <div class="list-controls">
       <div class="list-controls-head">
         <div>
-          <q-checkbox :disable="max===selected" v-model="filters.all" @input="emitAllChecked"/>
+          <q-checkbox :disable="max===selected" v-model="allSelected" @input="emitAllChecked"/>
         </div>
         <div class="list-controls-status flex items-center">
           selected <b>{{` ${selected} `}}</b> from {{max}}
@@ -41,16 +41,18 @@ export default {
     }
   },
   data: () => ({
-    sortOptions: ['Oldest', 'Newest', 'A to Z', 'Status']
+    sortOptions: ['Oldest', 'Newest', 'A to Z', 'Status'],
+    allSelected: true
   }),
   watch: {
     selected () {
-      this.filters.all = this.selected === this.max;
+      // check if specific items in the list selected
+      this.allSelected = (this.selected === this.max);
     }
   },
   methods: {
     emitAllChecked () {
-      if (this.filters.all) this.$emit('all-checked');
+      this.$emit('all-checked');
     }
   }
 };
