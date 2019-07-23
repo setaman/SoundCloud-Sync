@@ -25,7 +25,8 @@
 </template>
 
 <script>
-import { SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_SUCCESS } from 'src/utils/socketEvents.js';
+import { SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_SUCCESS,
+  SOCKET_INITIALIZATION_DATA_LOADED } from 'src/utils/socketEvents.js';
 import notificationMixin from 'src/components/notificationMixin';
 export default {
   name: 'Welcome',
@@ -42,7 +43,7 @@ export default {
       this.msg = 'Loading data...';
       this.$store.dispatch('startInitialization');
     },
-    [SOCKET_INITIALIZATION_SUCCESS] () {
+    [SOCKET_INITIALIZATION_DATA_LOADED] () {
       this.blinking = false;
       this.msg = 'We are ready to go';
       this.$store.dispatch('successInitialization');

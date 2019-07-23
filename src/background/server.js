@@ -7,8 +7,8 @@ const { SOCKET_INITIALIZATION_START, SOCKET_GET_USER_LIKES,
   SOCKET_GET_USER_FOLLOWINGS } = require('./socketEvents');
 
 // Event handler
-const { getUserLikes } = require('./eventsHandler/persistetUsersDataLoding');
-const { init } = require('./eventsHandler/initialization');
+const { getUserLikes } = require('./eventsHandler/persistedUsersDataLoding');
+const { init } = require('./eventsHandler/inizialization/initialization');
 
 io.on('connection', socket => {
   console.log('--- CLIENT CONNECTED ---');
