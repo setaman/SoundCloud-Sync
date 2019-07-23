@@ -61,7 +61,7 @@ export default {
   .user-statistics-card {
     border-radius: $border_radius;
     position: relative;
-    clip-path: polygon(0 0, 100% 0%, 75% 100%, 0% 100%);
+    //clip-path: polygon(0 0, 100% 0%, 75% 100%, 0% 100%);
     /*&:before, &:after {
       display: block;
       content: '';

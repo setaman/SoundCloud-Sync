@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import users from './users';
+import overview from './overview';
+import socket from './socket';
 import initialization from './initialization';
 
 Vue.use(Vuex);
@@ -13,6 +15,8 @@ Vue.use(Vuex);
 const Store = new Vuex.Store({
   modules: {
     users,
+    overview,
+    socket,
     initialization
   },
   // enable strict mode (adds overhead!)

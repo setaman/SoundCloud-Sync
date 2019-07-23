@@ -1,24 +1,13 @@
 <template>
-  <aside id="navigation" class="relative-position" :class="{expanded: expanded}">
-    <div id="navigation-container" :class="{expanded: expanded}">
-      <div id="navigation-content" :class="{expanded: expanded}">
-        <transition
-          appear
-          enter-active-class="animated fadeIn"
-          leave-active-class="animated fadeOut"
-        >
-          <div v-show="expanded" class="full-height flex items-center">
-            <user-statistics/>
-          </div>
-        </transition>
-      </div>
+  <aside id="navigation" class="relative-position">
+    <div id="navigation-container">
       <div id="navigation-items-container" class="flex column wrap justify-between">
         <div>
           <div class="flex justify-end q-pt-md q-pr-md">
-            <q-btn round size="large" flat @click="expanded = !expanded">
-        <span class="navigation-burger" :class="{expanded: expanded}">
+            <q-btn round size="large" flat @click="toggleOverview">
+        <span class="navigation-burger" :class="{expanded: isOverviewExpanded}">
         </span>
-              <span class="navigation-burger" :class="{expanded: expanded}">
+              <span class="navigation-burger" :class="{expanded: isOverviewExpanded}">
         </span>
             </q-btn>
           </div>
@@ -46,13 +35,9 @@
 </template>
 
 <script>
-import ScrollMixin from '../scrollObserverMixin';
-import UserStatistics from './UserStatistics';
-
 export default {
   name: 'Navigation',
-  components: { UserStatistics },
-  mixins: [ScrollMixin],
+  components: { },
   data: () => ({
     activeRouteIndex: 0,
     expanded: true,
@@ -77,7 +62,16 @@ export default {
       }
     ]
   }),
-  computed: {}
+  computed: {
+    isOverviewExpanded () {
+      return this.$store.state.overview.expanded;
+    }
+  },
+  methods: {
+    toggleOverview () {
+      this.$store.dispatch('toggleOverview');
+    }
+  }
 };
 </script>
 
@@ -106,25 +100,12 @@ export default {
     position: fixed;
     height: 100vh;
     display: grid;
-    grid-template-columns: 1fr 80px;
     z-index: 9999;
     background: $c_bg;
     transition: 0.5s;
     width: $base_width;
     &.expanded {
       width: $expanded_width;
-    }
-  }
-
-  #navigation-content {
-    z-index: 9999;
-    width: 0;
-    transition: 0.5s;
-    overflow: hidden;
-    background: $c_bg;
-    white-space: nowrap;
-    &.expanded {
-      width: $expanded_width - 80;
     }
   }
 
