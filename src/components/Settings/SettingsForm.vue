@@ -80,50 +80,24 @@
 <script>
 import UserAvatar from 'components/Navigation/UserAvatar';
 import UserStatistics from 'components/Settings/UserStatisticsCheck';
-import notificationMixin from 'src/components/notificationMixin';
-import { SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_SUCCESS } from 'src/utils/socketEvents.js';
+import initializationMixin from 'components/initializationMixin';
+
+import { SOCKET_INITIALIZATION_START } from 'src/utils/socketEvents.js';
 
 const userPlaceholder = { userId: '', token: '', clientId: '' };
 
 export default {
   name: 'SettingsForm',
   components: { UserStatistics, UserAvatar },
-  mixins: [notificationMixin],
+  mixins: [initializationMixin],
   data () {
     return {
       step: 1,
       loaded: false,
       saved: false,
-      isLoading: false,
       userOne: userPlaceholder,
       userTwo: userPlaceholder
     };
-  },
-  sockets: {
-    connect: function () {
-      console.log('socket connected');
-    },
-    [SOCKET_INITIALIZATION_START] () {
-      this.isLoading = true;
-      this.$store.dispatch('startInitialization');
-    },
-    [SOCKET_INITIALIZATION_SUCCESS] (usersData) {
-      this.notifySuccess('Data successful loaded');
-      this.$store.dispatch('successInitialization');
-      console.log('USERS', usersData);
-      this.userOne = usersData.userOne;
-      this.userTwo = usersData.userTwo;
-      this.isLoading = false;
-      this.loaded = true;
-      this.step = 2;
-    },
-    [SOCKET_INITIALIZATION_FAIL] (msg) {
-      this.isLoading = false;
-      this.$store.dispatch('failInitialization');
-      msg.forEach(e => {
-        this.notifyError(e);
-      });
-    }
   },
 
   methods: {
@@ -142,6 +116,14 @@ export default {
         }
       });
     },
+    onDataLoaded (usersData) {
+      console.log('USERS', usersData);
+      this.userOne = usersData.userOne;
+      this.userTwo = usersData.userTwo;
+      this.isLoading = false;
+      this.loaded = true;
+      this.step = 2;
+    },
     persistData () {
       this.$store.dispatch('setUserOne', this.userOne);
       this.$store.dispatch('setUserTwo', this.userTwo);
@@ -159,22 +141,6 @@ export default {
     persistedUserTwo () {
       return this.$store.state.users.userTwo;
     }
-    /* userOne: {
-      get () {
-        return this.$store.state.users.userOne
-      },
-      set (val) {
-        this.$store.dispatch('setUserOne', val)
-      }
-    },
-    userTwo: {
-      get () {
-        return this.$store.state.users.userTwo
-      },
-      set (val) {
-        this.$store.dispatch('setUserTwo', val)
-      }
-    } */
   },
   mounted () {
     this.userOne = { ...this.persistedUserOne };

@@ -18,51 +18,21 @@
       />
     </div>
     <p class="msg q-mt-md" :class="{blinking: blinking}">
-      {{msg}}
+      Doing awesome stuff for you
     </p>
   </div>
 </div>
 </template>
 
 <script>
-import { SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_SUCCESS,
-  SOCKET_INITIALIZATION_DATA_LOADED } from 'src/utils/socketEvents.js';
-import notificationMixin from 'src/components/notificationMixin';
+import { SOCKET_INITIALIZATION_START } from 'src/utils/socketEvents.js';
+import initializationMixin from 'components/initializationMixin';
 export default {
   name: 'Welcome',
-  mixins: [notificationMixin],
+  mixins: [initializationMixin],
   data: () => ({
-    msg: 'Loading data...',
     blinking: true
   }),
-  sockets: {
-    connect: function () {
-      console.log('socket connected');
-    },
-    [SOCKET_INITIALIZATION_START] () {
-      this.msg = 'Loading data...';
-      this.$store.dispatch('startInitialization');
-    },
-    [SOCKET_INITIALIZATION_DATA_LOADED] () {
-      this.blinking = false;
-      this.msg = 'We are ready to go';
-      this.$store.dispatch('successInitialization');
-      setTimeout(() => {
-        this.$router.push('settings');
-      }, 1500);
-    },
-    [SOCKET_INITIALIZATION_FAIL] (msg) {
-      this.blinking = false;
-      this.msg = 'Error while loading data';
-      this.$store.dispatch('failInitialization');
-      msg.forEach(e => {
-        this.notifyError(e);
-      });
-      setTimeout(() => {
-        this.$router.push('settings');
-      }, 3000);
-    }
-  },
   computed: {
     userOne () {
       return this.$store.state.users.userOne;

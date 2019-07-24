@@ -11,6 +11,14 @@ const persistUserData = (userId, likes, followings) => {
   return datastore.insert([likesToPersist, followingsToPersist]);
 };
 
+const persistSyncStatusData = (
+  likesSynchronizationPercent,
+  followingsSynchronizationPercent,
+  overallSynchronizationPercent) =>
+  datastore.insert([likesSynchronizationPercent,
+    followingsSynchronizationPercent,
+    overallSynchronizationPercent]);
+
 const sanitizeUsersDataResponse = ({ userOne, userTwo }) => ({
   userOne: {
     ...userOne,
@@ -40,8 +48,8 @@ const loadUsersData = async (userOne, userTwo) => {
   const loadedUserOne = result.find(data => data.userId === userOne.userId);
   const loadedUserTwo = result.find(data => data.userId === userTwo.userId);
 
-  console.log('USER ONE', loadedUserOne.username);
-  console.log('USER TWO', loadedUserTwo.username);
+  console.log('USER ONE', loadedUserOne.userId);
+  console.log('USER TWO', loadedUserTwo.userId);
 
   return {
     userOne: {
@@ -74,8 +82,11 @@ const init = async (io, msg) => {
 
     await Promise.all([
       persistUserData(userOne.userId, userOne.likes, userOne.followings),
-      persistUserData(userTwo.user.userId, userTwo.likes, userTwo.followings)
+      persistUserData(userTwo.userId, userTwo.likes, userTwo.followings)
     ]);
+
+    await persistSyncStatusData(likesSynchronizationPercent, followingsSynchronizationPercent);
+
     io.emit(SOCKET_SYNC_STATUS_SUCCESS);
     io.emit(SOCKET_INITIALIZATION_SUCCESS);
   } catch (e) {
