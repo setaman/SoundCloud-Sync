@@ -8,8 +8,6 @@ const calculateItemsSyncPercent = (itemsOne = [], itemsTwo = []) => {
 
   const notSynchronizedCount = itemsOne.filter(item => !item.synchronized).length + itemsTwo.filter(item => !item.synchronized).length;
 
-  console.log('Items percent', (100 - uniqIds.size > 0 ? notSynchronizedCount / uniqIds.size * 100 : 0));
-
   return {
     itemsSyncPercent: 100 - (uniqIds.size > 0 ? notSynchronizedCount / uniqIds.size * 100 : 0),
     notSynchronizedCount
@@ -30,9 +28,9 @@ const calculateOverallSyncPercent = (userOne, userTwo, notSynchronizedLikes, not
   const uniqIdsCount = uniqLikesIds.size + uniqFollowingsIds.size;
   const notSynchronized = notSynchronizedLikes + notSynchronizedFollowings;
 
-  console.log('OVERALL percent', 100 - (uniqIdsCount.size > 0 ? notSynchronized / uniqIdsCount.size * 100 : 0));
+  const overallSyncPercent = 100 - (uniqIdsCount > 0 ? notSynchronized / uniqIdsCount * 100 : 0);
 
-  return 100 - (uniqIdsCount.size > 0 ? notSynchronized / uniqIdsCount.size * 100 : 0);
+  return Number(overallSyncPercent.toFixed(2));
 };
 
 const determineItemsStatus = (itemsOne = [], itemsTwo = []) => {
