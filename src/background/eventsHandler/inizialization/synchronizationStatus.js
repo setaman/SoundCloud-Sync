@@ -1,12 +1,38 @@
+const getSetFromArray = array => new Set(array);
+
 const calculateItemsSyncPercent = (itemsOne = [], itemsTwo = []) => {
-  const uniqIds = new Set([
+  const uniqIds = getSetFromArray([
     ...itemsOne.map(item => item.id),
     ...itemsTwo.map(item => item.id)
   ]);
 
-  const notSynchronized = itemsOne.filter(item => !item.synchronized).length + itemsTwo.filter(item => !item.synchronized).length;
+  const notSynchronizedCount = itemsOne.filter(item => !item.synchronized).length + itemsTwo.filter(item => !item.synchronized).length;
 
-  return uniqIds.size > 0 ? notSynchronized / uniqIds.size * 100 : 0;
+  console.log('Items percent', (100 - uniqIds.size > 0 ? notSynchronizedCount / uniqIds.size * 100 : 0));
+
+  return {
+    itemsSyncPercent: 100 - (uniqIds.size > 0 ? notSynchronizedCount / uniqIds.size * 100 : 0),
+    notSynchronizedCount
+  };
+};
+
+const calculateOverallSyncPercent = (userOne, userTwo, notSynchronizedLikes, notSynchronizedFollowings) => {
+  const uniqLikesIds = new Set([
+    ...userOne.likes.map(item => item.id),
+    ...userTwo.likes.map(item => item.id)
+  ]);
+
+  const uniqFollowingsIds = new Set([
+    ...userOne.followings.map(item => item.id),
+    ...userTwo.followings.map(item => item.id)
+  ]);
+
+  const uniqIdsCount = uniqLikesIds.size + uniqFollowingsIds.size;
+  const notSynchronized = notSynchronizedLikes + notSynchronizedFollowings;
+
+  console.log('OVERALL percent', 100 - (uniqIdsCount.size > 0 ? notSynchronized / uniqIdsCount.size * 100 : 0));
+
+  return 100 - (uniqIdsCount.size > 0 ? notSynchronized / uniqIdsCount.size * 100 : 0);
 };
 
 const determineItemsStatus = (itemsOne = [], itemsTwo = []) => {
@@ -20,15 +46,13 @@ const determineItemsStatus = (itemsOne = [], itemsTwo = []) => {
     synchronized: itemsOne.filter(i => i.id === item.id).length > 0
   }));
 
-  console.log(updatedItemsOne.filter(item => !item.synchronized).length);
-  console.log(updatedItemsTwo.filter(item => !item.synchronized).length);
-
-  const itemsSyncPercent = Number(calculateItemsSyncPercent(updatedItemsOne, updatedItemsTwo).toFixed(2));
+  const { itemsSyncPercent, notSynchronizedCount } = calculateItemsSyncPercent(updatedItemsOne, updatedItemsTwo);
 
   return {
     updatedItemsOne,
     updatedItemsTwo,
-    itemsSyncPercent
+    notSynchronizedCount,
+    itemsSyncPercent: Number(itemsSyncPercent.toFixed(2))
   };
 };
 
@@ -48,7 +72,12 @@ function determineSyncStatus ({ userOne, userTwo }) {
       followings: updatedFollowingsData.updatedItemsTwo
     },
     likesSynchronizationPercent: updatedLikesData.itemsSyncPercent,
-    followingsSynchronizationPercent: updatedFollowingsData.itemsSyncPercent
+    followingsSynchronizationPercent: updatedFollowingsData.itemsSyncPercent,
+    overallSynchronizationPercent: calculateOverallSyncPercent(
+      userOne, userTwo,
+      updatedLikesData.notSynchronizedCount,
+      updatedFollowingsData.notSynchronizedCount
+    )
   };
 }
 

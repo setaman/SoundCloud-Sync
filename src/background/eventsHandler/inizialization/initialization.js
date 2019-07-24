@@ -7,17 +7,8 @@ const determineSyncStatus = require('./synchronizationStatus');
 const persistUserData = (userId, likes, followings) => {
   const likesToPersist = likes.map(like => ({ userId, type: 'likes', ...like }));
   const followingsToPersist = followings.map(following => ({ userId, type: 'following', ...following }));
-  // console.log('PERSIST', followingsToPersist);
   return datastore.insert([likesToPersist, followingsToPersist]);
 };
-
-const persistSyncStatusData = (
-  likesSynchronizationPercent,
-  followingsSynchronizationPercent,
-  overallSynchronizationPercent) =>
-  datastore.insert([likesSynchronizationPercent,
-    followingsSynchronizationPercent,
-    overallSynchronizationPercent]);
 
 const sanitizeUsersDataResponse = ({ userOne, userTwo }) => ({
   userOne: {
@@ -76,7 +67,9 @@ const init = async (io, msg) => {
 
   try {
     io.emit(SOCKET_SYNC_STATUS_START);
-    const { userOne, userTwo, likesSynchronizationPercent, followingsSynchronizationPercent } = determineSyncStatus(usersData);
+    const { userOne, userTwo, likesSynchronizationPercent, followingsSynchronizationPercent,
+      overallSynchronizationPercent
+    } = determineSyncStatus(usersData);
     // clear db before persisting new data
     await clear();
 
@@ -85,7 +78,7 @@ const init = async (io, msg) => {
       persistUserData(userTwo.userId, userTwo.likes, userTwo.followings)
     ]);
 
-    await persistSyncStatusData(likesSynchronizationPercent, followingsSynchronizationPercent);
+    await datastore.insert([{ overallSynchronizationPercent }, { likesSynchronizationPercent }, { followingsSynchronizationPercent }]);
 
     io.emit(SOCKET_SYNC_STATUS_SUCCESS);
     io.emit(SOCKET_INITIALIZATION_SUCCESS);
