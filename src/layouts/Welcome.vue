@@ -61,6 +61,12 @@ export default {
           clientId: this.userTwo.clientId
         }
       });
+    },
+    onInitialisationSuccess () {
+      this.blinking = false;
+      setTimeout(() => {
+        this.$router.push('home');
+      }, 1500);
     }
   },
   mounted () {

@@ -120,9 +120,11 @@ export default {
       console.log('USERS', usersData);
       this.userOne = usersData.userOne;
       this.userTwo = usersData.userTwo;
-      this.isLoading = false;
       this.loaded = true;
       this.step = 2;
+    },
+    onInitialisationSuccess () {
+      console.log('initialized');
     },
     persistData () {
       this.$store.dispatch('setUserOne', this.userOne);

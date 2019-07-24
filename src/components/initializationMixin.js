@@ -28,9 +28,8 @@ export default {
       this.msg = 'We are ready to go';
       this.notifySuccess(this.msg);
       this.$store.dispatch('successInitialization');
-      setTimeout(() => {
-        this.$router.push('home');
-      }, 1500);
+      this.isLoading = false;
+      this.onInitialisationSuccess();
     },
     [SOCKET_INITIALIZATION_FAIL] (msg) {
       this.isLoading = false;
