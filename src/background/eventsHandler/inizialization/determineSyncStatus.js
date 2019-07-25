@@ -1,7 +1,5 @@
-const getSetFromArray = array => new Set(array);
-
 const calculateItemsSyncPercent = (itemsOne = [], itemsTwo = []) => {
-  const uniqIds = getSetFromArray([
+  const uniqIds = new Set([
     ...itemsOne.map(item => item.id),
     ...itemsTwo.map(item => item.id)
   ]);
@@ -69,9 +67,9 @@ function determineSyncStatus ({ userOne, userTwo }) {
       likes: updatedLikesData.updatedItemsTwo,
       followings: updatedFollowingsData.updatedItemsTwo
     },
-    likesSynchronizationPercent: updatedLikesData.itemsSyncPercent,
-    followingsSynchronizationPercent: updatedFollowingsData.itemsSyncPercent,
-    overallSynchronizationPercent: calculateOverallSyncPercent(
+    likesSyncPercent: updatedLikesData.itemsSyncPercent,
+    followingsSyncPercent: updatedFollowingsData.itemsSyncPercent,
+    overallSyncPercent: calculateOverallSyncPercent(
       userOne, userTwo,
       updatedLikesData.notSynchronizedCount,
       updatedFollowingsData.notSynchronizedCount

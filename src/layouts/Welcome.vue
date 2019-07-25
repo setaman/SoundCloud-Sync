@@ -62,6 +62,7 @@ export default {
         }
       });
     },
+    onDataLoaded () {},
     onInitialisationSuccess () {
       this.blinking = false;
       setTimeout(() => {

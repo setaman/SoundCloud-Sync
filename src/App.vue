@@ -12,6 +12,7 @@ export default {
 
 <style lang="scss">
   @import url('https://fonts.googleapis.com/css?family=Quicksand:300,400,700&display=swap');
+  @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700&display=swap');
   #q-app {
     background-color: white;
     font-family: Quicksand, serif;

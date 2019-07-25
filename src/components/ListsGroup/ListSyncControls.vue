@@ -13,7 +13,7 @@
         <q-btn round flat size="ms" color="primary" icon="sync" slot="legend-capture"/>
       </div>
     </div>
-    <vue-ellipse-progress :progress="55" font-size="2rem" :animation="{type: 'rs', delay: 1000, duration: 700}">
+    <vue-ellipse-progress :progress="progress" font-size="2rem" :animation="{type: 'rs', delay: 1000, duration: 700}">
       <span slot="legend-value">%</span>
       <q-btn round flat size="lg" color="primary" icon="sync" slot="legend-capture"/>
     </vue-ellipse-progress>
@@ -30,7 +30,13 @@
 
 <script>
 export default {
-  name: 'ListSyncControls'
+  name: 'ListSyncControls',
+  props: {
+    progress: {
+      type: Number,
+      required: true
+    }
+  }
 };
 </script>
 

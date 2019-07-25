@@ -4,11 +4,12 @@ const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
 
 const { SOCKET_INITIALIZATION_START, SOCKET_GET_USER_LIKES,
-  SOCKET_GET_USER_FOLLOWINGS } = require('./socketEvents');
+  SOCKET_SYNC_STATUS_GET } = require('./socketEvents');
 
 // Event handler
 const { getUserLikes } = require('./eventsHandler/persistedUsersDataLoding');
 const { init } = require('./eventsHandler/inizialization/initialization');
+const { getSyncStatus } = require('./eventsHandler/syncStatus');
 
 io.on('connection', socket => {
   console.log('--- CLIENT CONNECTED ---');
@@ -16,6 +17,8 @@ io.on('connection', socket => {
   socket.on(SOCKET_INITIALIZATION_START, msg => init(io, msg));
 
   socket.on(SOCKET_GET_USER_LIKES, data => getUserLikes(io, data));
+
+  socket.on(SOCKET_SYNC_STATUS_GET, () => getSyncStatus(io));
 });
 
 http.listen(port, function () {

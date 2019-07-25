@@ -2,7 +2,7 @@ const { SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_START, SOCKET_INITIALI
   SOCKET_SYNC_STATUS_START, SOCKET_SYNC_STATUS_SUCCESS, SOCKET_SYNC_STATUS_FAIL } = require('../../socketEvents');
 const { loadUserData } = require('../../userDataLoader');
 const { datastore, clear } = require('../../db');
-const determineSyncStatus = require('./synchronizationStatus');
+const determineSyncStatus = require('./determineSyncStatus');
 
 const persistUserData = (userId, likes, followings) => {
   const likesToPersist = likes.map(like => ({ userId, type: 'likes', ...like }));
@@ -67,8 +67,8 @@ const init = async (io, msg) => {
 
   try {
     io.emit(SOCKET_SYNC_STATUS_START);
-    const { userOne, userTwo, likesSynchronizationPercent, followingsSynchronizationPercent,
-      overallSynchronizationPercent
+    const { userOne, userTwo, likesSyncPercent, followingsSyncPercent,
+      overallSyncPercent
     } = determineSyncStatus(usersData);
     // clear db before persisting new data
     await clear();
@@ -78,7 +78,12 @@ const init = async (io, msg) => {
       persistUserData(userTwo.userId, userTwo.likes, userTwo.followings)
     ]);
 
-    await datastore.insert([{ overallSynchronizationPercent }, { likesSynchronizationPercent }, { followingsSynchronizationPercent }]);
+    await datastore.insert({
+      type: 'syncStatusInfo',
+      overallSyncPercent,
+      likesSyncPercent,
+      followingsSyncPercent
+    });
 
     io.emit(SOCKET_SYNC_STATUS_SUCCESS);
     io.emit(SOCKET_INITIALIZATION_SUCCESS);
