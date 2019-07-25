@@ -19,12 +19,12 @@ const loadUserData = async (userId, clientId, token) => {
   const errors = [userError, likesError, followingsError, tokenError];
 
   return {
-    user: {
-      username,
-      avatar_url,
-      permalink_url,
-      userId
-    },
+    username,
+    avatar_url,
+    permalink_url,
+    userId,
+    clientId,
+    token,
     likes,
     followings,
     playlists: [],
@@ -59,7 +59,8 @@ async function getLikes (userId, clientId) {
       type: LIST_TYPE_LIKES,
       userId,
       status: STATUS_WAITING,
-      order
+      order,
+      synchronized: false
     })),
     likesError: null
     };
@@ -82,8 +83,9 @@ async function getFollowings (userId, clientId) {
       ...following,
       type: LIST_TYPE_FOLLOWINGS,
       userId,
-      status: 'waiting',
-      order
+      status: STATUS_WAITING,
+      order,
+      synchronized: false
     })),
     followingsError: null };
   } catch (e) {

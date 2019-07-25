@@ -11,7 +11,7 @@
       <splash-loading v-if="isLoading"/>
       <lists-group v-else>
         <list slot="list-one" :items="itemsOne" @filtersChange="onFiltersChangeOne"></list>
-        <list-sync-controls slot="list-sync-controls"></list-sync-controls>
+        <list-sync-controls :progress="syncPercent" slot="list-sync-controls"></list-sync-controls>
         <list slot="list-two" :items="itemsTwo" @filtersChange="onFiltersChangeTwo"></list>
       </lists-group>
     </transition>
@@ -21,9 +21,11 @@
 import ListsGroup from 'components/ListsGroup/ListsGroup';
 import List from 'components/ListsGroup/List';
 import ListSyncControls from 'components/ListsGroup/ListSyncControls';
-import { SOCKET_GET_USER_LIKES, SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR } from 'src/utils/socketEvents.js';
+import { SOCKET_GET_USER_LIKES, SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR, SOCKET_SYNC_STATUS_GET,
+  SOCKET_SYNC_STATUS_DATA } from 'src/utils/socketEvents.js';
 import SplashLoading from 'components/Base/SplashLoading';
 import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR } from 'src/utils/const';
+import { SOCKET_INITIALIZATION_FAIL } from 'src/utils/socketEvents';
 
 export default {
   name: 'Likes',
@@ -41,6 +43,14 @@ export default {
     },
     [SOCKET_USER_LIKES_ERROR] (e) {
       console.log('ERROR LIkES', e);
+    },
+    [SOCKET_SYNC_STATUS_DATA] ({ likesSyncPercent }) {
+      console.log('SYNC PERCENT', likesSyncPercent);
+      this.syncPercent = likesSyncPercent || 0;
+    },
+    [SOCKET_INITIALIZATION_FAIL] (e) {
+      console.log('SYNC ERROR', e);
+      this.syncPercent = 0;
     }
   },
 
@@ -48,7 +58,8 @@ export default {
     itemsOne: [],
     itemsTwo: [],
     isLoadingOne: true,
-    isLoadingTwo: true
+    isLoadingTwo: true,
+    syncPercent: 0
   }),
   computed: {
     userOne () {
@@ -76,6 +87,9 @@ export default {
         sort: ''
       });
     },
+    getSyncPercent () {
+      this.$socket.emit(SOCKET_SYNC_STATUS_GET);
+    },
     onFiltersChangeOne (filters) {
       console.log('RELOAD ON CHANGE');
       this.$socket.emit(SOCKET_GET_USER_LIKES, {
@@ -99,7 +113,7 @@ export default {
   },
   mounted () {
     setTimeout(() => this.getUsersLikes(), 500);
-    // this.getUsersLikes();
+    this.getSyncPercent();
   }
 };
 </script>
