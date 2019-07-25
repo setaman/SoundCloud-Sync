@@ -27,9 +27,7 @@ const formulateSort = sortOption => {
   }
 };
 
-const getUserLikes = async (io, { userId, title, status, sort }) => {
-  // console.log('GETTING LIKES FOR USER: ', userId, title, status, sort);
-
+const getUserLikes = async (io, { userId, title, status, sort, page = 1 }) => {
   const filter = {
     type: 'likes',
     userId,
@@ -44,10 +42,12 @@ const getUserLikes = async (io, { userId, title, status, sort }) => {
     status: { $in: status }
   };
 
-  console.log('FILTERS:', filter, formulateSort(sort));
+  console.log('FILTERS:', filter, formulateSort(sort), page);
+
+  const pagesize = 20;
 
   try {
-    const likes = await datastore.find(filter).sort(formulateSort(sort)).limit(20).exec();
+    const likes = await datastore.find(filter).sort(formulateSort(sort)).skip(pagesize * (page - 1)).limit(pagesize).exec();
     io.emit(SOCKET_USER_LIKES, {
       userId,
       likes

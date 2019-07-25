@@ -4,6 +4,16 @@
         &lt;!&ndash;<q-checkbox v-model="val" />&ndash;&gt;
       </div>-->
       <div class="list-item-content">
+        <div class="list-item-status">
+          <vue-ellipse-progress
+            :progress="100"
+            half
+            :legend="false"
+            :size="70"
+            :color="statusColor"
+            emptyColor="transparent"
+            :loading="false"/>
+        </div>
         <div class="list-item-avatar shadow-8">
           <user-avatar size="50" :url="avatar || ''"/>
         </div>
@@ -17,9 +27,8 @@
         </div>
       </div>
       <div class="list-item-action flex items-center">
-        <q-btn round flat icon="fas fa-angle-right" color="primary"></q-btn>
+        <q-btn round flat :icon="icon" color="primary"></q-btn>
       </div>
-      <div :class="[item.status]" class="list-item-status synchronized"></div>
     </div>
 </template>
 
@@ -42,7 +51,9 @@ export default {
   },
   data () {
     return {
-      checked: false
+      checked: false,
+      progressColor: 'transparent',
+      isLoading: false
     };
   },
   computed: {
@@ -52,8 +63,12 @@ export default {
     avatar () {
       return this.item.avatar_url || this.item.artwork_url;
     },
+    statusColor () {
+      if (this.item.status === 'error') return 'rgba(255,113,130,0.3)';
+      return !this.item.synchronized ? 'transparent' : 'rgba(60,186,146,0.3)';
+    },
     icon () {
-      return this.item.synchronized ? 'fa-angle-right' : '';
+      return !this.item.synchronized ? 'fas fa-angle-right' : 'refresh';
     }
   },
   methods: {
@@ -112,11 +127,12 @@ export default {
   }
   .list-item-status {
     transition: 0.3s;
-    width: 100%;
-    height: 4px;
+    width: 70px;
+    border-radius: 35px;
+    height: 100%;
     position: absolute;
     left: 0;
-    bottom: -2px;
+    top: 0;
     &.waiting {
       // opacity: 0.5;
       background-image: linear-gradient(to bottom, #e6e9f0 0%, #eef1f5 100%);
