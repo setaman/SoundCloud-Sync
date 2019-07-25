@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="list-item-action flex items-center">
-        <q-btn round flat icon="refresh" color="primary"></q-btn>
+        <q-btn round flat icon="fas fa-angle-right" color="primary"></q-btn>
       </div>
       <div :class="[item.status]" class="list-item-status synchronized"></div>
     </div>
@@ -42,14 +42,7 @@ export default {
   },
   data () {
     return {
-      checked: false,
-      gradients: [
-        'to top, #fdcbf1 0%, #fdcbf1 1%, #e6dee9 100%',
-        '120deg, #84fab0 0%, #8fd3f4 100%',
-        '135deg, #667eea 0%, #764ba2 100%',
-        'to right, #4facfe 0%, #00f2fe 100%',
-        'to right, #74ebd5 0%, #9face6 100%'
-      ]
+      checked: false
     };
   },
   computed: {
@@ -59,9 +52,8 @@ export default {
     avatar () {
       return this.item.avatar_url || this.item.artwork_url;
     },
-    randomGradient () {
-      const randomNumber = Math.floor(Math.random() * (4 + 1));
-      return `background-image: linear-gradient(${this.gradients[randomNumber]})`;
+    icon () {
+      return this.item.synchronized ? 'fa-angle-right' : '';
     }
   },
   methods: {
