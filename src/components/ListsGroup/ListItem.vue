@@ -4,6 +4,16 @@
         &lt;!&ndash;<q-checkbox v-model="val" />&ndash;&gt;
       </div>-->
       <div class="list-item-content">
+        <div class="list-item-status">
+          <vue-ellipse-progress
+            :progress="100"
+            half
+            :legend="false"
+            :size="70"
+            :color="statusColor"
+            emptyColor="transparent"
+            :loading="false"/>
+        </div>
         <div class="list-item-avatar shadow-8">
           <user-avatar size="50" :url="avatar || ''"/>
         </div>
@@ -17,9 +27,8 @@
         </div>
       </div>
       <div class="list-item-action flex items-center">
-        <q-btn round flat icon="refresh" color="primary"></q-btn>
+        <q-btn round flat :icon="icon" color="primary"></q-btn>
       </div>
-      <div :class="[item.status]" class="list-item-status synchronized"></div>
     </div>
 </template>
 
@@ -43,13 +52,8 @@ export default {
   data () {
     return {
       checked: false,
-      gradients: [
-        'to top, #fdcbf1 0%, #fdcbf1 1%, #e6dee9 100%',
-        '120deg, #84fab0 0%, #8fd3f4 100%',
-        '135deg, #667eea 0%, #764ba2 100%',
-        'to right, #4facfe 0%, #00f2fe 100%',
-        'to right, #74ebd5 0%, #9face6 100%'
-      ]
+      progressColor: 'transparent',
+      isLoading: false
     };
   },
   computed: {
@@ -59,9 +63,12 @@ export default {
     avatar () {
       return this.item.avatar_url || this.item.artwork_url;
     },
-    randomGradient () {
-      const randomNumber = Math.floor(Math.random() * (4 + 1));
-      return `background-image: linear-gradient(${this.gradients[randomNumber]})`;
+    statusColor () {
+      if (this.item.status === 'error') return 'rgba(255,113,130,0.3)';
+      return !this.item.synchronized ? 'transparent' : 'rgba(60,186,146,0.3)';
+    },
+    icon () {
+      return !this.item.synchronized ? 'fas fa-angle-right' : 'refresh';
     }
   },
   methods: {
@@ -120,11 +127,12 @@ export default {
   }
   .list-item-status {
     transition: 0.3s;
-    width: 100%;
-    height: 4px;
+    width: 70px;
+    border-radius: 35px;
+    height: 100%;
     position: absolute;
     left: 0;
-    bottom: -2px;
+    top: 0;
     &.waiting {
       // opacity: 0.5;
       background-image: linear-gradient(to bottom, #e6e9f0 0%, #eef1f5 100%);

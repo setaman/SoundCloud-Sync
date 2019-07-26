@@ -10,7 +10,7 @@
     >
       <splash-loading v-if="isLoading"/>
       <lists-group v-else>
-        <list slot="list-one" :items="itemsOne" @filtersChange="onFiltersChangeOne"></list>
+        <list slot="list-one" @increasePage="loadNewPage" :items="itemsOne" @filtersChange="onFiltersChangeOne"></list>
         <list-sync-controls :progress="syncPercent" slot="list-sync-controls"></list-sync-controls>
         <list slot="list-two" :items="itemsTwo" @filtersChange="onFiltersChangeTwo"></list>
       </lists-group>
@@ -34,10 +34,10 @@ export default {
     [SOCKET_USER_LIKES] ({ userId, likes }) {
       console.log('LOADED LIkES', userId, likes);
       if (userId === this.userOne.userId) {
-        this.itemsOne = likes;
+        this.itemsOne.push(...likes);
         this.isLoadingOne = false;
       } else {
-        this.itemsTwo = likes;
+        this.itemsTwo.push(...likes);
         this.isLoadingTwo = false;
       }
     },
@@ -59,7 +59,8 @@ export default {
     itemsTwo: [],
     isLoadingOne: true,
     isLoadingTwo: true,
-    syncPercent: 0
+    syncPercent: 0,
+    page: 1
   }),
   computed: {
     userOne () {
@@ -78,13 +79,15 @@ export default {
         userId: this.userOne.userId,
         title: '',
         status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR],
-        sort: ''
+        sort: '',
+        page: this.page
       });
       this.$socket.emit(SOCKET_GET_USER_LIKES, {
         userId: this.userTwo.userId,
         title: '',
         status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR],
-        sort: ''
+        sort: '',
+        page: this.page
       });
     },
     getSyncPercent () {
@@ -92,15 +95,21 @@ export default {
     },
     onFiltersChangeOne (filters) {
       console.log('RELOAD ON CHANGE');
+      this.page = 1;
+      this.itemsOne = [];
       this.$socket.emit(SOCKET_GET_USER_LIKES, {
         userId: this.userOne.userId,
-        ...filters
+        ...filters,
+        page: this.page
       });
     },
     onFiltersChangeTwo (filters) {
+      this.page = 1;
+      this.itemsTwo = [];
       this.$socket.emit(SOCKET_GET_USER_LIKES, {
         userId: this.userTwo.userId,
-        ...filters
+        ...filters,
+        page: this.page
       });
     },
     onChecked (itemId) {
@@ -109,6 +118,10 @@ export default {
     onUnchecked (itemId) {
       const index = this.checkedItems.findIndex(item => item.id === itemId);
       this.checkedItems.splice(index, 1);
+    },
+    loadNewPage () {
+      /* this.page++;
+      this.getUsersLikes(); */
     }
   },
   mounted () {

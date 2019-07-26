@@ -7,7 +7,7 @@
     <divider></divider>
   </div>
   <q-infinite-scroll @load="onLoad" :offset="200">
-      <list-item v-for="item in visibleItems" :key="item.id" :item="item" :checked-items="checkedItems" @checked="onChecked" @unchecked="onUnchecked"/>
+      <list-item v-for="item in items" :key="item.id" :item="item" :checked-items="checkedItems" @checked="onChecked" @unchecked="onUnchecked"/>
     <template v-slot:loading>
       <div class="row justify-center q-my-md">
         <q-spinner-audio
@@ -48,7 +48,6 @@ export default {
   watch: {
     filters: {
       handler () {
-        console.log('FIILTER CHANGES');
         this.emitFilterChanges();
       },
       deep: true
@@ -61,9 +60,6 @@ export default {
   computed: {
     selectedItems () {
       return this.checkedItems.length > 0 ? this.checkedItems : this.items;
-    },
-    visibleItems () {
-      return this.items.slice(0, this.offset);
     }
   },
   methods: {
@@ -74,6 +70,8 @@ export default {
       this.$emit('filtersChange', this.filters);
     },
     onLoad (index, done) {
+      this.$emit('increasePage');
+      console.log('LOAD');
       if (this.offset < this.items.length) {
         this.offset = this.offset * 2;
         console.log('LOAD', this.offset);

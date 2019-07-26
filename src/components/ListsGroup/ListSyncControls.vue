@@ -1,51 +1,61 @@
 <template>
-  <div class="list-group-sync-controls text-center">
-    <div class="text-center">
+  <div class="list-group-sync-controls-container relative-position text-center" :class="{expanded: isOverviewExpanded}">
+    <!--<div class="text-center">
       <h5>
         Sync your Likes
       </h5>
+    </div>-->
+    <div class="row list-group-sync-controls">
+      <div class="col">
+        <q-btn round flat size="ms" color="primary" icon="fas fa-stream"/>
+      </div>
+      <div class="col">
+        <q-btn round flat size="ms" color="primary" icon="fas fa-stream fa-flip-horizontal"/>
+      </div>
     </div>
+    <sync-progress :progress="progress">
+      <q-btn round flat size="lg" color="primary" icon="fas fa-sync-alt"/>
+    </sync-progress>
     <div class="row">
       <div class="col">
-        <q-btn round flat size="ms" color="primary" icon="sync" slot="legend-capture"/>
+        <q-btn round flat size="ms" color="primary" icon="fas fa-angle-double-right"/>
       </div>
       <div class="col">
-        <q-btn round flat size="ms" color="primary" icon="sync" slot="legend-capture"/>
-      </div>
-    </div>
-    <vue-ellipse-progress :progress="progress" font-size="2rem" :animation="{type: 'rs', delay: 1000, duration: 700}">
-      <span slot="legend-value">%</span>
-      <q-btn round flat size="lg" color="primary" icon="sync" slot="legend-capture"/>
-    </vue-ellipse-progress>
-    <div class="row">
-      <div class="col">
-        <q-btn round flat size="ms" color="primary" icon="sync" slot="legend-capture"/>
-      </div>
-      <div class="col">
-        <q-btn round flat size="md" color="primary" icon="sync" slot="legend-capture"/>
+        <q-btn round flat size="ms" color="primary" icon="fas fa-angle-double-left"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import SyncProgress from 'components/Base/SyncProgress';
 export default {
   name: 'ListSyncControls',
+  components: { SyncProgress },
   props: {
     progress: {
       type: Number,
       required: true
+    }
+  },
+  computed: {
+    isOverviewExpanded () {
+      return this.$store.state.overview.expanded;
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
-  .list-group-sync-controls {
-    //position: fixed;
+  .list-group-sync-controls-container {
+    position: fixed;
+    width: 300px;
     //left: calc(50vw - 105px);
-    &.fixed {
-      position: fixed;
+    // position: relative;
+    top: 30vh;
+    transition: 0.5s;
+    &.expanded {
+      top: 50vh;
     }
   }
 </style>

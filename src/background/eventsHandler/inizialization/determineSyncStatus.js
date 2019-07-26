@@ -32,15 +32,23 @@ const calculateOverallSyncPercent = (userOne, userTwo, notSynchronizedLikes, not
 };
 
 const determineItemsStatus = (itemsOne = [], itemsTwo = []) => {
-  const updatedItemsOne = itemsOne.map(item => ({
-    ...item,
-    synchronized: itemsTwo.filter(i => i.id === item.id).length > 0
-  }));
+  const updatedItemsOne = itemsOne.map(item => {
+    const synchronized = itemsTwo.filter(i => i.id === item.id).length > 0;
+    return {
+      ...item,
+      synchronized,
+      status: synchronized ? 'synchronized' : 'waiting'
+    };
+  });
 
-  const updatedItemsTwo = itemsTwo.map(item => ({
-    ...item,
-    synchronized: itemsOne.filter(i => i.id === item.id).length > 0
-  }));
+  const updatedItemsTwo = itemsTwo.map(item => {
+    const synchronized = itemsOne.filter(i => i.id === item.id).length > 0;
+    return {
+      ...item,
+      synchronized,
+      status: synchronized ? 'synchronized' : 'waiting'
+    };
+  });
 
   const { itemsSyncPercent, notSynchronizedCount } = calculateItemsSyncPercent(updatedItemsOne, updatedItemsTwo);
 
