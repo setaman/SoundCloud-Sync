@@ -1,11 +1,11 @@
 <template>
-  <div class="list-group-sync-controls text-center">
+  <div class="list-group-sync-controls-container relative-position text-center" :class="{expanded: isOverviewExpanded}">
     <!--<div class="text-center">
       <h5>
         Sync your Likes
       </h5>
     </div>-->
-    <div class="row">
+    <div class="row list-group-sync-controls">
       <div class="col">
         <q-btn round flat size="ms" color="primary" icon="fas fa-stream"/>
       </div>
@@ -37,18 +37,25 @@ export default {
       type: Number,
       required: true
     }
+  },
+  computed: {
+    isOverviewExpanded () {
+      return this.$store.state.overview.expanded;
+    }
   }
 };
 </script>
 
 <style scoped lang="scss">
-  .list-group-sync-controls {
-    //position: fixed;
+  .list-group-sync-controls-container {
+    position: fixed;
+    width: 300px;
     //left: calc(50vw - 105px);
-    position: relative;
+    // position: relative;
     top: 30vh;
-    &.fixed {
-      position: fixed;
+    transition: 0.5s;
+    &.expanded {
+      top: 50vh;
     }
   }
 </style>

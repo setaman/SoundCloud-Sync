@@ -44,12 +44,12 @@ export default {
   .lists-group-head {
     transition: 1s;
     display: grid;
-    grid-template-columns: minmax(280px, 1fr) minmax(260px, 300px) minmax(280px, 1fr);
+    grid-template-columns: minmax(280px, 1fr) 300px minmax(280px, 1fr);
     grid-column-gap: 16px;
   }
   .lists-group-content {
     display: grid;
-    grid-template-columns: minmax(280px, 1fr) minmax(260px, 300px) minmax(280px, 1fr);
+    grid-template-columns: minmax(280px, 1fr)300px minmax(280px, 1fr);
     grid-column-gap: 16px;
   }
 </style>

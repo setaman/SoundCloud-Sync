@@ -120,8 +120,8 @@ export default {
       this.checkedItems.splice(index, 1);
     },
     loadNewPage () {
-      this.page++;
-      this.getUsersLikes();
+      /* this.page++;
+      this.getUsersLikes(); */
     }
   },
   mounted () {
