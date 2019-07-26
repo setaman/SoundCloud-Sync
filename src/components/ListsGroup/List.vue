@@ -4,7 +4,18 @@
   <div class="q-pt-md q-pb-sm">
     <!--{{checkedItems}}
     {{filters}}-->
-    <divider></divider>
+    <div class="relative-position">
+      <divider></divider>
+      <transition
+        apper
+        enter-active-class="animated fadeIn"
+        leave-active-class="animated fadeOut"
+      >
+        <div style="height: 2px; top: 0;" v-if="isLoading" class="absolute full-width">
+          <horizontal-progress :stroke="2" class="absolute"/>
+        </div>
+      </transition>
+    </div>
   </div>
   <q-infinite-scroll @load="onLoad" :offset="200">
       <list-item v-for="item in items" :key="item.id" :item="item" :checked-items="checkedItems" @checked="onChecked" @unchecked="onUnchecked"/>
@@ -26,10 +37,11 @@ import ListItem from 'components/ListsGroup/ListItem';
 import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR } from 'src/utils/const';
 import Divider from 'components/Base/Divider';
 import ListItemsTransition from 'components/Transitions/ListItemsTransition';
+import HorizontalProgress from 'components/Base/HorizontalProgress';
 
 export default {
   name: 'List',
-  components: { ListItemsTransition, Divider, ListItem, ListControls },
+  components: { HorizontalProgress, ListItemsTransition, Divider, ListItem, ListControls },
   props: {
     items: {
       type: Array,
@@ -38,6 +50,11 @@ export default {
     maxItems: {
       type: [Number, String],
       required: true
+    },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data: () => ({

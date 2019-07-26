@@ -11,6 +11,7 @@
             :legend="false"
             :size="70"
             :color="statusColor"
+            :thickness="2"
             emptyColor="transparent"
             :loading="false"/>
         </div>

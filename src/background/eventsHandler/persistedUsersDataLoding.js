@@ -27,7 +27,6 @@ const formulateSort = sortOption => {
   }
 };
 
-// eslint-disable-next-line no-return-await
 const countItems = filter => datastore.count(filter);
 
 const getUserLikes = async (io, { userId, title, status, sort, page = 1 }) => {
@@ -47,7 +46,7 @@ const getUserLikes = async (io, { userId, title, status, sort, page = 1 }) => {
 
   console.log('FILTERS:', filter, formulateSort(sort), page);
 
-  const pageSize = 20;
+  const pageSize = 30;
 
   try {
     const likes = await datastore.find(filter).sort(formulateSort(sort)).skip(pageSize * (page - 1)).limit(pageSize).exec();

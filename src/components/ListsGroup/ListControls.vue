@@ -16,7 +16,7 @@
           <q-select dense outlined v-model="filters.sort" :options="sortOptions" />
         </div>
         <div class="col-8">
-          <q-input dense outlined v-model="filters.title">
+          <q-input placeholder="Filter by track title" dense outlined v-model="filters.title">
           </q-input>
         </div>
       </div>

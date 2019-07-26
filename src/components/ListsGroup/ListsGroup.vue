@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import Divider from '../Base/Divider';
-import ScrollMixin from '../scrollObserverMixin';
+import Divider from 'components/Base/Divider';
+import ScrollMixin from 'components/scrollObserverMixin';
 
 export default {
   name: 'ListsGroup',
@@ -48,6 +48,7 @@ export default {
     grid-column-gap: 16px;
   }
   .lists-group-content {
+    min-height: calc(100vh - 100px);
     display: grid;
     grid-template-columns: minmax(280px, 1fr)300px minmax(280px, 1fr);
     grid-column-gap: 16px;

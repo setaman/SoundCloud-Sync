@@ -5,17 +5,18 @@
     </q-btn>-->
     <transition
       appear
+      mode="out-in"
       enter-active-class="animated fadeIn"
       leave-active-class="animated fadeOut"
     >
-      <splash-loading v-if="isLoading"/>
+      <splash-loading v-if="!isInitialized"/>
       <lists-group v-else>
-        <list slot="list-one" @increasePage="loadNewPage" :items="itemsOne" :maxItems="itemsCountOne" @filtersChange="onFiltersChangeOne"></list>
+        <list slot="list-one" :isLoading="isLoadingOne" @increasePage="loadNewPage" :items="itemsOne" :maxItems="itemsCountOne" @filtersChange="onFiltersChangeOne"></list>
         <template slot="list-sync-controls">
           <list-sync-controls :progress="syncPercent"></list-sync-controls>
           <list-pagination/>
         </template>
-        <list slot="list-two" :items="itemsTwo" :maxItems="itemsCountOne" @filtersChange="onFiltersChangeTwo"></list>
+        <list slot="list-two" :isLoading="isLoadingTwo" :items="itemsTwo" :maxItems="itemsCountOne" @filtersChange="onFiltersChangeTwo"></list>
       </lists-group>
     </transition>
   </q-page>
@@ -25,18 +26,31 @@ import ListsGroup from 'components/ListsGroup/ListsGroup';
 import List from 'components/ListsGroup/List';
 import ListSyncControls from 'components/ListsGroup/ListSyncControls';
 import { SOCKET_GET_USER_LIKES, SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR, SOCKET_SYNC_STATUS_GET,
-  SOCKET_SYNC_STATUS_DATA } from 'src/utils/socketEvents.js';
+  SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL } from 'src/utils/socketEvents.js';
 import SplashLoading from 'components/Base/SplashLoading';
-import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR } from 'src/utils/const';
-import { SOCKET_INITIALIZATION_FAIL } from 'src/utils/socketEvents';
+import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
 import ListPagination from 'components/ListsGroup/ListPagination';
 
 export default {
   name: 'Likes',
   components: { ListPagination, SplashLoading, ListSyncControls, List, ListsGroup },
+  data: () => ({
+    itemsCountOne: 0,
+    itemsCountTwo: 0,
+    itemsOne: [],
+    itemsTwo: [],
+    isLoadingOne: true,
+    isLoadingTwo: true,
+    isInitialized: false,
+    syncPercent: 0,
+    page: 1
+  }),
   sockets: {
     [SOCKET_USER_LIKES] ({ userId, items, from }) {
       console.log('LOADED LIkES', userId, items, from);
+      this.isInitialized = true;
+      /* setTimeout(() => {
+      }, 1000); */
       if (userId === this.userOne.userId) {
         this.itemsOne = items;
         this.itemsCountOne = from;
@@ -54,22 +68,11 @@ export default {
       console.log('SYNC PERCENT', likesSyncPercent);
       this.syncPercent = likesSyncPercent || 0;
     },
-    [SOCKET_INITIALIZATION_FAIL] (e) {
+    [SOCKET_SYNC_STATUS_FAIL] (e) {
       console.log('SYNC ERROR', e);
       this.syncPercent = 0;
     }
   },
-
-  data: () => ({
-    itemsCountOne: 0,
-    itemsCountTwo: 0,
-    itemsOne: [],
-    itemsTwo: [],
-    isLoadingOne: true,
-    isLoadingTwo: true,
-    syncPercent: 0,
-    page: 1
-  }),
   computed: {
     userOne () {
       return this.$store.state.users.userOne;
@@ -83,17 +86,20 @@ export default {
   },
   methods: {
     getUsersLikes () {
+      this.isLoadingOne = true;
+      this.isLoadingTwo = true;
+
       this.$socket.emit(SOCKET_GET_USER_LIKES, {
         userId: this.userOne.userId,
         title: '',
-        status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR],
+        status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
         sort: '',
         page: this.page
       });
       this.$socket.emit(SOCKET_GET_USER_LIKES, {
         userId: this.userTwo.userId,
         title: '',
-        status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR],
+        status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
         sort: '',
         page: this.page
       });
@@ -102,7 +108,7 @@ export default {
       this.$socket.emit(SOCKET_SYNC_STATUS_GET);
     },
     onFiltersChangeOne (filters) {
-      console.log('RELOAD ON CHANGE');
+      this.isLoadingOne = true;
       this.page = 1;
       this.$socket.emit(SOCKET_GET_USER_LIKES, {
         userId: this.userOne.userId,
@@ -111,6 +117,7 @@ export default {
       });
     },
     onFiltersChangeTwo (filters) {
+      this.isLoadingTwo = true;
       this.page = 1;
       this.$socket.emit(SOCKET_GET_USER_LIKES, {
         userId: this.userTwo.userId,
