@@ -1,6 +1,6 @@
 <template>
 <div>
-  <list-controls :filters.sync="filters" :selected="selectedItems.length" :max="items.length" @all-checked="onAllChecked"/>
+  <list-controls :filters.sync="filters" :selected="checkedItems.length || maxItems" :max="maxItems" @all-checked="onAllChecked"/>
   <div class="q-pt-md q-pb-sm">
     <!--{{checkedItems}}
     {{filters}}-->
@@ -21,11 +21,11 @@
 </template>
 
 <script>
-import ListControls from './ListControls';
-import ListItem from './ListItem';
-import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR } from '../../utils/const';
-import Divider from '../Base/Divider';
-import ListItemsTransition from '../Transitions/ListItemsTransition';
+import ListControls from 'components/ListsGroup/ListControls';
+import ListItem from 'components/ListsGroup/ListItem';
+import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR } from 'src/utils/const';
+import Divider from 'components/Base/Divider';
+import ListItemsTransition from 'components/Transitions/ListItemsTransition';
 
 export default {
   name: 'List',
@@ -33,6 +33,10 @@ export default {
   props: {
     items: {
       type: Array,
+      required: true
+    },
+    maxItems: {
+      type: [Number, String],
       required: true
     }
   },

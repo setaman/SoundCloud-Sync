@@ -27,6 +27,9 @@ const formulateSort = sortOption => {
   }
 };
 
+// eslint-disable-next-line no-return-await
+const countItems = filter => datastore.count(filter);
+
 const getUserLikes = async (io, { userId, title, status, sort, page = 1 }) => {
   const filter = {
     type: 'likes',
@@ -44,13 +47,15 @@ const getUserLikes = async (io, { userId, title, status, sort, page = 1 }) => {
 
   console.log('FILTERS:', filter, formulateSort(sort), page);
 
-  const pagesize = 20;
+  const pageSize = 20;
 
   try {
-    const likes = await datastore.find(filter).sort(formulateSort(sort)).skip(pagesize * (page - 1)).limit(pagesize).exec();
+    const likes = await datastore.find(filter).sort(formulateSort(sort)).skip(pageSize * (page - 1)).limit(pageSize).exec();
     io.emit(SOCKET_USER_LIKES, {
       userId,
-      likes
+      items: likes,
+      page,
+      from: await countItems(filter)
     });
   } catch (e) {
     console.error(e);
