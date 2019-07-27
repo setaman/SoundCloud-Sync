@@ -1,10 +1,21 @@
 <template>
-<div>
-  <list-controls :filters.sync="filters" :selected="selectedItems.length" :max="items.length" @all-checked="onAllChecked"/>
+<div class="list">
+  <list-controls :filters.sync="filters" :selected="checkedItems.length || maxItems" :max="maxItems" @all-checked="onAllChecked"/>
   <div class="q-pt-md q-pb-sm">
     <!--{{checkedItems}}
     {{filters}}-->
-    <divider></divider>
+    <div class="relative-position">
+      <divider></divider>
+      <transition
+        apper
+        enter-active-class="animated fadeIn"
+        leave-active-class="animated fadeOut"
+      >
+        <div style="height: 2px; top: 0;" v-if="isLoading" class="absolute full-width">
+          <horizontal-progress :stroke="2" class="absolute"/>
+        </div>
+      </transition>
+    </div>
   </div>
   <q-infinite-scroll @load="onLoad" :offset="200">
       <list-item v-for="item in items" :key="item.id" :item="item" :checked-items="checkedItems" @checked="onChecked" @unchecked="onUnchecked"/>
@@ -17,29 +28,42 @@
       </div>
     </template>
   </q-infinite-scroll>
+  <slot>
+
+  </slot>
 </div>
 </template>
 
 <script>
-import ListControls from './ListControls';
-import ListItem from './ListItem';
-import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR } from '../../utils/const';
-import Divider from '../Base/Divider';
-import ListItemsTransition from '../Transitions/ListItemsTransition';
+import ListControls from 'components/ListsGroup/ListControls';
+import ListItem from 'components/ListsGroup/ListItem';
+import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
+import Divider from 'components/Base/Divider';
+import ListItemsTransition from 'components/Transitions/ListItemsTransition';
+import HorizontalProgress from 'components/Base/HorizontalProgress';
 
 export default {
   name: 'List',
-  components: { ListItemsTransition, Divider, ListItem, ListControls },
+  components: { HorizontalProgress, ListItemsTransition, Divider, ListItem, ListControls },
   props: {
     items: {
       type: Array,
       required: true
+    },
+    maxItems: {
+      type: [Number, String],
+      required: true
+    },
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data: () => ({
     filters: {
       title: '',
-      status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR],
+      status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
       sort: 'Oldest'
     },
     offset: 30,
@@ -94,6 +118,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  .list {
+    min-height: calc(100vh - 100px);
+  }
 
 </style>

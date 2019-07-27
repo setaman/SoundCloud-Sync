@@ -1,5 +1,5 @@
 const { SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_SUCCESS, SOCKET_INITIALIZATION_DATA_LOADED,
-  SOCKET_SYNC_STATUS_START, SOCKET_SYNC_STATUS_SUCCESS, SOCKET_SYNC_STATUS_FAIL } = require('../../socketEvents');
+  SOCKET_SYNC_STATUS_START, SOCKET_SYNC_STATUS_SUCCESS, SOCKET_SYNC_STATUS_FAIL } = require('../../const/socketEvents');
 const { loadUserData } = require('../../userDataLoader');
 const { datastore, clear } = require('../../db');
 const determineSyncStatus = require('./determineSyncStatus');

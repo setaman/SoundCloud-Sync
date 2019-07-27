@@ -49,6 +49,7 @@ module.exports = function (ctx) {
         'QItemSection',
         'QItemLabel',
         'QInfiniteScroll',
+        'QPagination',
         'QCard',
         'QCardSection',
         'QCardActions',

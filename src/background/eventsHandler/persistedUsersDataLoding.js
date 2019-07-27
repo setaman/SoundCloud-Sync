@@ -1,6 +1,6 @@
-const { SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR } = require('../socketEvents');
+const { SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR } = require('../const/socketEvents');
 const { datastore } = require('../db');
-const { LIST_SORT_OPTION_ALPHABETIC, LIST_SORT_OPTION_NEWEST, LIST_SORT_OPTION_OLDEST, LIST_SORT_OPTION_STATUS } = require('../const');
+const { LIST_SORT_OPTION_ALPHABETIC, LIST_SORT_OPTION_NEWEST, LIST_SORT_OPTION_OLDEST, LIST_SORT_OPTION_STATUS } = require('../const/const');
 
 const formulateSort = sortOption => {
   switch (sortOption) {
@@ -27,6 +27,9 @@ const formulateSort = sortOption => {
   }
 };
 
+const countItems = filter => datastore.count(filter);
+const countItemsPages = (itemsCount, pageSize) => Math.ceil((itemsCount / pageSize));
+
 const getUserLikes = async (io, { userId, title, status, sort, page = 1 }) => {
   const filter = {
     type: 'likes',
@@ -44,13 +47,17 @@ const getUserLikes = async (io, { userId, title, status, sort, page = 1 }) => {
 
   console.log('FILTERS:', filter, formulateSort(sort), page);
 
-  const pagesize = 20;
+  const pageSize = 30;
 
   try {
-    const likes = await datastore.find(filter).sort(formulateSort(sort)).skip(pagesize * (page - 1)).limit(pagesize).exec();
+    const likes = await datastore.find(filter).sort(formulateSort(sort)).skip(pageSize * (page - 1)).limit(pageSize).exec();
+    const itemsCount = await countItems(filter);
     io.emit(SOCKET_USER_LIKES, {
       userId,
-      likes
+      items: likes,
+      from: itemsCount,
+      page,
+      pages: itemsCount > pageSize ? countItemsPages(itemsCount, pageSize) : 1
     });
   } catch (e) {
     console.error(e);

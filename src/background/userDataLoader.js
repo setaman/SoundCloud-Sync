@@ -1,5 +1,5 @@
 const { getUserById, getUserFollowings, getUserTracks, addUserFollowing } = require('./soundcloudApi');
-const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, STATUS_WAITING } = require('./const');
+const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, STATUS_WAITING } = require('./const/const');
 
 const loadUserData = async (userId, clientId, token) => {
   const { username, avatar_url, permalink_url, userError } = await getUser(userId, clientId);
