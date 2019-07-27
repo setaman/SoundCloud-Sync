@@ -1,5 +1,5 @@
 const { datastore } = require('../db');
-const { SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL } = require('../socketEvents');
+const { SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL } = require('../const/socketEvents');
 
 const getSyncStatus = async io => {
   try {

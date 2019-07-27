@@ -3,16 +3,19 @@
     <div class="lists-group-content">
       <div>
         <slot name="list-one"></slot>
+        <div class="q-py-lg">
+          <divider></divider>
+        </div>
       </div>
       <div class="relative-position">
         <slot name="list-sync-controls"></slot>
       </div>
       <div>
         <slot name="list-two"></slot>
+        <div class="q-py-lg">
+          <divider></divider>
+        </div>
       </div>
-    </div>
-    <div class="q-py-lg">
-      <divider></divider>
     </div>
   </section>
 </template>
@@ -37,20 +40,11 @@ export default {
 <style scoped lang="scss">
   .list-group-section {
   }
-  .lists-group-head-container {
-    height: 118px;
-    position: relative;
-  }
-  .lists-group-head {
-    transition: 1s;
-    display: grid;
-    grid-template-columns: minmax(280px, 1fr) 300px minmax(280px, 1fr);
-    grid-column-gap: 16px;
-  }
   .lists-group-content {
     min-height: calc(100vh - 100px);
     display: grid;
     grid-template-columns: minmax(280px, 1fr)300px minmax(280px, 1fr);
+    grid-template-rows: minmax(calc(100vh - 100px), 1fr);
     grid-column-gap: 16px;
   }
 </style>

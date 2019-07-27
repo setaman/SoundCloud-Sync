@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="list">
   <list-controls :filters.sync="filters" :selected="checkedItems.length || maxItems" :max="maxItems" @all-checked="onAllChecked"/>
   <div class="q-pt-md q-pb-sm">
     <!--{{checkedItems}}
@@ -28,13 +28,16 @@
       </div>
     </template>
   </q-infinite-scroll>
+  <slot>
+
+  </slot>
 </div>
 </template>
 
 <script>
 import ListControls from 'components/ListsGroup/ListControls';
 import ListItem from 'components/ListsGroup/ListItem';
-import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR } from 'src/utils/const';
+import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
 import Divider from 'components/Base/Divider';
 import ListItemsTransition from 'components/Transitions/ListItemsTransition';
 import HorizontalProgress from 'components/Base/HorizontalProgress';
@@ -60,7 +63,7 @@ export default {
   data: () => ({
     filters: {
       title: '',
-      status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_EXIST, STATUS_ERROR],
+      status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
       sort: 'Oldest'
     },
     offset: 30,
@@ -115,6 +118,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  .list {
+    min-height: calc(100vh - 100px);
+  }
 
 </style>

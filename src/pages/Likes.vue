@@ -11,12 +11,38 @@
     >
       <splash-loading v-if="!isInitialized"/>
       <lists-group v-else>
-        <list slot="list-one" :isLoading="isLoadingOne" @increasePage="loadNewPage" :items="itemsOne" :maxItems="itemsCountOne" @filtersChange="onFiltersChangeOne"></list>
-        <template slot="list-sync-controls">
+        <list slot="list-one" :isLoading="isLoadingOne" :items="itemsOne" :maxItems="itemsCountOne" @filtersChange="onFiltersChangeOne">
+          <div>
+            <transition
+              appear
+              mode="out-in"
+              enter-active-class="animated fadeIn"
+              leave-active-class="animated fadeOut"
+            >
+              <list-pagination v-if="pagesOne > 1" :current="pageOne" :max="pagesOne" @pageChange="changePageOne"/>
+            </transition>
+          </div>
+        </list>
+        <div slot="list-sync-controls">
           <list-sync-controls :progress="syncPercent"></list-sync-controls>
-          <list-pagination/>
-        </template>
-        <list slot="list-two" :isLoading="isLoadingTwo" :items="itemsTwo" :maxItems="itemsCountOne" @filtersChange="onFiltersChangeTwo"></list>
+          {{ pageOne}}<br>
+          {{ pageTwo}}
+          <q-btn @click="pageOne = pagesTwo = 2">
+            reset page
+          </q-btn>
+        </div>
+        <list slot="list-two" :isLoading="isLoadingTwo" :items="itemsTwo" :maxItems="itemsCountTwo" @filtersChange="onFiltersChangeTwo">
+          <div>
+            <transition
+              appear
+              mode="out-in"
+              enter-active-class="animated fadeIn"
+              leave-active-class="animated fadeOut"
+            >
+              <list-pagination v-if="pagesTwo > 1" :current="pageTwo" :max="pagesTwo" @pageChange="changePageTwo"/>
+            </transition>
+          </div>
+        </list>
       </lists-group>
     </transition>
   </q-page>
@@ -35,6 +61,16 @@ export default {
   name: 'Likes',
   components: { ListPagination, SplashLoading, ListSyncControls, List, ListsGroup },
   data: () => ({
+    filtersTwo: {
+      title: '',
+      status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
+      sort: ''
+    },
+    filtersOne: {
+      title: '',
+      status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
+      sort: 'Oldest'
+    },
     itemsCountOne: 0,
     itemsCountTwo: 0,
     itemsOne: [],
@@ -43,11 +79,14 @@ export default {
     isLoadingTwo: true,
     isInitialized: false,
     syncPercent: 0,
-    page: 1
+    pageOne: 1,
+    pageTwo: 1,
+    pagesOne: 1,
+    pagesTwo: 1
   }),
   sockets: {
-    [SOCKET_USER_LIKES] ({ userId, items, from }) {
-      console.log('LOADED LIkES', userId, items, from);
+    [SOCKET_USER_LIKES] ({ userId, items, from, page, pages }) {
+      console.log('LOADED LIkES', userId, items, from, page, pages);
       this.isInitialized = true;
       /* setTimeout(() => {
       }, 1000); */
@@ -55,10 +94,12 @@ export default {
         this.itemsOne = items;
         this.itemsCountOne = from;
         this.isLoadingOne = false;
+        this.pagesOne = pages;
       } else {
         this.itemsTwo = items;
         this.itemsCountTwo = from;
         this.isLoadingTwo = false;
+        this.pagesTwo = pages;
       }
     },
     [SOCKET_USER_LIKES_ERROR] (e) {
@@ -86,22 +127,23 @@ export default {
   },
   methods: {
     getUsersLikes () {
+      this.getUserOneLikes();
+      this.getUserTwoLikes();
+    },
+    getUserOneLikes () {
       this.isLoadingOne = true;
-      this.isLoadingTwo = true;
-
       this.$socket.emit(SOCKET_GET_USER_LIKES, {
         userId: this.userOne.userId,
-        title: '',
-        status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-        sort: '',
-        page: this.page
+        ...this.filtersOne,
+        page: this.pageOne
       });
+    },
+    getUserTwoLikes () {
+      this.isLoadingTwo = true;
       this.$socket.emit(SOCKET_GET_USER_LIKES, {
         userId: this.userTwo.userId,
-        title: '',
-        status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-        sort: '',
-        page: this.page
+        ...this.filtersTwo,
+        page: this.pageTwo
       });
     },
     getSyncPercent () {
@@ -109,21 +151,15 @@ export default {
     },
     onFiltersChangeOne (filters) {
       this.isLoadingOne = true;
-      this.page = 1;
-      this.$socket.emit(SOCKET_GET_USER_LIKES, {
-        userId: this.userOne.userId,
-        ...filters,
-        page: this.page
-      });
+      this.pageOne = 1;
+      this.filtersOne = filters;
+      this.getUserOneLikes();
     },
     onFiltersChangeTwo (filters) {
       this.isLoadingTwo = true;
-      this.page = 1;
-      this.$socket.emit(SOCKET_GET_USER_LIKES, {
-        userId: this.userTwo.userId,
-        ...filters,
-        page: this.page
-      });
+      this.pageTwo = 1;
+      this.filtersTwo = filters;
+      this.getUserTwoLikes();
     },
     onChecked (itemId) {
       this.checkedItems.push(itemId);
@@ -132,9 +168,13 @@ export default {
       const index = this.checkedItems.findIndex(item => item.id === itemId);
       this.checkedItems.splice(index, 1);
     },
-    loadNewPage () {
-      /* this.page++;
-      this.getUsersLikes(); */
+    changePageOne (newPage) {
+      this.pageOne = newPage;
+      this.getUserOneLikes();
+    },
+    changePageTwo (newPage) {
+      this.pageTwo = newPage;
+      this.getUserTwoLikes();
     }
   },
   mounted () {

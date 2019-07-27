@@ -4,7 +4,7 @@ const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
 
 const { SOCKET_INITIALIZATION_START, SOCKET_GET_USER_LIKES,
-  SOCKET_SYNC_STATUS_GET } = require('./socketEvents');
+  SOCKET_SYNC_STATUS_GET } = require('./const/socketEvents');
 
 // Event handler
 const { getUserLikes } = require('./eventsHandler/persistedUsersDataLoding');
