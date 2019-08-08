@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="list-item-action flex items-center">
-        <q-btn round flat :icon="icon" color="primary"></q-btn>
+        <q-btn round flat :icon="icon" :color="item.synchronized ? 'green' : 'primary'"></q-btn>
       </div>
     </div>
 </template>
