@@ -11,8 +11,10 @@ queue.on('active', () => {
 const addJob = async (io, job) => {
   console.log(job);
   try {
-    await queue.add(processJob(io, job));
-    io.emit(SOCKET_ADDED_JOB, job);
+    queue.add(() => {
+      io.emit(SOCKET_ADDED_JOB, { ...job, processed: 0, from: job.items.length });
+      processJob(io, job);
+    });
   } catch (e) {
     console.log(e);
     io.emit(SOCKET_ADD_JOB_FAILED, job);

@@ -1,5 +1,6 @@
 const { JOB_TYPE_ALL, JOB_TYPE_LIKES, JOB_TYPE_FOLLOWINGS } = require('../../const/const');
-const { SOCKET_SYNC_ITEM_SUCCESS, SOCKET_SYNC_ITEM_FAILED, SOCKET_COMPLETED_JOB } = require('../../const/socketEvents');
+const { SOCKET_SYNC_ITEM_SUCCESS, SOCKET_SYNC_ITEM_FAILED, SOCKET_COMPLETED_JOB,
+  SOCKET_START_JOB } = require('../../const/socketEvents');
 const { processAllJob } = require('./handleAllJob');
 const { processLike, processFollowing } = require('./processors');
 
@@ -23,6 +24,7 @@ const processJob = async (io, job) => {
   if (job.type === JOB_TYPE_ALL) {
     processAllJob(io, job);
   } else {
+    io.emit(SOCKET_START_JOB, { ...job, processed: 0, from: job.items.length });
     const chunkedJobItems = chunkJobItems(job);
 
     switch (job.type) {
@@ -43,7 +45,7 @@ const processJob = async (io, job) => {
           );
           await Promise.all(promises);
         }
-        io.emit(SOCKET_COMPLETED_JOB, job);
+        io.emit(SOCKET_COMPLETED_JOB, { ...job, processed: job.items.length, from: job.items.length });
         break;
       case JOB_TYPE_FOLLOWINGS:
         for (let chunk of chunkedJobItems) {

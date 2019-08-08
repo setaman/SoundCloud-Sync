@@ -1,7 +1,7 @@
 <template>
     <div class="h-progress" :style="{height: stroke + 'px'}">
       <div class="h-progress-empty" :style="{height: stroke + 'px'}"></div>
-      <div class="h-progress-full" :style="{height: stroke + 'px'}"></div>
+      <div class="h-progress-full" :style="{height: stroke + 'px', width: progress + '%'}"></div>
       <div class="h-progress-indicator" :style="{height: stroke + 'px'}"></div>
     </div>
 </template>
@@ -14,6 +14,11 @@ export default {
       type: Number,
       required: false,
       default: 4
+    },
+    progress: {
+      type: Number,
+      required: false,
+      default: 0
     }
   }
 };
@@ -31,6 +36,7 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
+    transition: 0.2s;
     background-image: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   }
   .h-progress-empty {
@@ -39,7 +45,7 @@ export default {
   }
 
   .h-progress-full {
-    width: 0%;
+    width: 0;
     opacity: 0.8;
   }
 

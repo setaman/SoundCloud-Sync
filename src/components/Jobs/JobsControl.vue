@@ -1,5 +1,5 @@
 <template>
-    <div class="jobs-control shadow-20">
+    <div class="jobs-control shadow-20" :class="{expanded: jobs.length > 0}">
       <div class="jobs-control-jobs-container" :class="{expanded: expanded}">
         <transition
           appear
@@ -19,19 +19,27 @@
           </div>
         </transition>
       </div>
-      <div class="jobs-control-container">
-        <div class="flex flex-center">
-          <p class="q-ma-none">
-            status
-          </p>
+      <transition
+        appear
+        enter-active-class="animated fadeIn"
+        leave-active-class="animated fadeOut"
+      >
+        <div class="jobs-control-container" v-if="jobs.length > 0">
+          <div class="flex flex-center">
+            <p class="q-ma-none">
+              status
+            </p>
+          </div>
+          <div class="flex flex-center">
+            <horizontal-progress :progress="progress"/>
+          </div>
+          <div class="flex flex-center">
+            <q-btn v-if="jobs.length > 0" :class="{expanded: expanded}" class="jobs-control-btn" round icon="expand_less"
+                   flat color="primary" @click="expanded = !expanded">
+            </q-btn>
+          </div>
         </div>
-        <div class="flex flex-center">
-          <horizontal-progress />
-        </div>
-        <div class="flex flex-center">
-          <q-btn :class="{expanded: expanded}" class="jobs-control-btn" round icon="expand_less" flat color="primary" @click="expanded = !expanded"></q-btn>
-        </div>
-      </div>
+      </transition>
     </div>
 </template>
 
@@ -39,13 +47,13 @@
 import HorizontalProgress from 'components/Base/HorizontalProgress';
 import Job from 'components/Jobs/Job';
 const { SOCKET_SYNC_ITEM_FAILED, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_ADDED_JOB, SOCKET_ADD_JOB_FAILED,
-  SOCKET_ADD_JOB, SOCKET_COMPLETED_JOB } = require('../../background/const/socketEvents.js');
+  SOCKET_ADD_JOB, SOCKET_COMPLETED_JOB, SOCKET_START_JOB } = require('../../background/const/socketEvents.js');
 export default {
   name: 'JobsControl',
   components: { Job, HorizontalProgress },
   data: () => ({
     jobs: [],
-    expanded: false
+    expanded: true
   }),
   sockets: {
     [SOCKET_ADD_JOB] (jobInfo) {
@@ -54,13 +62,39 @@ export default {
     },
     [SOCKET_ADDED_JOB] (jobInfo) {
       console.log('ADDED JOB', jobInfo);
-      this.jobs.push(jobInfo);
+      this.jobs.unshift(jobInfo);
+      console.log(this.jobs);
+    },
+    [SOCKET_START_JOB] (jobInfo) {
+      console.log('ADDED JOB', jobInfo);
+      const currentJobIndex = this.jobs.findIndex(job => job.id === jobInfo.id);
+      this.jobs[currentJobIndex] = jobInfo;
+      console.log(this.jobs);
     },
     [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo) {
       console.log('ITEM SYNC SUCCESS', jobInfo);
     },
     [SOCKET_COMPLETED_JOB] (jobInfo) {
       console.log('JOB COMPLETED', jobInfo);
+      const currentJobIndex = this.jobs.findIndex(job => job.id === jobInfo.id);
+      this.jobs[currentJobIndex] = jobInfo;
+      console.log(this.jobs);
+      setTimeout(() => {
+        this.jobs = this.jobs.filter(job => job.id !== jobInfo.id);
+        if (!this.jobs.length > 0) {
+          // this.expanded = false;
+        }
+      }, 10000);
+    }
+  },
+  computed: {
+    progress () {
+      const processed = this.jobs.map(job => job.processed || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
+      const from = this.jobs.map(job => job.from || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
+      if (from === 0) {
+        return 0;
+      }
+      return processed / from * 100;
     }
   }
 };
@@ -79,23 +113,32 @@ export default {
 .jobs-control {
   color: white;
   position: fixed;
+  bottom: -60px;
   min-height: 60px;
-  bottom: 0;
   right: 0;
+  transition: 0.5s;
   background-color: $c_bg;
   width: calc(100% - 80px);
   border-left: 2px solid rgba(255, 255, 255, 0.1);
+  &.expanded {
+    bottom: 0;
+  }
 }
 .jobs-control-container {
+  transition: 0.5s;
   display: grid;
   height: 60px;
   grid-template-columns: 60px 1fr 60px;
   grid-column-gap: 10px;
   border-top: 2px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  &.expanded {
+    height: 60px;
+  }
 }
 .jobs-control-jobs-container {
   transition: 0.5s;
-  max-height: 0px;
+  max-height: 0;
   overflow-y: auto;
   &.expanded {
     max-height: 240px;

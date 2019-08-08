@@ -2,11 +2,11 @@
   <div class="job">
     <div class="flex flex-center">
       <p class="q-ma-none">
-        status
+        {{job.id}}
       </p>
     </div>
     <div class="flex flex-center">
-      <horizontal-progress/>
+      <horizontal-progress :progress="progress"/>
     </div>
     <div class="flex flex-center">
       <q-btn round icon="close" flat color="red"></q-btn>
@@ -23,6 +23,16 @@ export default {
     job: {
       type: [Object, Number],
       required: true
+    }
+  },
+  computed: {
+    progress () {
+      const processed = this.job.processed || 0;
+      const from = this.job.from || 0;
+      if (from === 0) {
+        return 0;
+      }
+      return processed / from * 100;
     }
   }
 };
