@@ -5,16 +5,18 @@
       <user-statistics/>
       <router-view/>
     </q-page-container>
+    <jobs-control/>
   </q-layout>
 </template>
 
 <script>
 import Navigation from 'components/Navigation/Navigation';
 import UserStatistics from 'components/UsersOverview/UsersStatistics';
+import JobsControl from 'components/Jobs/JobsControl';
 
 export default {
   name: 'Home',
-  components: { UserStatistics, Navigation },
+  components: { JobsControl, UserStatistics, Navigation },
   data: () => ({}),
   methods: {}
 };

@@ -1,8 +1,5 @@
 <template>
   <q-page class="q-px-lg q-pt-xl q-px-xs-sm">
-    <!--<q-btn @click="getUsersLikes">
-      load likes
-    </q-btn>-->
     <transition
       appear
       mode="out-in"
