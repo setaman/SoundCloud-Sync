@@ -65,6 +65,18 @@ const getUserById = (userId, clientId) =>
     }
   });
 
+const addUserTrack = (user_id, client_id, track_id, token) =>
+  axios.put(
+    `https://api-v2.soundcloud.com/users/${user_id}/track_likes/${track_id}`,
+    {},
+    {
+      params: {
+        client_id
+      },
+      headers: { Authorization: `OAuth ${token}` }
+    }
+  );
+
 const addUserFollowing = (followingId, token) =>
   axios.post(
     `https://api-v2.soundcloud.com/me/followings/${followingId}`,
@@ -76,7 +88,8 @@ const addUserFollowing = (followingId, token) =>
 
 module.exports = {
   getUserTracks,
+  addUserTrack,
   getUserFollowings,
-  getUserById,
-  addUserFollowing
+  addUserFollowing,
+  getUserById
 };
