@@ -25,6 +25,7 @@
     "quasar": "^1.0.0-beta.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
+    "uniqid": "^5.0.3",
     "vue-ellipse-progress": "^0.18.8",
     "vue-i18n": "^7.3.3",
     "vue-smooth-dnd": "^0.8.0",

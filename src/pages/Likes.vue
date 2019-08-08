@@ -48,8 +48,8 @@
 import ListsGroup from 'components/ListsGroup/ListsGroup';
 import List from 'components/ListsGroup/List';
 import ListSyncControls from 'components/ListsGroup/ListSyncControls';
-import { SOCKET_GET_USER_LIKES, SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR, SOCKET_SYNC_STATUS_GET,
-  SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL } from 'src/utils/socketEvents.js';
+const { SOCKET_GET_USER_LIKES, SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR, SOCKET_SYNC_STATUS_GET,
+  SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL } = require('../background/const/socketEvents.js');
 import SplashLoading from 'components/Base/SplashLoading';
 import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
 import ListPagination from 'components/ListsGroup/ListPagination';
@@ -85,8 +85,6 @@ export default {
     [SOCKET_USER_LIKES] ({ userId, items, from, page, pages }) {
       console.log('LOADED LIkES', userId, items, from, page, pages);
       this.isInitialized = true;
-      /* setTimeout(() => {
-      }, 1000); */
       if (userId === this.userOne.userId) {
         this.itemsOne = items;
         this.itemsCountOne = from;

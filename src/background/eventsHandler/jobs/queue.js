@@ -1,11 +1,17 @@
 const { SOCKET_ADDED_JOB, SOCKET_ADD_JOB_FAILED } = require('../../const/socketEvents');
+const { processJob } = require('./jobsHandler');
 const { default: PQueue } = require('p-queue');
 
 const queue = new PQueue({ concurrency: 3 });
 
+queue.on('active', () => {
+  console.log(`[ QUEUE ]!!! Size: ${queue.size}  Pending: ${queue.pending}`);
+});
+
 const addJob = async (io, job) => {
+  console.log(job);
   try {
-    await queue.add(job);
+    await queue.add(processJob(io, job));
     io.emit(SOCKET_ADDED_JOB, job);
   } catch (e) {
     console.log(e);

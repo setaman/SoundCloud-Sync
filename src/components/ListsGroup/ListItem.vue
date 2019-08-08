@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="list-item-action flex items-center">
-        <q-btn round flat :icon="icon" :color="item.synchronized ? 'green' : 'primary'"></q-btn>
+        <q-btn round flat :icon="icon" :loading="processing" :color="item.synchronized ? 'green' : 'primary'" @click="addJob"></q-btn>
       </div>
     </div>
 </template>
@@ -36,6 +36,11 @@
 <script>
 import UserAvatar from 'components/Navigation/UserAvatar';
 import { shell } from 'electron';
+const uniqid = require('uniqid');
+const { SOCKET_SYNC_ITEM_FAILED, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_ADDED_JOB, SOCKET_ADD_JOB,
+  SOCKET_ADD_JOB_FAILED } = require('../../background/const/socketEvents.js');
+
+const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, JOB_TYPE_FOLLOWINGS, JOB_TYPE_LIKES } = require('../../background/const/const.js');
 
 export default {
   name: 'ListItem',
@@ -54,8 +59,15 @@ export default {
     return {
       checked: false,
       progressColor: 'transparent',
-      isLoading: false
+      isLoading: false,
+      isProcessing: false
     };
+  },
+  sockets: {
+    [SOCKET_ADD_JOB] (jobInfo) {
+      console.log('ADDED JOB', jobInfo);
+      this.jobs.push(jobInfo);
+    }
   },
   computed: {
     isChecked () {
@@ -70,14 +82,42 @@ export default {
     },
     icon () {
       return !this.item.synchronized ? 'fas fa-angle-right' : 'refresh';
+    },
+    processing () {
+      return this.item.isProcessing || this.isProcessing;
     }
   },
   methods: {
+    addJob () {
+      console.log('adding new job');
+      this.isProcessing = true;
+      this.$socket.emit(SOCKET_ADD_JOB, {
+        id: uniqid(),
+        type: this.getJobType(),
+        items: [this.item],
+        ...this.getFromAndToUser()
+      });
+    },
     openUserLinkInBrowser () {
       shell.openExternal(this.item.permalink_url);
     },
     toggleCheck () {
       !this.isChecked ? this.$emit('checked', this.item.id) : this.$emit('unchecked', this.item.id);
+    },
+    getJobType () {
+      if (this.item.type === LIST_TYPE_LIKES) {
+        return JOB_TYPE_LIKES;
+      } else if (this.item.type === LIST_TYPE_FOLLOWINGS) {
+        return JOB_TYPE_FOLLOWINGS;
+      }
+    },
+    getFromAndToUser () {
+      const userOne = this.$store.state.users.userOne;
+      const userTwo = this.$store.state.users.userTwo;
+      return {
+        userFrom: userOne.userId === this.item.userId ? userOne : userTwo,
+        userTo: userOne.userId !== this.item.userId ? userOne : userTwo
+      };
     }
   }
 };

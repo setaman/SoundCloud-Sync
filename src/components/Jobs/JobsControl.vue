@@ -39,21 +39,30 @@
 import HorizontalProgress from 'components/Base/HorizontalProgress';
 import Job from 'components/Jobs/Job';
 const { SOCKET_SYNC_ITEM_FAILED, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_ADDED_JOB, SOCKET_ADD_JOB_FAILED,
-  SOCKET_ADD_JOB } = require('../../background/const/socketEvents.js');
+  SOCKET_ADD_JOB, SOCKET_COMPLETED_JOB } = require('../../background/const/socketEvents.js');
 export default {
   name: 'JobsControl',
   components: { Job, HorizontalProgress },
   data: () => ({
-    jobs: [1, 2, 3, 4, 5, 6],
+    jobs: [],
     expanded: false
   }),
   sockets: {
     [SOCKET_ADD_JOB] (jobInfo) {
       console.log('ADDED JOB', jobInfo);
       this.jobs.push(jobInfo);
+    },
+    [SOCKET_ADDED_JOB] (jobInfo) {
+      console.log('ADDED JOB', jobInfo);
+      this.jobs.push(jobInfo);
+    },
+    [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo) {
+      console.log('ITEM SYNC SUCCESS', jobInfo);
+    },
+    [SOCKET_COMPLETED_JOB] (jobInfo) {
+      console.log('JOB COMPLETED', jobInfo);
     }
   }
-
 };
 </script>
 

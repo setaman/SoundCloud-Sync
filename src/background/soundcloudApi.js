@@ -65,7 +65,7 @@ const getUserById = (userId, clientId) =>
     }
   });
 
-const addUserTrack = (user_id, client_id, track_id, token) =>
+const addUserLike = (user_id, client_id, track_id, token) =>
   axios.put(
     `https://api-v2.soundcloud.com/users/${user_id}/track_likes/${track_id}`,
     {},
@@ -88,7 +88,7 @@ const addUserFollowing = (followingId, token) =>
 
 module.exports = {
   getUserTracks,
-  addUserTrack,
+  addUserLike,
   getUserFollowings,
   addUserFollowing,
   getUserById
