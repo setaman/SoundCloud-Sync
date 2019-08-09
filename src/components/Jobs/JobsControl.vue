@@ -69,8 +69,8 @@ export default {
       this.jobs[currentJobIndex] = jobInfo;
       console.log(this.jobs);
     },
-    [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo) {
-      console.log(SOCKET_SYNC_ITEM_SUCCESS, jobInfo);
+    [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo, item) {
+      console.log(SOCKET_SYNC_ITEM_SUCCESS, jobInfo, item);
     },
     [SOCKET_COMPLETED_JOB] (jobInfo) {
       console.log(SOCKET_COMPLETED_JOB, jobInfo);

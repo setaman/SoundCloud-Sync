@@ -68,11 +68,13 @@ export default {
   mixins: [notificationMixin],
   data: () => ({
     filtersTwo: {
+      type: LIST_TYPE_LIKES,
       title: '',
       status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
       sort: ''
     },
     filtersOne: {
+      type: LIST_TYPE_LIKES,
       title: '',
       status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
       sort: 'Oldest'
@@ -158,13 +160,13 @@ export default {
     onFiltersChangeOne (filters) {
       this.isLoadingOne = true;
       this.pageOne = 1;
-      this.filtersOne = filters;
+      this.filtersOne = { ...this.filtersOne, ...filters };
       this.getUserOneLikes();
     },
     onFiltersChangeTwo (filters) {
       this.isLoadingTwo = true;
       this.pageTwo = 1;
-      this.filtersTwo = filters;
+      this.filtersTwo = { ...this.filtersTwo, ...filters };
       this.getUserTwoLikes();
     },
     onSelectedChangeOne (items) {
@@ -179,11 +181,12 @@ export default {
       } else {
         const selectedIds = this.checkedItemsOne.join(' ');
         const itemsToSync = this.itemsOne.filter(item => selectedIds.includes(item.id));
-        // console.log(itemsToSync);
         this.addJob(JOB_TYPE_SELECTED, this.userOne, this.userTwo, itemsToSync);
       }
     },
-    onSyncFilteredOne () {},
+    onSyncFilteredOne () {
+      this.addJob(JOB_TYPE_ONE_USER, this.userOne, this.userTwo, [], this.filtersOne);
+    },
     onSyncFilteredTwo () {},
     onSyncSelectedTwo () {},
     changePageOne (newPage) {
@@ -194,12 +197,13 @@ export default {
       this.pageTwo = newPage;
       this.getUserTwoLikes();
     },
-    addJob (type, userFrom, userTo, items) {
+    addJob (type, userFrom, userTo, items = [], query = {}) {
       console.log('adding new job');
       this.$socket.emit(SOCKET_ADD_JOB, {
         id: uniqid(),
         type: type,
         itemsType: LIST_TYPE_LIKES,
+        query,
         items,
         userTo,
         userFrom

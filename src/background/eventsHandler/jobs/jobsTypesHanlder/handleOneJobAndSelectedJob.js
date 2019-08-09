@@ -26,38 +26,20 @@ const processOneAndSelectedJob = async (io, job) => {
   switch (job.itemsType) {
     case LIST_TYPE_LIKES:
       for (let chunk of chunkedJobItems) {
-        const promises = chunk.map(item => processLike({
+        const promises = chunk.map(item => processLike(io, {
           userTo: job.userTo,
           item
-        })
-          .then(response => {
-            console.log(response.data);
-            io.emit(SOCKET_SYNC_ITEM_SUCCESS, job, item);
-          })
-          .catch(error => {
-            console.log(error);
-            io.emit(SOCKET_SYNC_ITEM_FAILED, job, item);
-          })
-        );
+        }));
         await Promise.all(promises);
       }
       io.emit(SOCKET_COMPLETED_JOB, { ...job, processed: job.items.length, from: job.items.length });
       break;
     case LIST_TYPE_FOLLOWINGS:
       for (let chunk of chunkedJobItems) {
-        const promises = chunk.map(item => processFollowing({
+        const promises = chunk.map(item => processFollowing(io, {
           userTo: job.userTo,
           item
-        })
-          .then(response => {
-            console.log(response);
-            io.emit(SOCKET_SYNC_ITEM_SUCCESS, job.id, item);
-          })
-          .catch(error => {
-            console.log(error);
-            io.emit(SOCKET_SYNC_ITEM_FAILED, job.id, item);
-          })
-        );
+        }));
         io.emit(SOCKET_COMPLETED_JOB, job);
         await Promise.all(promises);
       }
