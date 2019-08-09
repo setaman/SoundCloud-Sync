@@ -57,7 +57,7 @@ import notificationMixin from 'components/notificationMixin';
 const uniqid = require('uniqid');
 const { SOCKET_GET_USER_LIKES, SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR, SOCKET_SYNC_STATUS_GET,
   SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL, SOCKET_ADD_JOB } = require('../background/const/socketEvents.js');
-const { JOB_TYPE_LIKES_ONE_USER, JOB_TYPE_LIKES_SELECTED, LIST_TYPE_LIKES } = require('../background/const/const.js');
+const { JOB_TYPE_SELECTED, JOB_TYPE_ONE_USER, LIST_TYPE_LIKES } = require('../background/const/const.js');
 import SplashLoading from 'components/Base/SplashLoading';
 import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
 import ListPagination from 'components/ListsGroup/ListPagination';
@@ -179,8 +179,8 @@ export default {
       } else {
         const selectedIds = this.checkedItemsOne.join(' ');
         const itemsToSync = this.itemsOne.filter(item => selectedIds.includes(item.id));
-        console.log(itemsToSync);
-        // this.addJob(JOB_TYPE_LIKES_SELECTED, this.userOne, this.userTwo, itemsToSync);
+        // console.log(itemsToSync);
+        this.addJob(JOB_TYPE_SELECTED, this.userOne, this.userTwo, itemsToSync);
       }
     },
     onSyncFilteredOne () {},
@@ -193,18 +193,18 @@ export default {
     changePageTwo (newPage) {
       this.pageTwo = newPage;
       this.getUserTwoLikes();
+    },
+    addJob (type, userFrom, userTo, items) {
+      console.log('adding new job');
+      this.$socket.emit(SOCKET_ADD_JOB, {
+        id: uniqid(),
+        type: type,
+        itemsType: LIST_TYPE_LIKES,
+        items,
+        userTo,
+        userFrom
+      });
     }
-  },
-  addJob (type, userFrom, userTo, items) {
-    console.log('adding new job');
-    this.$socket.emit(SOCKET_ADD_JOB, {
-      id: uniqid(),
-      type: type,
-      itemsType: LIST_TYPE_LIKES,
-      items,
-      userTo,
-      userFrom
-    });
   },
   mounted () {
     setTimeout(() => this.getUsersLikes(), 500);
