@@ -8,7 +8,9 @@
     >
       <splash-loading v-if="!isInitialized"/>
       <lists-group v-else>
-        <list slot="list-one" :isLoading="isLoadingOne" :items="itemsOne" :maxItems="itemsCountOne" @filtersChange="onFiltersChangeOne">
+        <list slot="list-one" :isLoading="isLoadingOne" :items="itemsOne" :maxItems="itemsCountOne"
+              @selectedChange="onSelectedChangeOne"
+              @filtersChange="onFiltersChangeOne">
           <div>
             <transition
               appear
@@ -21,14 +23,17 @@
           </div>
         </list>
         <div slot="list-sync-controls">
-          <list-sync-controls :progress="syncPercent"></list-sync-controls>
-          {{ pageOne}}<br>
-          {{ pageTwo}}
-          <q-btn @click="pageOne = pagesTwo = 2">
-            reset page
-          </q-btn>
+          <list-sync-controls
+            :progress="syncPercent"
+            @syncSelectedOne="onSyncSelectedOne"
+            @syncSelectedTwo="onSyncSelectedTwo"
+            @syncFilteredOne="onSyncFilteredOne"
+            @syncFilteredTwo="onSyncFilteredTwo"
+          ></list-sync-controls>
         </div>
-        <list slot="list-two" :isLoading="isLoadingTwo" :items="itemsTwo" :maxItems="itemsCountTwo" @filtersChange="onFiltersChangeTwo">
+        <list slot="list-two" :isLoading="isLoadingTwo" :items="itemsTwo" :maxItems="itemsCountTwo"
+              @selectedChange="onSelectedChangeTwo"
+              @filtersChange="onFiltersChangeTwo">
           <div>
             <transition
               appear
@@ -48,8 +53,11 @@
 import ListsGroup from 'components/ListsGroup/ListsGroup';
 import List from 'components/ListsGroup/List';
 import ListSyncControls from 'components/ListsGroup/ListSyncControls';
+import notificationMixin from 'components/notificationMixin';
+const uniqid = require('uniqid');
 const { SOCKET_GET_USER_LIKES, SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR, SOCKET_SYNC_STATUS_GET,
-  SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL } = require('../background/const/socketEvents.js');
+  SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL, SOCKET_ADD_JOB } = require('../background/const/socketEvents.js');
+const { JOB_TYPE_LIKES_ONE_USER, JOB_TYPE_LIKES_SELECTED, LIST_TYPE_LIKES } = require('../background/const/const.js');
 import SplashLoading from 'components/Base/SplashLoading';
 import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
 import ListPagination from 'components/ListsGroup/ListPagination';
@@ -57,6 +65,7 @@ import ListPagination from 'components/ListsGroup/ListPagination';
 export default {
   name: 'Likes',
   components: { ListPagination, SplashLoading, ListSyncControls, List, ListsGroup },
+  mixins: [notificationMixin],
   data: () => ({
     filtersTwo: {
       title: '',
@@ -71,7 +80,9 @@ export default {
     itemsCountOne: 0,
     itemsCountTwo: 0,
     itemsOne: [],
+    checkedItemsOne: [],
     itemsTwo: [],
+    checkedItemsTwo: [],
     isLoadingOne: true,
     isLoadingTwo: true,
     isInitialized: false,
@@ -156,13 +167,25 @@ export default {
       this.filtersTwo = filters;
       this.getUserTwoLikes();
     },
-    onChecked (itemId) {
-      this.checkedItems.push(itemId);
+    onSelectedChangeOne (items) {
+      this.checkedItemsOne = items;
     },
-    onUnchecked (itemId) {
-      const index = this.checkedItems.findIndex(item => item.id === itemId);
-      this.checkedItems.splice(index, 1);
+    onSelectedChangeTwo (items) {
+      this.checkedItemsTwo = items;
     },
+    onSyncSelectedOne () {
+      if (this.checkedItemsOne.length < 1) {
+        this.notifyWarn('No items selected');
+      } else {
+        const selectedIds = this.checkedItemsOne.join(' ');
+        const itemsToSync = this.itemsOne.filter(item => selectedIds.includes(item.id));
+        console.log(itemsToSync);
+        // this.addJob(JOB_TYPE_LIKES_SELECTED, this.userOne, this.userTwo, itemsToSync);
+      }
+    },
+    onSyncFilteredOne () {},
+    onSyncFilteredTwo () {},
+    onSyncSelectedTwo () {},
     changePageOne (newPage) {
       this.pageOne = newPage;
       this.getUserOneLikes();
@@ -171,6 +194,17 @@ export default {
       this.pageTwo = newPage;
       this.getUserTwoLikes();
     }
+  },
+  addJob (type, userFrom, userTo, items) {
+    console.log('adding new job');
+    this.$socket.emit(SOCKET_ADD_JOB, {
+      id: uniqid(),
+      type: type,
+      itemsType: LIST_TYPE_LIKES,
+      items,
+      userTo,
+      userFrom
+    });
   },
   mounted () {
     setTimeout(() => this.getUsersLikes(), 500);

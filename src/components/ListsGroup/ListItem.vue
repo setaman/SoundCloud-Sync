@@ -40,7 +40,7 @@ const uniqid = require('uniqid');
 const { SOCKET_SYNC_ITEM_FAILED, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_ADDED_JOB, SOCKET_ADD_JOB,
   SOCKET_ADD_JOB_FAILED } = require('../../background/const/socketEvents.js');
 
-const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, JOB_TYPE_FOLLOWINGS, JOB_TYPE_LIKES } = require('../../background/const/const.js');
+const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, JOB_TYPE_ONE } = require('../../background/const/const.js');
 
 export default {
   name: 'ListItem',
@@ -93,7 +93,8 @@ export default {
       this.isProcessing = true;
       this.$socket.emit(SOCKET_ADD_JOB, {
         id: uniqid(),
-        type: this.getJobType(),
+        type: JOB_TYPE_ONE,
+        itemsType: this.getItemType(),
         items: [this.item],
         ...this.getFromAndToUser()
       });
@@ -104,11 +105,11 @@ export default {
     toggleCheck () {
       !this.isChecked ? this.$emit('checked', this.item.id) : this.$emit('unchecked', this.item.id);
     },
-    getJobType () {
+    getItemType () {
       if (this.item.type === LIST_TYPE_LIKES) {
-        return JOB_TYPE_LIKES;
+        return LIST_TYPE_LIKES;
       } else if (this.item.type === LIST_TYPE_FOLLOWINGS) {
-        return JOB_TYPE_FOLLOWINGS;
+        return LIST_TYPE_FOLLOWINGS;
       }
     },
     getFromAndToUser () {

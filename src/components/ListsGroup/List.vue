@@ -2,8 +2,10 @@
 <div class="list">
   <list-controls :filters.sync="filters" :selected="checkedItems.length || maxItems" :max="maxItems" @all-checked="onAllChecked"/>
   <div class="q-pt-md q-pb-sm">
-    <!--{{checkedItems}}
-    {{filters}}-->
+    {{checkedItems}}
+    {{filters}}
+
+    {{selectedItems.length}}
     <div class="relative-position">
       <divider></divider>
       <transition
@@ -17,17 +19,8 @@
       </transition>
     </div>
   </div>
-  <q-infinite-scroll @load="onLoad" :offset="200">
-      <list-item v-for="item in items" :key="item.id" :item="item" :checked-items="checkedItems" @checked="onChecked" @unchecked="onUnchecked"/>
-    <template v-slot:loading>
-      <div class="row justify-center q-my-md">
-        <q-spinner-audio
-          color="orange"
-          size="2em"
-        />
-      </div>
-    </template>
-  </q-infinite-scroll>
+  <list-item v-for="item in items" :key="item.id" :item="item" :checked-items="checkedItems" @checked="onChecked" @unchecked="onUnchecked"/>
+  <!-- Pagination goes here -->
   <slot>
 
   </slot>
@@ -88,7 +81,7 @@ export default {
   },
   methods: {
     emitSelectedItems () {
-      this.$emit('selectedChange', this.selectedItems);
+      this.$emit('selectedChange', this.checkedItems);
     },
     emitFilterChanges () {
       this.$emit('filtersChange', this.filters);

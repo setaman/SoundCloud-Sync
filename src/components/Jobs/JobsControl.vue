@@ -57,25 +57,23 @@ export default {
   }),
   sockets: {
     [SOCKET_ADD_JOB] (jobInfo) {
-      console.log('ADDED JOB', jobInfo);
-      this.jobs.push(jobInfo);
+      console.log(SOCKET_ADD_JOB, jobInfo);
     },
     [SOCKET_ADDED_JOB] (jobInfo) {
-      console.log('ADDED JOB', jobInfo);
+      console.log(SOCKET_ADDED_JOB, jobInfo);
       this.jobs.unshift(jobInfo);
-      console.log(this.jobs);
     },
     [SOCKET_START_JOB] (jobInfo) {
-      console.log('ADDED JOB', jobInfo);
+      console.log(SOCKET_START_JOB, jobInfo);
       const currentJobIndex = this.jobs.findIndex(job => job.id === jobInfo.id);
       this.jobs[currentJobIndex] = jobInfo;
       console.log(this.jobs);
     },
     [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo) {
-      console.log('ITEM SYNC SUCCESS', jobInfo);
+      console.log(SOCKET_SYNC_ITEM_SUCCESS, jobInfo);
     },
     [SOCKET_COMPLETED_JOB] (jobInfo) {
-      console.log('JOB COMPLETED', jobInfo);
+      console.log(SOCKET_COMPLETED_JOB, jobInfo);
       const currentJobIndex = this.jobs.findIndex(job => job.id === jobInfo.id);
       this.jobs[currentJobIndex] = jobInfo;
       console.log(this.jobs);
