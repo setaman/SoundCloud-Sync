@@ -26,11 +26,8 @@ const formulateSort = (sortOption, type) => {
   }
 };
 
-const countItems = filter => datastore.count(filter);
-const countItemsPages = (itemsCount, pageSize) => Math.ceil((itemsCount / pageSize));
-
-const getUserItems = async (io, { type, userId, title, status, sort, page = 1 }) => {
-  const filter = {
+const formulateFilter = (type, userId, title, status) => {
+  return {
     type,
     userId,
     $or: [
@@ -46,6 +43,13 @@ const getUserItems = async (io, { type, userId, title, status, sort, page = 1 })
     ],
     status: { $in: status }
   };
+};
+
+const countItems = filter => datastore.count(filter);
+const countItemsPages = (itemsCount, pageSize) => Math.ceil((itemsCount / pageSize));
+
+const getPaginatedUserItems = async (io, { type, userId, title, status, sort, page = 1 }) => {
+  const filter = formulateFilter(type, userId, title, status);
   const pageSize = 30;
 
   console.log('FILTERS AFTER:', filter, formulateSort(sort, type), page);
@@ -74,6 +78,12 @@ const getUserItems = async (io, { type, userId, title, status, sort, page = 1 })
   }
 };
 
+const getUserItems = async query => {
+  const filter = formulateFilter(query.type, query.userId, query.title, query.status);
+  return datastore.find(filter).sort(formulateSort(query.sort));
+};
+
 module.exports = {
-  getUserLikes: getUserItems
+  getPaginatedUserItems,
+  getUserItems
 };

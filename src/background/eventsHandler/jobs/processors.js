@@ -5,11 +5,11 @@ const processLike = (io, job) => {
   const { userTo, item } = job;
   return addUserLike(userTo.userId, userTo.clientId, item.id, userTo.token)
     .then(response => {
-      console.log(response);
+      console.log('ON RESPONSE:', response.data);
       io.emit(SOCKET_SYNC_ITEM_SUCCESS, job, item);
     })
     .catch(error => {
-      console.log(error);
+      console.log('ON ERROR:', error.message);
       io.emit(SOCKET_SYNC_ITEM_FAILED, job, item);
     });
 };

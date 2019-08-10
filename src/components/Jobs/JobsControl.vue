@@ -72,6 +72,9 @@ export default {
     [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo, item) {
       console.log(SOCKET_SYNC_ITEM_SUCCESS, jobInfo, item);
     },
+    [SOCKET_SYNC_ITEM_FAILED] (jobInfo, item) {
+      console.warn(SOCKET_SYNC_ITEM_FAILED, jobInfo, item);
+    },
     [SOCKET_COMPLETED_JOB] (jobInfo) {
       console.log(SOCKET_COMPLETED_JOB, jobInfo);
       const currentJobIndex = this.jobs.findIndex(job => job.id === jobInfo.id);

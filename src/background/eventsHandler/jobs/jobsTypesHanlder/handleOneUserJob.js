@@ -1,18 +1,20 @@
 const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS } = require('../../../const/const');
-const { SOCKET_COMPLETED_JOB, SOCKET_START_JOB } = require('../../../const/socketEvents');
+const { SOCKET_COMPLETED_JOB, SOCKET_START_JOB, SOCKET_FAILED_JOB } = require('../../../const/socketEvents');
 const { processLike, processFollowing } = require('../processors');
-const { getUserLikes } = require('../../persistedUsersDataLoding');
+const { getUserItems } = require('../../persistedUsersDataLoding');
 
-const chunkJobItems = job => {
+const wait = (ms = 3000) => new Promise(resolve => setTimeout(resolve, ms));
+
+const chunkJobItems = items => {
   const chunkSize = 10;
   let tempArray = [];
 
-  if (job.items.length <= chunkSize) {
-    return [job.items];
+  if (items.length <= chunkSize) {
+    return [items.items];
   }
 
-  for (let i = 0; i < job.items.length; i += chunkSize) {
-    const chunk = job.items.slice(i, i + chunkSize);
+  for (let i = 0; i < items.length; i += chunkSize) {
+    const chunk = items.slice(i, i + chunkSize);
     tempArray.push(chunk);
   }
 
@@ -22,29 +24,44 @@ const chunkJobItems = job => {
 const processOneUserJob = async (io, job) => {
   console.log(job.query);
 
-  io.emit(SOCKET_START_JOB, { ...job, processed: 0, from: job.items.length });
-  const chunkedJobItems = chunkJobItems(job);
+  let itemsToSync = [];
+
+  try {
+    itemsToSync = await getUserItems({ ...job.query, userId: job.userFrom.userId });
+    io.emit(SOCKET_START_JOB, { ...job, processed: 0, from: itemsToSync.length });
+  } catch (e) {
+    console.error(e);
+    io.emit(SOCKET_FAILED_JOB, e.toString());
+  }
+
+  const chunkedJobItems = chunkJobItems(itemsToSync);
 
   switch (job.itemsType) {
     case LIST_TYPE_LIKES:
       for (let chunk of chunkedJobItems) {
-        const promises = chunk.map(item => processLike({
-          userTo: job.userTo,
-          item
-        }));
-        await Promise.all(promises);
+        for (let item of chunk) {
+          await processLike(io, {
+            userTo: job.userTo,
+            item
+          });
+        }
+        // Let SC API coll down
+        await wait(2000);
       }
       io.emit(SOCKET_COMPLETED_JOB, { ...job, processed: job.items.length, from: job.items.length });
       break;
     case LIST_TYPE_FOLLOWINGS:
       for (let chunk of chunkedJobItems) {
-        const promises = chunk.map(item => processFollowing({
-          userTo: job.userTo,
-          item
-        }));
-        io.emit(SOCKET_COMPLETED_JOB, job);
-        await Promise.all(promises);
+        for (let item of chunk) {
+          await processFollowing(io, {
+            userTo: job.userTo,
+            item
+          });
+        }
+        // Let SC API coll down
+        await wait(2000);
       }
+      io.emit(SOCKET_COMPLETED_JOB, job);
       break;
   }
 };

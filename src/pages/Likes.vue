@@ -185,6 +185,7 @@ export default {
       }
     },
     onSyncFilteredOne () {
+      console.log(JOB_TYPE_ONE_USER);
       this.addJob(JOB_TYPE_ONE_USER, this.userOne, this.userTwo, [], this.filtersOne);
     },
     onSyncFilteredTwo () {},

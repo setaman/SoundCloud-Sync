@@ -5,7 +5,7 @@
         <q-btn round flat size="ms" color="primary" icon="fas fa-stream" @click="emitSyncSelectedOne"/>
       </div>
       <div class="col">
-        <q-btn round flat size="ms" color="primary" icon="fas fa-stream fa-flip-horizontal" @click="emitSyncFilteredOne"/>
+        <q-btn round flat size="ms" color="primary" icon="fas fa-stream fa-flip-horizontal" @click="emitSyncSelectedTwo"/>
       </div>
     </div>
     <sync-progress :progress="progress">
@@ -13,7 +13,7 @@
     </sync-progress>
     <div class="row">
       <div class="col">
-        <q-btn round flat size="ms" color="primary" icon="fas fa-angle-double-right" @click="emitSyncSelectedTwo"/>
+        <q-btn round flat size="ms" color="primary" icon="fas fa-angle-double-right" @click="emitSyncFilteredOne"/>
       </div>
       <div class="col">
         <q-btn round flat size="ms" color="primary" icon="fas fa-angle-double-left" @click="emitSyncFilteredTwo"/>

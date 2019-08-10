@@ -40,9 +40,9 @@ const processOneAndSelectedJob = async (io, job) => {
           userTo: job.userTo,
           item
         }));
-        io.emit(SOCKET_COMPLETED_JOB, job);
         await Promise.all(promises);
       }
+      io.emit(SOCKET_COMPLETED_JOB, job);
       break;
   }
 };
