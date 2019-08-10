@@ -1,8 +1,8 @@
 <template>
     <div class="h-progress" :style="{height: stroke + 'px'}">
       <div class="h-progress-empty" :style="{height: stroke + 'px'}"></div>
-      <div class="h-progress-full" :style="{height: stroke + 'px', width: progress + '%'}"></div>
-      <div class="h-progress-indicator" :style="{height: stroke + 'px'}"></div>
+      <div class="h-progress-indicator" :class="[stateClasee]" :style="{height: stroke + 'px'}"></div>
+      <div class="h-progress-full" :class="[stateClasee]" :style="{height: stroke + 'px', width: progress + '%'}"></div>
     </div>
 </template>
 
@@ -19,6 +19,27 @@ export default {
       type: Number,
       required: false,
       default: 0
+    },
+    pending: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    error: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
+  computed: {
+    stateClasee () {
+      if (this.error) {
+        return 'error';
+      }
+      if (this.pending) {
+        return 'pending';
+      }
+      return 'active';
     }
   }
 };
@@ -47,26 +68,55 @@ export default {
   .h-progress-full {
     width: 0;
     opacity: 0.8;
+    &.error, &.pending {
+      opacity: 0;
+    }
+    &.active {
+      opacity: 0.8;
+    }
   }
 
   .h-progress-indicator {
-    animation: loading-animation 1s ease-in-out infinite;
+    &.error {
+      width: 100%;
+      opacity: 0.3;
+      background: red;
+    }
+    &.active {
+      animation: loading-animation 1s ease-in-out infinite;
+    }
+    &.pending {
+      width: 100%;
+      animation: loading-pending 1s ease-in-out infinite;
+    }
   }
 
   @keyframes loading-animation {
     0% {
-      width: 0%;
+      width: 0;
       opacity: 0;
     }
     70% {
       width: 100%;
-      opacity: 0.4;
+      opacity: 0.7;
     }
     100% {
       opacity: 0;
       width: 100%;
     }
 
+  }
+
+  @keyframes loading-pending {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.4;
+    }
+    100% {
+      opacity: 0;
+    }
   }
 
 </style>
