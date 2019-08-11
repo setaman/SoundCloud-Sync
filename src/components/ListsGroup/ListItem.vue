@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="list-item-action flex items-center">
-        <q-btn round flat :icon="icon" :loading="processing" :color="item.synchronized ? 'green' : 'primary'" @click="addJob"></q-btn>
+        <q-btn round flat :icon="icon" :loading="processing" :color="item.synchronized ? 'green' : 'primary'" @click="createJob"></q-btn>
       </div>
     </div>
 </template>
@@ -36,6 +36,7 @@
 <script>
 import UserAvatar from 'components/Navigation/UserAvatar';
 import { shell } from 'electron';
+import { createJob } from 'components/Jobs/create job';
 const uniqid = require('uniqid');
 const { SOCKET_SYNC_ITEM_FAILED, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_ADDED_JOB, SOCKET_ADD_JOB,
   SOCKET_ADD_JOB_FAILED } = require('../../background/const/socketEvents.js');
@@ -88,16 +89,15 @@ export default {
     }
   },
   methods: {
-    addJob () {
+    createJob () {
       console.log('adding new job');
-      this.isProcessing = true;
-      this.$socket.emit(SOCKET_ADD_JOB, {
-        id: uniqid(),
-        type: JOB_TYPE_ONE,
-        itemsType: this.getItemType(),
-        items: [this.item],
-        ...this.getFromAndToUser()
-      });
+      this.$socket.emit(SOCKET_ADD_JOB, createJob(
+        JOB_TYPE_ONE,
+        this.getItemType(),
+        [this.item],
+        this.getFromAndToUser().userFrom,
+        this.getFromAndToUser().userTo
+      ));
     },
     openUserLinkInBrowser () {
       shell.openExternal(this.item.permalink_url);

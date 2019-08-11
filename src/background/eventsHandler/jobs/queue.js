@@ -1,19 +1,29 @@
 const { SOCKET_ADDED_JOB, SOCKET_ADD_JOB_FAILED } = require('../../const/socketEvents');
-const { processJob } = require('./jobsHandler');
 const { default: PQueue } = require('p-queue');
 
-const queue = new PQueue({ concurrency: 3 });
+const queue = new PQueue({ concurrency: 1 });
 
 queue.on('active', () => {
   console.log(`[ QUEUE ]!!! Size: ${queue.size}  Pending: ${queue.pending}`);
 });
 
-const addJob = async (io, job) => {
-  console.log(job);
+(async () => {
+  await queue.onEmpty();
+  console.log('[ QUEUE ]: queue is empty');
+})();
+
+(async () => {
+  await queue.onIdle();
+  console.log('[ QUEUE ]: all jobs are done!');
+})();
+
+const clearQueue = () => queue.clear();
+
+const addQueueJob = async (io, job, jobFunction) => {
   try {
     queue.add(() => {
-      io.emit(SOCKET_ADDED_JOB, { ...job, processed: 0, from: job.items.length });
-      processJob(io, job);
+      io.emit(SOCKET_ADDED_JOB, job);
+      jobFunction();
     });
   } catch (e) {
     console.log(e);
@@ -22,5 +32,7 @@ const addJob = async (io, job) => {
 };
 
 module.exports = {
-  addJob
+  addQueueJob,
+  clearQueue,
+  queue
 };

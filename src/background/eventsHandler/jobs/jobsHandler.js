@@ -2,6 +2,7 @@ const { JOB_TYPE_ALL, JOB_TYPE_ONE, JOB_TYPE_ONE_USER, JOB_TYPE_SELECTED } = req
 const { processAllJob } = require('./jobsTypesHanlder/handleAllJob');
 const { processOneAndSelectedJob } = require('./jobsTypesHanlder/handleOneJobAndSelectedJob');
 const { processOneUserJob } = require('./jobsTypesHanlder/handleOneUserJob');
+const { addQueueJob } = require('./queue');
 
 const processJob = async (io, job) => {
   switch (job.type) {
@@ -20,6 +21,8 @@ const processJob = async (io, job) => {
   }
 };
 
+const handleJob = (io, job) => addQueueJob(io, job, () => processJob(io, job));
+
 module.exports = {
-  processJob
+  handleJob
 };

@@ -61,6 +61,7 @@ const { JOB_TYPE_SELECTED, JOB_TYPE_ONE_USER, LIST_TYPE_LIKES } = require('../ba
 import SplashLoading from 'components/Base/SplashLoading';
 import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
 import ListPagination from 'components/ListsGroup/ListPagination';
+import { createJob } from 'components/Jobs/create job';
 
 export default {
   name: 'Likes',
@@ -181,12 +182,12 @@ export default {
       } else {
         const selectedIds = this.checkedItemsOne.join(' ');
         const itemsToSync = this.itemsOne.filter(item => selectedIds.includes(item.id));
-        this.addJob(JOB_TYPE_SELECTED, this.userOne, this.userTwo, itemsToSync);
+        this.createJob(JOB_TYPE_SELECTED, this.userOne, this.userTwo, itemsToSync);
       }
     },
     onSyncFilteredOne () {
       console.log(JOB_TYPE_ONE_USER);
-      this.addJob(JOB_TYPE_ONE_USER, this.userOne, this.userTwo, [], this.filtersOne);
+      this.createJob(JOB_TYPE_ONE_USER, this.userOne, this.userTwo, [], this.filtersOne);
     },
     onSyncFilteredTwo () {},
     onSyncSelectedTwo () {},
@@ -198,17 +199,16 @@ export default {
       this.pageTwo = newPage;
       this.getUserTwoLikes();
     },
-    addJob (type, userFrom, userTo, items = [], query = {}) {
+    createJob (type, userFrom, userTo, items = [], query = {}) {
       console.log('adding new job');
-      this.$socket.emit(SOCKET_ADD_JOB, {
-        id: uniqid(),
-        type: type,
-        itemsType: LIST_TYPE_LIKES,
-        query,
+      this.$socket.emit(SOCKET_ADD_JOB, createJob(
+        type,
+        LIST_TYPE_LIKES,
         items,
+        userFrom,
         userTo,
-        userFrom
-      });
+        query
+      ));
     }
   },
   mounted () {

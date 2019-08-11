@@ -47,7 +47,7 @@
 import HorizontalProgress from 'components/Base/HorizontalProgress';
 import Job from 'components/Jobs/Job';
 const { SOCKET_SYNC_ITEM_FAILED, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_ADDED_JOB, SOCKET_ADD_JOB_FAILED,
-  SOCKET_ADD_JOB, SOCKET_COMPLETED_JOB, SOCKET_START_JOB } = require('../../background/const/socketEvents.js');
+  SOCKET_ADD_JOB, SOCKET_COMPLETED_JOB, SOCKET_START_JOB, SOCKET_FAILED_JOB, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../background/const/socketEvents.js');
 export default {
   name: 'JobsControl',
   components: { Job, HorizontalProgress },
@@ -65,37 +65,46 @@ export default {
     },
     [SOCKET_START_JOB] (jobInfo) {
       console.log(SOCKET_START_JOB, jobInfo);
-      const currentJobIndex = this.jobs.findIndex(job => job.id === jobInfo.id);
-      this.jobs[currentJobIndex] = jobInfo;
-      console.log(this.jobs);
+      this.updateJob(jobInfo);
     },
     [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo, item) {
       console.log(SOCKET_SYNC_ITEM_SUCCESS, jobInfo, item);
+      this.updateJob(jobInfo);
     },
     [SOCKET_SYNC_ITEM_FAILED] (jobInfo, item) {
       console.warn(SOCKET_SYNC_ITEM_FAILED, jobInfo, item);
+      this.updateJob(jobInfo);
+    },
+    [SOCKET_FAILED_JOB] (jobInfo, e) {
+      console.warn(SOCKET_FAILED_JOB, jobInfo, e);
+      this.updateJob(jobInfo);
+    },
+    [SOCKET_TO_MANY_REQUESTS_ERROR] (jobInfo, e) {
+      console.warn(SOCKET_TO_MANY_REQUESTS_ERROR, jobInfo, e);
     },
     [SOCKET_COMPLETED_JOB] (jobInfo) {
       console.log(SOCKET_COMPLETED_JOB, jobInfo);
-      const currentJobIndex = this.jobs.findIndex(job => job.id === jobInfo.id);
-      this.jobs[currentJobIndex] = jobInfo;
-      console.log(this.jobs);
-      setTimeout(() => {
-        this.jobs = this.jobs.filter(job => job.id !== jobInfo.id);
-        if (!this.jobs.length > 0) {
-          // this.expanded = false;
-        }
-      }, 10000);
+      this.updateJob(jobInfo);
     }
   },
   computed: {
     progress () {
-      const processed = this.jobs.map(job => job.processed || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
-      const from = this.jobs.map(job => job.from || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
+      const processed = this.jobs.map(job => job.progress.done || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
+      const from = this.jobs.map(job => job.progress.from || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
       if (from === 0) {
         return 0;
       }
       return processed / from * 100;
+    }
+  },
+  methods: {
+    updateJob (updatedJob) {
+      for (let i = 0; i < this.jobs.length; i++) {
+        if (this.jobs[i].id === updatedJob.id) {
+          this.jobs.splice(i, 1, updatedJob);
+          break;
+        }
+      }
     }
   }
 };
@@ -140,8 +149,9 @@ export default {
 .jobs-control-jobs-container {
   transition: 0.5s;
   max-height: 0;
-  overflow-y: auto;
+  overflow-y: hidden;
   &.expanded {
+    overflow-y: auto;
     max-height: 240px;
   }
 }
