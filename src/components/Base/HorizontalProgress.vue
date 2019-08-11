@@ -1,8 +1,8 @@
 <template>
     <div class="h-progress" :style="{height: stroke + 'px'}">
       <div class="h-progress-empty" :style="{height: stroke + 'px'}"></div>
-      <div class="h-progress-indicator" :class="[stateClasee]" :style="{height: stroke + 'px'}"></div>
-      <div class="h-progress-full" :class="[stateClasee]" :style="{height: stroke + 'px', width: progress + '%'}"></div>
+      <div class="h-progress-indicator" :class="[stateClass]" :style="{height: stroke + 'px'}"></div>
+      <div class="h-progress-full" :class="[stateClass]" :style="{height: stroke + 'px', width: progress + '%'}"></div>
     </div>
 </template>
 
@@ -29,15 +29,23 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    done: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   computed: {
-    stateClasee () {
+    stateClass () {
       if (this.error) {
         return 'error';
       }
       if (this.pending) {
         return 'pending';
+      }
+      if (this.done) {
+        return 'done';
       }
       return 'active';
     }
@@ -74,6 +82,9 @@ export default {
     &.active {
       opacity: 0.8;
     }
+    &.done {
+      opacity: 0;
+    }
   }
 
   .h-progress-indicator {
@@ -81,6 +92,11 @@ export default {
       width: 100%;
       opacity: 0.3;
       background: red;
+    }
+    &.done {
+      width: 100%;
+      opacity: 0.6;
+      background: #00ffbc;
     }
     &.active {
       animation: loading-animation 1s ease-in-out infinite;

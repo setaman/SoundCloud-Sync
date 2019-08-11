@@ -26,12 +26,12 @@
       >
         <div class="jobs-control-container" v-if="jobs.length > 0">
           <div class="flex flex-center">
-            <p class="q-ma-none">
-              status
+            <p class="q-ma-none text-bold">
+              {{jobsCountMessage}}
             </p>
           </div>
           <div class="flex flex-center">
-            <horizontal-progress :progress="progress"/>
+            <horizontal-progress :progress="progress" :done="progress === 100"/>
           </div>
           <div class="flex flex-center">
             <q-btn v-if="jobs.length > 0" :class="{expanded: expanded}" class="jobs-control-btn" round icon="expand_less"
@@ -89,12 +89,16 @@ export default {
   },
   computed: {
     progress () {
-      const processed = this.jobs.map(job => job.progress.done || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
+      const processed = this.jobs.map(job => job.failed ? job.progress.from || 0 : job.progress.done || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
       const from = this.jobs.map(job => job.progress.from || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
       if (from === 0) {
         return 0;
       }
       return processed / from * 100;
+    },
+    jobsCountMessage () {
+      const jobsCount = this.jobs.length;
+      return `${jobsCount} Job${jobsCount > 1 ? 's' : ''}`;
     }
   },
   methods: {
@@ -138,7 +142,7 @@ export default {
   transition: 0.5s;
   display: grid;
   height: 60px;
-  grid-template-columns: 60px 1fr 60px;
+  grid-template-columns: 80px 1fr 60px;
   grid-column-gap: 10px;
   border-top: 2px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;

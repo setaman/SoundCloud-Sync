@@ -2,11 +2,11 @@
   <div class="job">
     <div class="flex flex-center">
       <p class="q-ma-none">
-        {{job.id}}
+        {{job.progress.done}} / {{ job.progress.from }}
       </p>
     </div>
     <div class="flex flex-center">
-      <horizontal-progress :progress="progress" :error="job.failed" :pending="job.pending"/>
+      <horizontal-progress :progress="progress" :error="job.failed" :pending="job.pending" :done="job.finished"/>
     </div>
     <div class="flex flex-center">
       <q-btn v-if="job.failed" round icon="refresh" flat color="primary"></q-btn>

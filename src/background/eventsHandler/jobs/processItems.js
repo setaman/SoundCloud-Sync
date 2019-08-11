@@ -1,23 +1,29 @@
 const { addUserLike, addUserFollowing } = require('../../soundcloudApi');
 const { SOCKET_SYNC_ITEM_SUCCESS, SOCKET_SYNC_ITEM_FAILED, SOCKET_COMPLETED_JOB,
   SOCKET_START_JOB, SOCKET_FAILED_JOB, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../const/socketEvents');
-const { LIST_TYPE_FOLLOWINGS, LIST_TYPE_LIKES } = require('../../const/const');
+const { LIST_TYPE_FOLLOWINGS, LIST_TYPE_LIKES, STATUS_ERROR, STATUS_SYNCHRONIZED } = require('../../const/const');
 const { clearQueue } = require('./queue');
+const { datastore } = require('../../db');
 
 const wait = (ms = 3000) => new Promise(resolve => setTimeout(resolve, ms));
+
+const updateItemStatus = (id, status, synchronized) => datastore.update({ id }, { $set: { status, synchronized } },
+  { multi: false, returnUpdatedDocs: true });
 
 const processLike = (io, job) => {
   const { userTo, item } = job;
   return addUserLike(userTo.userId, userTo.clientId, item.id, userTo.token)
-    .then(response => {
+    .then(async response => {
       console.log('ON RESPONSE:', response.data);
       job.progress.done += 1;
-      io.emit(SOCKET_SYNC_ITEM_SUCCESS, job, item);
+      const updatedItem = await updateItemStatus(item.id, STATUS_SYNCHRONIZED, true);
+      io.emit(SOCKET_SYNC_ITEM_SUCCESS, job, updatedItem);
     })
-    .catch(error => {
+    .catch(async error => {
       console.error('ON ERROR:', error.message);
       job.progress.done += 1;
-      io.emit(SOCKET_SYNC_ITEM_FAILED, job, item);
+      const updatedItem = await updateItemStatus(item.id, STATUS_ERROR, false);
+      io.emit(SOCKET_SYNC_ITEM_FAILED, job, updatedItem);
       if (error.response && error.response.status === 429) {
         throw Error(error);
       }

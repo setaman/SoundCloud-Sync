@@ -1,5 +1,5 @@
 const { SOCKET_FAILED_JOB } = require('../../../const/socketEvents');
-const { processItems } = require('../processors');
+const { processItems } = require('../processItems');
 const { getUserItems } = require('../../persistedUsersDataLoding');
 
 const processOneUserJob = async (io, job) => {

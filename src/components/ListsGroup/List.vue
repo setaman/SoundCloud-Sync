@@ -2,10 +2,10 @@
 <div class="list">
   <list-controls :filters.sync="filters" :selected="checkedItems.length || maxItems" :max="maxItems" @all-checked="onAllChecked"/>
   <div class="q-pt-md q-pb-sm">
-    {{checkedItems}}
-    {{filters}}
+    <!--{{checkedItems}}
+    {{filters}}-->
 
-    {{selectedItems.length}}
+    <!--{{selectedItems.length}}-->
     <div class="relative-position">
       <divider></divider>
       <transition

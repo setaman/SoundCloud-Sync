@@ -1,4 +1,4 @@
-const { processItems } = require('../processors');
+const { processItems } = require('../processItems');
 
 const processOneAndSelectedJob = async (io, job) => {
   processItems(io, job);
