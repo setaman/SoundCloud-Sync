@@ -56,10 +56,11 @@ import ListSyncControls from 'components/ListsGroup/ListSyncControls';
 import notificationMixin from 'components/notificationMixin';
 const uniqid = require('uniqid');
 const { SOCKET_GET_USER_LIKES, SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR, SOCKET_SYNC_STATUS_GET,
-  SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL, SOCKET_ADD_JOB } = require('../background/const/socketEvents.js');
-const { JOB_TYPE_SELECTED, JOB_TYPE_ONE_USER, LIST_TYPE_LIKES } = require('../background/const/const.js');
+  SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL, SOCKET_ADD_JOB,
+  SOCKET_SYNC_ITEM_FAILED, SOCKET_SYNC_ITEM_SUCCESS } = require('../background/const/socketEvents.js');
+const { JOB_TYPE_SELECTED, JOB_TYPE_ONE_USER, LIST_TYPE_LIKES, STATUS_WAITING, STATUS_SYNCHRONIZED,
+  STATUS_ERROR } = require('../background/const/const.js');
 import SplashLoading from 'components/Base/SplashLoading';
-import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
 import ListPagination from 'components/ListsGroup/ListPagination';
 import { createJob } from 'components/Jobs/create job';
 
@@ -121,6 +122,14 @@ export default {
     [SOCKET_SYNC_STATUS_FAIL] (e) {
       console.log('SYNC ERROR', e);
       this.syncPercent = 0;
+    },
+    [SOCKET_SYNC_ITEM_FAILED] (jobInfo, updatedItem) {
+      console.log('LIKES: SOCKET_SYNC_ITEM_FAILED', updatedItem);
+      this.updateItem(updatedItem);
+    },
+    [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo, updatedItem) {
+      console.log('LIKES: SOCKET_SYNC_ITEM_SUCCESS', updatedItem);
+      this.updateItem(updatedItem);
     }
   },
   computed: {
@@ -209,6 +218,20 @@ export default {
         userTo,
         query
       ));
+    },
+    updateItem (updatedItem) {
+      for (let i = 0; i < this.itemsOne.length; i++) {
+        if (this.itemsOne[i].id === updatedItem.id) {
+          this.itemsOne.splice(i, 1, updatedItem);
+          return;
+        }
+      }
+      for (let i = 0; i < this.itemsTwo.length; i++) {
+        if (this.itemsTwo[i].id === updatedItem.id) {
+          this.itemsTwo.splice(i, 1, updatedItem);
+          return;
+        }
+      }
     }
   },
   mounted () {

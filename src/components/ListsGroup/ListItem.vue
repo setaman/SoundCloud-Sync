@@ -1,5 +1,5 @@
 <template>
-    <div class="list-item" :class="{checked: isChecked}" @click="toggleCheck">
+    <div class="list-item" :class="[{checked: isChecked}, statusClass]" @click="toggleCheck">
      <!-- <div class="flex flex-center">
         &lt;!&ndash;<q-checkbox v-model="val" />&ndash;&gt;
       </div>-->
@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="list-item-action flex items-center">
-        <q-btn round flat :icon="icon" :loading="processing" :color="item.synchronized ? 'green' : 'primary'" @click="createJob"></q-btn>
+        <q-btn round flat :icon="icon" :loading="processing" :color="btnColor" @click="createJob"></q-btn>
       </div>
     </div>
 </template>
@@ -37,11 +37,9 @@
 import UserAvatar from 'components/Navigation/UserAvatar';
 import { shell } from 'electron';
 import { createJob } from 'components/Jobs/create job';
-const uniqid = require('uniqid');
-const { SOCKET_SYNC_ITEM_FAILED, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_ADDED_JOB, SOCKET_ADD_JOB,
-  SOCKET_ADD_JOB_FAILED } = require('../../background/const/socketEvents.js');
+const { SOCKET_ADD_JOB } = require('../../background/const/socketEvents.js');
 
-const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, JOB_TYPE_ONE } = require('../../background/const/const.js');
+const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, JOB_TYPE_ONE, STATUS_ERROR, STATUS_SYNCHRONIZED, STATUS_WAITING } = require('../../background/const/const.js');
 
 export default {
   name: 'ListItem',
@@ -67,7 +65,6 @@ export default {
   sockets: {
     [SOCKET_ADD_JOB] (jobInfo) {
       console.log('ADDED JOB', jobInfo);
-      this.jobs.push(jobInfo);
     }
   },
   computed: {
@@ -78,11 +75,23 @@ export default {
       return this.item.avatar_url || this.item.artwork_url;
     },
     statusColor () {
-      if (this.item.status === 'error') return 'rgba(255,113,130,0.3)';
+      if (this.item.status === STATUS_ERROR) return 'rgba(255,113,130,0.3)';
       return !this.item.synchronized ? 'transparent' : 'rgba(60,186,146,0.3)';
     },
+    btnColor () {
+      if (this.item.status === STATUS_ERROR) {
+        return 'red';
+      }
+      if (this.item.status === STATUS_SYNCHRONIZED) {
+        return 'green';
+      }
+      return 'primary';
+    },
+    statusClass () {
+      return this.item.status;
+    },
     icon () {
-      return !this.item.synchronized ? 'fas fa-angle-right' : 'refresh';
+      return this.item.status === STATUS_WAITING ? 'fas fa-angle-right' : 'refresh';
     },
     processing () {
       return this.item.isProcessing || this.isProcessing;
@@ -90,7 +99,6 @@ export default {
   },
   methods: {
     createJob () {
-      console.log('adding new job');
       this.$socket.emit(SOCKET_ADD_JOB, createJob(
         JOB_TYPE_ONE,
         this.getItemType(),
@@ -139,8 +147,29 @@ export default {
     cursor: pointer;
     border: 2px transparent solid;
     &:hover {
-      box-shadow: 7px 9px 32px 10px rgba(0, 0, 0, 0.06);
+      // box-shadow: 7px 9px 32px 10px rgba(0, 0, 0, 0.06);
+        &.waiting {
+          box-shadow: 7px 9px 32px 10px rgba(0, 0, 0, 0.06);
+        }
+        &.synchronized {
+          box-shadow: 5px 5px 32px 1px #e1ffeb;
+        }
+        &.error {
+          box-shadow: 5px 5px 32px 1px #ffe8e8;
+        }
     }
+    /*&.waiting {
+      // opacity: 0.5;
+      background-image: linear-gradient(to bottom, #e6e9f0 0%, #eef1f5 100%);
+    }
+    &.synchronized {
+      // opacity: 0.2;
+      border: 2px solid #e1ffeb;
+    }
+    &.error {
+      // opacity: 0.2;
+      background-color: #ffe8e8;
+    }*/
     &.checked {
       //border: 2px rgba(34, 156, 255, 0.5) solid;
       background: rgba(34, 156, 255, 0.1);

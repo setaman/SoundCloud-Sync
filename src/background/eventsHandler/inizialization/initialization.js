@@ -63,6 +63,7 @@ const init = async (io, msg) => {
   } catch (e) {
     console.log(e);
     io.emit(SOCKET_INITIALIZATION_FAIL, e);
+    return;
   }
 
   try {

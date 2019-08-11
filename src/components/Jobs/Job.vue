@@ -28,8 +28,8 @@ export default {
   },
   computed: {
     progress () {
-      const processed = this.job.processed || 0;
-      const from = this.job.from || 0;
+      const processed = this.job.progress.done || 0;
+      const from = this.job.progress.from || 0;
       if (from === 0) {
         return 0;
       }

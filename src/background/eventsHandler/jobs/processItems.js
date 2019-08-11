@@ -6,6 +6,7 @@ const { clearQueue } = require('./queue');
 const { datastore } = require('../../db');
 
 const wait = (ms = 3000) => new Promise(resolve => setTimeout(resolve, ms));
+const calculateDelay = itemsCount => Math.log10(itemsCount) * 1000;
 
 const updateItemStatus = (id, status, synchronized) => datastore.update({ id }, { $set: { status, synchronized } },
   { multi: false, returnUpdatedDocs: true });
@@ -76,9 +77,10 @@ const processItems = async (io, job) => {
               ...job,
               item
             });
+            // Let SC API coll down
+            console.log('delay:', calculateDelay(job.items.length));
+            await wait(2000);
           }
-          // Let SC API coll down
-          await wait(2000);
         } catch (e) {
           console.error(SOCKET_TO_MANY_REQUESTS_ERROR, e);
           // Remove all pending jobs
