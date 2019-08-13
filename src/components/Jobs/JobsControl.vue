@@ -40,18 +40,53 @@
           </div>
         </div>
       </transition>
+
+      <q-dialog v-model="alert">
+        <q-card>
+          <q-card-section>
+            <div class="text-h4 alert-header">Oh no, not this again</div>
+          </q-card-section>
+
+          <q-card-section class="alert-body">
+            Thank you for using this amazing app but you made to many request today. In order to prevent spam behaviour
+            SoundCloud blocks such activities.
+          </q-card-section>
+
+          <q-card-section class="alert-body">
+            Sorry, but <b>{{blockedUser.username}}</b> can not add new favorites until <b>{{period}}</b>.
+          </q-card-section>
+
+          <q-card-section>
+            <div class="text-h6 alert-header">And what now?</div>
+          </q-card-section>
+
+          <q-card-section class="alert-body">
+            Clear your browser cache and try to get fresh credentials. Than add new data on settings page and try again.
+            <br>
+            Good Luck!
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat rounded label="i understand" color="primary" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
 </template>
 
 <script>
 import HorizontalProgress from 'components/Base/HorizontalProgress';
 import Job from 'components/Jobs/Job';
+import { format } from 'date-fns';
 const { SOCKET_SYNC_ITEM_FAILED, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_ADDED_JOB, SOCKET_ADD_JOB_FAILED,
   SOCKET_ADD_JOB, SOCKET_COMPLETED_JOB, SOCKET_START_JOB, SOCKET_FAILED_JOB, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../background/const/socketEvents.js');
 export default {
   name: 'JobsControl',
   components: { Job, HorizontalProgress },
   data: () => ({
+    alert: true,
+    blockedUser: '',
+    period: '',
     jobs: [],
     expanded: true
   }),
@@ -79,8 +114,11 @@ export default {
       console.warn(SOCKET_FAILED_JOB, jobInfo, e);
       this.updateJob(jobInfo);
     },
-    [SOCKET_TO_MANY_REQUESTS_ERROR] (jobInfo, e) {
-      console.warn(SOCKET_TO_MANY_REQUESTS_ERROR, jobInfo, e);
+    [SOCKET_TO_MANY_REQUESTS_ERROR] (info) {
+      console.warn(SOCKET_TO_MANY_REQUESTS_ERROR, info);
+      this.alert = true;
+      this.blockedUser = info.blockedUser;
+      this.period = format(info.period, 'YYYY-MM-DD HH:MM');
     },
     [SOCKET_COMPLETED_JOB] (jobInfo) {
       console.log(SOCKET_COMPLETED_JOB, jobInfo);
@@ -114,7 +152,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   $base_width: 80px;
   $expanded_width: 500px;
 
@@ -164,5 +202,20 @@ export default {
   &.expanded {
     transform: rotate(180deg);
   }
+}
+
+.alert-header {
+  font-family: Quicksand;
+  color: $c_bg;
+  font-weight: bold;
+}
+
+.alert-body {
+  font-family: Quicksand;
+  color: $c_bg;
+}
+
+.q-dialog .q-card {
+  border-radius: 10px;
 }
 </style>

@@ -26,6 +26,10 @@ const processLike = (io, job) => {
       const updatedItem = await updateItemStatus(item.id, STATUS_ERROR, false);
       io.emit(SOCKET_SYNC_ITEM_FAILED, job, updatedItem);
       if (error.response && error.response.status === 429) {
+        io.emit(SOCKET_TO_MANY_REQUESTS_ERROR, {
+          blockedUser: job.userFrom,
+          period: error.response.data.errors[0].spam_warning.expires_at
+        });
         throw Error(error);
       }
     });
@@ -91,7 +95,6 @@ const processItems = async (io, job) => {
           job.pending = false;
 
           io.emit(SOCKET_FAILED_JOB, job, e);
-          io.emit(SOCKET_TO_MANY_REQUESTS_ERROR, e);
           // cancel job execution
           return;
         }

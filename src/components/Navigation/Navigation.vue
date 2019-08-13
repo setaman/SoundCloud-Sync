@@ -100,7 +100,7 @@ export default {
     position: fixed;
     height: 100vh;
     display: grid;
-    z-index: 9999;
+    z-index: 10;
     background: $c_bg;
     transition: 0.5s;
     width: $base_width;

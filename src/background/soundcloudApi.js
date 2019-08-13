@@ -68,6 +68,7 @@ const getUserById = (userId, clientId) =>
 const addUserLike = (user_id, client_id, track_id, token) =>
   axios.put(
     `https://api-v2.soundcloud.com/users/${user_id}/track_likes/${track_id}`,
+    // `https://api.soundcloud.com/users/${user_id}/favorites/${track_id}`,
     {},
     {
       params: {
