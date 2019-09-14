@@ -1,6 +1,6 @@
 <template>
 <div class="list">
-  <list-controls :filters.sync="filters" :selected="checkedItems.length || maxItems" :max="maxItems" @all-checked="onAllChecked"/>
+  <list-controls :filters.sync="filters" :selected="checkedItems.length" :max="maxItems" @all-checked="onAllChecked"/>
   <div class="q-pt-md q-pb-sm">
     <!--{{checkedItems}}
     {{filters}}-->
@@ -53,21 +53,30 @@ export default {
       default: false
     }
   },
-  data: () => ({
-    filters: {
-      title: '',
-      status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-      sort: 'Oldest'
-    },
-    offset: 30,
-    checkedItems: []
-  }),
+  data () {
+    return {
+      filters: {
+        title: '',
+        status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
+        sort: 'Oldest',
+        range: {
+          min: 1,
+          max: this.maxItems
+        }
+      },
+      offset: 30,
+      checkedItems: []
+    };
+  },
   watch: {
     filters: {
       handler () {
         this.emitFilterChanges();
       },
       deep: true
+    },
+    maxItems () {
+      this.filters.range.max = this.maxItems;
     },
     items () {
       this.checkedItems = [];

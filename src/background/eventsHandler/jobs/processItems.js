@@ -27,7 +27,7 @@ const processLike = (io, job) => {
       io.emit(SOCKET_SYNC_ITEM_FAILED, job, updatedItem);
       if (error.response && error.response.status === 429) {
         io.emit(SOCKET_TO_MANY_REQUESTS_ERROR, {
-          blockedUser: job.userFrom,
+          blockedUser: job.userTo,
           period: error.response.data.errors[0].spam_warning.expires_at
         });
         throw Error(error);
@@ -81,7 +81,7 @@ const processItems = async (io, job) => {
               ...job,
               item
             });
-            // Let SC API coll down
+            // Let SC API cool down
             console.log('delay:', calculateDelay(job.items.length));
             await wait(2000);
           }

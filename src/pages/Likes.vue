@@ -73,7 +73,7 @@ export default {
       type: LIST_TYPE_LIKES,
       title: '',
       status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-      sort: ''
+      sort: 'Oldest'
     },
     filtersOne: {
       type: LIST_TYPE_LIKES,

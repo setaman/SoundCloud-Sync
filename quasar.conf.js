@@ -59,6 +59,7 @@ module.exports = function (ctx) {
         'QStepper',
         'QStep',
         'QStepperNavigation',
+        'QRange',
         'QTabs',
         'QTab',
         'QRouteTab'

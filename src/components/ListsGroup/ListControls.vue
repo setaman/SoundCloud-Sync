@@ -21,6 +21,23 @@
         </div>
       </div>
 
+      <div class="row list-controls-filters q-col-gutter-sm">
+        <div class="col-12">
+          <q-range
+            v-model="filters.range"
+            :min="1"
+            :max="max"
+            :step="1"
+            :disable="selected > 0"
+            label
+            drag-range
+            color="primary"
+          />
+          {{selected}}
+        </div>
+        {{filters.range}}
+      </div>
+
       <div class="row list-controls-status-filters q-col-gutter-sm">
         <div class="col-4 q-pt-none" v-for="(item, i) in statusFilters" :key="i + item">
           <input checked
@@ -55,18 +72,29 @@ export default {
       required: true
     }
   },
-  data: () => ({
-    sortOptions: ['Oldest', 'Newest', 'A to Z', 'Status'],
-    allSelected: true,
-    statusFilters: ['waiting', 'synchronized', 'error']
-  }),
+  data () {
+    return {
+      sortOptions: ['Oldest', 'Newest', 'A to Z', 'Status'],
+      allSelected: true,
+      statusFilters: ['waiting', 'synchronized', 'error']
+    };
+  },
   watch: {
     selected () {
       // check if specific items in the list selected
-      this.allSelected = (this.selected === this.max);
+      this.allSelected = (this.selected === this.max) || this.selected === 0;
+      if (this.selected > 0) {
+        this.resetRange();
+      }
     }
   },
   methods: {
+    resetRange () {
+      this.range = {
+        min: 1,
+        max: this.max
+      };
+    },
     emitAllChecked () {
       this.$emit('all-checked');
     }
