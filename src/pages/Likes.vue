@@ -73,13 +73,21 @@ export default {
       type: LIST_TYPE_LIKES,
       title: '',
       status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-      sort: 'Oldest'
+      sort: 'Oldest',
+      range: {
+        min: 0,
+        max: 0
+      }
     },
     filtersOne: {
       type: LIST_TYPE_LIKES,
       title: '',
       status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-      sort: 'Oldest'
+      sort: 'Oldest',
+      range: {
+        min: 0,
+        max: 0
+      }
     },
     itemsCountOne: 0,
     itemsCountTwo: 0,
@@ -98,8 +106,6 @@ export default {
   }),
   sockets: {
     [SOCKET_USER_LIKES] ({ userId, items, from, page, pages }) {
-      console.log('LOADED LIkES', userId, items, from, page, pages);
-      this.isInitialized = true;
       if (userId === this.userOne.userId) {
         this.itemsOne = items;
         this.itemsCountOne = from;
@@ -111,6 +117,8 @@ export default {
         this.isLoadingTwo = false;
         this.pagesTwo = pages;
       }
+      console.log('LOADED LIkES', userId, items, from, page, pages);
+      this.isInitialized = true;
     },
     [SOCKET_USER_LIKES_ERROR] (e) {
       console.log('ERROR LIkES', e);
@@ -120,7 +128,7 @@ export default {
       this.syncPercent = likesSyncPercent || 0;
     },
     [SOCKET_SYNC_STATUS_FAIL] (e) {
-      console.log('SYNC ERROR', e);
+      console.log(SOCKET_SYNC_STATUS_FAIL, e);
       this.syncPercent = 0;
     },
     [SOCKET_SYNC_ITEM_FAILED] (jobInfo, updatedItem) {
@@ -168,12 +176,22 @@ export default {
       this.$socket.emit(SOCKET_SYNC_STATUS_GET);
     },
     onFiltersChangeOne (filters) {
+      if (this.filtersOne.range.min !== filters.range.min || this.filtersOne.range.max !== filters.range.max) {
+        this.filtersOne = { ...this.filtersOne, ...filters };
+        // do not refetch the items if range was changed
+        return;
+      }
       this.isLoadingOne = true;
       this.pageOne = 1;
       this.filtersOne = { ...this.filtersOne, ...filters };
       this.getUserOneLikes();
     },
     onFiltersChangeTwo (filters) {
+      if (this.filtersTwo.range.min !== filters.range.min || this.filtersTwo.range.max !== filters.range.max) {
+        this.filtersTwo = { ...this.filtersTwo, ...filters };
+        // do not refetch the items if range was changed
+        return;
+      }
       this.isLoadingTwo = true;
       this.pageTwo = 1;
       this.filtersTwo = { ...this.filtersTwo, ...filters };

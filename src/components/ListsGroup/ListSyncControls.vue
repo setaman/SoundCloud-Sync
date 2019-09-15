@@ -9,7 +9,7 @@
       </div>
     </div>
     <sync-progress :progress="progress">
-      <q-btn slot="legend-caption" round flat size="lg" color="primary" icon="fas fa-sync-alt"/>
+      <span slot="legend-value">%</span>
     </sync-progress>
     <div class="row">
       <div class="col">

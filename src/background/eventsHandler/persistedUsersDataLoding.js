@@ -80,7 +80,11 @@ const getPaginatedUserItems = async (io, { type, userId, title, status, sort, pa
 
 const getUserItems = async query => {
   const filter = formulateFilter(query.type, query.userId, query.title, query.status);
-  return datastore.find(filter).sort(formulateSort(query.sort));
+  const items = await datastore.find(filter).sort(formulateSort(query.sort)).exec();
+  if (query.range && query.range.min > 0 && query.range.max > 0) {
+    return items.slice(query.range.min - 1, query.range.max);
+  }
+  return items;
 };
 
 module.exports = {

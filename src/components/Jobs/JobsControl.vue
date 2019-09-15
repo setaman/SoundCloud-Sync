@@ -84,7 +84,7 @@ export default {
   name: 'JobsControl',
   components: { Job, HorizontalProgress },
   data: () => ({
-    alert: true,
+    alert: false,
     blockedUser: '',
     period: '',
     jobs: [],

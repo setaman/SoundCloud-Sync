@@ -2,10 +2,10 @@
     <div class="list-controls">
       <div class="list-controls-head">
         <div>
-          <q-checkbox :disable="max===selected" v-model="allSelected" @input="emitAllChecked"/>
+          <q-checkbox :disable="max===selectedCount" v-model="allSelected" @input="emitAllChecked"/>
         </div>
         <div class="list-controls-status flex items-center">
-          selected <b>{{` ${selected} `}}</b> from {{max}}
+          selected <b>{{` ${selectedCount} `}}</b> from {{max}}
         </div>
         <div>
           <q-btn round flat icon="save_alt" color="info"></q-btn>
@@ -24,7 +24,8 @@
       <div class="row list-controls-filters q-col-gutter-sm">
         <div class="col-12">
           <q-range
-            v-model="filters.range"
+            :value="filters.range"
+            @change="val => { filters.range = val }"
             :min="1"
             :max="max"
             :step="1"
@@ -33,9 +34,7 @@
             drag-range
             color="primary"
           />
-          {{selected}}
         </div>
-        {{filters.range}}
       </div>
 
       <div class="row list-controls-status-filters q-col-gutter-sm">
@@ -79,23 +78,34 @@ export default {
       statusFilters: ['waiting', 'synchronized', 'error']
     };
   },
-  watch: {
-    selected () {
-      // check if specific items in the list selected
-      this.allSelected = (this.selected === this.max) || this.selected === 0;
+  computed: {
+    selectedCount () {
       if (this.selected > 0) {
-        this.resetRange();
+        this.setAllSelectedFalse();
+        return this.selected;
+      } else if (((this.filters.range.max - this.filters.range.min) + 1) < this.max) {
+        this.setAllSelectedFalse();
+        return (this.filters.range.max - this.filters.range.min) + 1;
       }
+      this.setAllSelectedTrue();
+      return this.max;
     }
   },
   methods: {
     resetRange () {
-      this.range = {
+      this.filters.range = {
         min: 1,
         max: this.max
       };
     },
+    setAllSelectedFalse () {
+      this.allSelected = false;
+    },
+    setAllSelectedTrue () {
+      this.allSelected = true;
+    },
     emitAllChecked () {
+      this.resetRange();
       this.$emit('all-checked');
     }
   }

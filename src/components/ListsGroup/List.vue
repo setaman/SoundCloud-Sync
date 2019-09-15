@@ -1,11 +1,7 @@
 <template>
 <div class="list">
   <list-controls :filters.sync="filters" :selected="checkedItems.length" :max="maxItems" @all-checked="onAllChecked"/>
-  <div class="q-pt-md q-pb-sm">
-    <!--{{checkedItems}}
-    {{filters}}-->
-
-    <!--{{selectedItems.length}}-->
+  <div class="q-pt-sm q-pb-sm">
     <div class="relative-position">
       <divider></divider>
       <transition
@@ -95,15 +91,6 @@ export default {
     emitFilterChanges () {
       this.$emit('filtersChange', this.filters);
     },
-    onLoad (index, done) {
-      this.$emit('increasePage');
-      console.log('LOAD');
-      if (this.offset < this.items.length) {
-        this.offset = this.offset * 2;
-        console.log('LOAD', this.offset);
-      }
-      done();
-    },
     onChecked (itemId) {
       this.checkedItems.push(itemId);
       this.emitSelectedItems();
@@ -124,5 +111,4 @@ export default {
   .list {
     min-height: calc(100vh - 100px);
   }
-
 </style>

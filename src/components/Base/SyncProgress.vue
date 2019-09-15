@@ -10,10 +10,9 @@
     fontColor="white"
     legendClass="sync-progress-legend"
     :animation="{type: 'rs', delay: 1000, duration: 700}">
-    <span slot="legend-value"></span>
-    <p slot="legend-caption">
-      hello
-    </p>
+    <span slot="legend-value">
+      <slot name="legend-value"></slot>
+    </span>
   </vue-ellipse-progress>
 </template>
 
