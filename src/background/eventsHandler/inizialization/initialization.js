@@ -1,5 +1,5 @@
-const { SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_SUCCESS, SOCKET_INITIALIZATION_DATA_LOADED,
-  SOCKET_SYNC_STATUS_START, SOCKET_SYNC_STATUS_SUCCESS, SOCKET_SYNC_STATUS_FAIL } = require('../../const/socketEvents');
+const { SOCKET_INITIALIZATION_ERROR, SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_SUCCESS, SOCKET_INITIALIZATION_ONDATA,
+  SOCKET_SYNC_STAT_START, SOCKET_SYNC_STAT_SUCCESS, SOCKET_SYNC_STAT_ERROR } = require('../../const/socketEvents');
 const { loadUserData } = require('../../userDataLoader');
 const { datastore, clear } = require('../../db');
 const determineSyncStatus = require('./determineSyncStatus');
@@ -59,15 +59,15 @@ const init = async (io, msg) => {
 
   try {
     usersData = await loadUsersData(msg.userOne, msg.userTwo);
-    io.emit(SOCKET_INITIALIZATION_DATA_LOADED, sanitizeUsersDataResponse(usersData));
+    io.emit(SOCKET_INITIALIZATION_ONDATA, sanitizeUsersDataResponse(usersData));
   } catch (e) {
     console.log(e);
-    io.emit(SOCKET_INITIALIZATION_FAIL, e);
+    io.emit(SOCKET_INITIALIZATION_ERROR, e);
     return;
   }
 
   try {
-    io.emit(SOCKET_SYNC_STATUS_START);
+    io.emit(SOCKET_SYNC_STAT_START);
     const { userOne, userTwo, likesSyncPercent, followingsSyncPercent,
       overallSyncPercent
     } = determineSyncStatus(usersData);
@@ -86,12 +86,12 @@ const init = async (io, msg) => {
       followingsSyncPercent
     });
 
-    io.emit(SOCKET_SYNC_STATUS_SUCCESS);
+    io.emit(SOCKET_SYNC_STAT_SUCCESS);
     io.emit(SOCKET_INITIALIZATION_SUCCESS);
   } catch (e) {
     console.log(e);
-    io.emit(SOCKET_SYNC_STATUS_FAIL, e);
-    io.emit(SOCKET_INITIALIZATION_FAIL, e);
+    io.emit(SOCKET_SYNC_STAT_ERROR, e);
+    io.emit(SOCKET_INITIALIZATION_ERROR, e);
   }
 };
 

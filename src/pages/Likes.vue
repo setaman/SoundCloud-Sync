@@ -55,9 +55,9 @@ import List from 'components/ListsGroup/List';
 import ListSyncControls from 'components/ListsGroup/ListSyncControls';
 import notificationMixin from 'components/notificationMixin';
 const uniqid = require('uniqid');
-const { SOCKET_GET_USER_LIKES, SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR, SOCKET_SYNC_STATUS_GET,
-  SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL, SOCKET_ADD_JOB,
-  SOCKET_SYNC_ITEM_FAILED, SOCKET_SYNC_ITEM_SUCCESS } = require('../background/const/socketEvents.js');
+const { SOCKET_LIKES_GET, SOCKET_LIKES_ONDATA, SOCKET_LIKES_GET_ERROR, SOCKET_SYNC_STAT_GET,
+  SOCKET_SYNC_STAT_ONDATA, SOCKET_SYNC_STAT_ERROR, SOCKET_JOB_ADD,
+  SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS } = require('../background/const/socketEvents.js');
 const { JOB_TYPE_SELECTED, JOB_TYPE_ONE_USER, LIST_TYPE_LIKES, STATUS_WAITING, STATUS_SYNCHRONIZED,
   STATUS_ERROR } = require('../background/const/const.js');
 import SplashLoading from 'components/Base/SplashLoading';
@@ -105,7 +105,7 @@ export default {
     pagesTwo: 1
   }),
   sockets: {
-    [SOCKET_USER_LIKES] ({ userId, items, from, page, pages }) {
+    [SOCKET_LIKES_ONDATA] ({ userId, items, from, page, pages }) {
       if (userId === this.userOne.userId) {
         this.itemsOne = items;
         this.itemsCountOne = from;
@@ -120,18 +120,18 @@ export default {
       console.log('LOADED LIkES', userId, items, from, page, pages);
       this.isInitialized = true;
     },
-    [SOCKET_USER_LIKES_ERROR] (e) {
+    [SOCKET_LIKES_GET_ERROR] (e) {
       console.log('ERROR LIkES', e);
     },
-    [SOCKET_SYNC_STATUS_DATA] ({ likesSyncPercent }) {
+    [SOCKET_SYNC_STAT_ONDATA] ({ likesSyncPercent }) {
       console.log('SYNC PERCENT', likesSyncPercent);
       this.syncPercent = likesSyncPercent || 0;
     },
-    [SOCKET_SYNC_STATUS_FAIL] (e) {
-      console.log(SOCKET_SYNC_STATUS_FAIL, e);
+    [SOCKET_SYNC_STAT_ERROR] (e) {
+      console.log(SOCKET_SYNC_STAT_ERROR, e);
       this.syncPercent = 0;
     },
-    [SOCKET_SYNC_ITEM_FAILED] (jobInfo, updatedItem) {
+    [SOCKET_SYNC_ITEM_ERROR] (jobInfo, updatedItem) {
       console.log('LIKES: SOCKET_SYNC_ITEM_FAILED', updatedItem);
       this.updateItem(updatedItem);
     },
@@ -158,7 +158,7 @@ export default {
     },
     getUserOneLikes () {
       this.isLoadingOne = true;
-      this.$socket.emit(SOCKET_GET_USER_LIKES, {
+      this.$socket.emit(SOCKET_LIKES_GET, {
         userId: this.userOne.userId,
         ...this.filtersOne,
         page: this.pageOne
@@ -166,14 +166,14 @@ export default {
     },
     getUserTwoLikes () {
       this.isLoadingTwo = true;
-      this.$socket.emit(SOCKET_GET_USER_LIKES, {
+      this.$socket.emit(SOCKET_LIKES_GET, {
         userId: this.userTwo.userId,
         ...this.filtersTwo,
         page: this.pageTwo
       });
     },
     getSyncPercent () {
-      this.$socket.emit(SOCKET_SYNC_STATUS_GET);
+      this.$socket.emit(SOCKET_SYNC_STAT_GET);
     },
     onFiltersChangeOne (filters) {
       if (this.filtersOne.range.min !== filters.range.min || this.filtersOne.range.max !== filters.range.max) {
@@ -228,7 +228,7 @@ export default {
     },
     createJob (type, userFrom, userTo, items = [], query = {}) {
       console.log('adding new job');
-      this.$socket.emit(SOCKET_ADD_JOB, createJob(
+      this.$socket.emit(SOCKET_JOB_ADD, createJob(
         type,
         LIST_TYPE_LIKES,
         items,

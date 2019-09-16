@@ -1,13 +1,13 @@
 const { datastore } = require('../db');
-const { SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL } = require('../const/socketEvents');
+const { SOCKET_SYNC_STAT_ONDATA, SOCKET_SYNC_STAT_ERROR } = require('../const/socketEvents');
 
 const getSyncStatus = async io => {
   try {
     const syncStatusData = await datastore.findOne({ type: 'syncStatusInfo' });
-    io.emit(SOCKET_SYNC_STATUS_DATA, syncStatusData);
+    io.emit(SOCKET_SYNC_STAT_ONDATA, syncStatusData);
   } catch (e) {
     console.error(e);
-    io.emit(SOCKET_SYNC_STATUS_FAIL, e.toString());
+    io.emit(SOCKET_SYNC_STAT_ERROR, e.toString());
   }
 };
 
@@ -19,14 +19,14 @@ const updateSyncStatus = async (io, { likesSyncPercent, followingsSyncPercent, o
       followingsSyncPercent,
       overallSyncPercent
     });
-    io.emit(SOCKET_SYNC_STATUS_DATA, {
+    io.emit(SOCKET_SYNC_STAT_ONDATA, {
       likesSyncPercent,
       followingsSyncPercent,
       overallSyncPercent
     });
   } catch (e) {
     console.error(e);
-    io.emit(SOCKET_SYNC_STATUS_FAIL, e.toString());
+    io.emit(SOCKET_SYNC_STAT_ERROR, e.toString());
   }
 };
 

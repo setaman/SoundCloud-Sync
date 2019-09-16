@@ -2,7 +2,7 @@
   <q-layout view="hhh lpr lFf" id="home">
     <navigation/>
     <q-page-container>
-      <user-statistics/>
+      <users-overview/>
       <router-view/>
     </q-page-container>
     <jobs-control/>
@@ -11,12 +11,12 @@
 
 <script>
 import Navigation from 'components/Navigation/Navigation';
-import UserStatistics from 'components/UsersOverview/UsersStatistics';
+import UsersOverview from 'components/UsersOverview/UsersOverview';
 import JobsControl from 'components/Jobs/JobsControl';
 
 export default {
   name: 'Home',
-  components: { JobsControl, UserStatistics, Navigation },
+  components: { JobsControl, UsersOverview, Navigation },
   data: () => ({}),
   methods: {}
 };

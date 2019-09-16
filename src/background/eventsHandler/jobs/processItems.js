@@ -1,6 +1,6 @@
 const { addUserLike, addUserFollowing } = require('../../soundcloudApi');
-const { SOCKET_SYNC_ITEM_SUCCESS, SOCKET_SYNC_ITEM_FAILED, SOCKET_COMPLETED_JOB,
-  SOCKET_START_JOB, SOCKET_FAILED_JOB, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../const/socketEvents');
+const { SOCKET_SYNC_ITEM_SUCCESS, SOCKET_SYNC_ITEM_ERROR, SOCKET_JOB_EXEC_SUCCESS,
+  SOCKET_JOB_EXEC_START, SOCKET_JOB_EXEC_ERROR, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../const/socketEvents');
 const { LIST_TYPE_FOLLOWINGS, LIST_TYPE_LIKES, STATUS_ERROR, STATUS_SYNCHRONIZED } = require('../../const/const');
 const { clearQueue } = require('./queue');
 const { datastore } = require('../../db');
@@ -24,7 +24,7 @@ const processLike = (io, job) => {
       console.error('ON ERROR:', error.message);
       job.progress.done += 1;
       const updatedItem = await updateItemStatus(item.id, STATUS_ERROR, false);
-      io.emit(SOCKET_SYNC_ITEM_FAILED, job, updatedItem);
+      io.emit(SOCKET_SYNC_ITEM_ERROR, job, updatedItem);
       if (error.response && error.response.status === 429) {
         io.emit(SOCKET_TO_MANY_REQUESTS_ERROR, {
           blockedUser: job.userTo,
@@ -45,7 +45,7 @@ const processFollowing = (io, job) => {
     })
     .catch(error => {
       console.log(error);
-      io.emit(SOCKET_SYNC_ITEM_FAILED, job, item);
+      io.emit(SOCKET_SYNC_ITEM_ERROR, job, item);
     });
 };
 
@@ -68,7 +68,7 @@ const chunkJobItems = items => {
 const processItems = async (io, job) => {
   job.pending = false;
   job.processing = true;
-  io.emit(SOCKET_START_JOB, job);
+  io.emit(SOCKET_JOB_EXEC_START, job);
 
   const chunkedJobItems = chunkJobItems(job.items);
 
@@ -94,7 +94,7 @@ const processItems = async (io, job) => {
           job.processing = false;
           job.pending = false;
 
-          io.emit(SOCKET_FAILED_JOB, job, e);
+          io.emit(SOCKET_JOB_EXEC_ERROR, job, e);
           // cancel job execution
           return;
         }
@@ -103,7 +103,7 @@ const processItems = async (io, job) => {
       job.processing = false;
       job.finished = true;
 
-      io.emit(SOCKET_COMPLETED_JOB, job);
+      io.emit(SOCKET_JOB_EXEC_SUCCESS, job);
       break;
     case LIST_TYPE_FOLLOWINGS:
       for (let chunk of chunkedJobItems) {
@@ -117,7 +117,7 @@ const processItems = async (io, job) => {
         // Let SC API coll down
         await wait(2000);
       }
-      io.emit(SOCKET_COMPLETED_JOB, job);
+      io.emit(SOCKET_JOB_EXEC_SUCCESS, job);
       break;
   }
 };

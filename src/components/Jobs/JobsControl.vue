@@ -78,8 +78,8 @@
 import HorizontalProgress from 'components/Base/HorizontalProgress';
 import Job from 'components/Jobs/Job';
 import { format } from 'date-fns';
-const { SOCKET_SYNC_ITEM_FAILED, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_ADDED_JOB, SOCKET_ADD_JOB_FAILED,
-  SOCKET_ADD_JOB, SOCKET_COMPLETED_JOB, SOCKET_START_JOB, SOCKET_FAILED_JOB, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../background/const/socketEvents.js');
+const { SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_JOB_ADD_SUCCESS, SOCKET_JOB_ADD_ERROR,
+  SOCKET_JOB_ADD, SOCKET_JOB_EXEC_SUCCESS, SOCKET_JOB_EXEC_START, SOCKET_JOB_EXEC_ERROR, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../background/const/socketEvents.js');
 export default {
   name: 'JobsControl',
   components: { Job, HorizontalProgress },
@@ -91,27 +91,27 @@ export default {
     expanded: true
   }),
   sockets: {
-    [SOCKET_ADD_JOB] (jobInfo) {
-      console.log(SOCKET_ADD_JOB, jobInfo);
+    [SOCKET_JOB_ADD] (jobInfo) {
+      console.log(SOCKET_JOB_ADD, jobInfo);
     },
-    [SOCKET_ADDED_JOB] (jobInfo) {
-      console.log(SOCKET_ADDED_JOB, jobInfo);
+    [SOCKET_JOB_ADD_SUCCESS] (jobInfo) {
+      console.log(SOCKET_JOB_ADD_SUCCESS, jobInfo);
       this.jobs.unshift(jobInfo);
     },
-    [SOCKET_START_JOB] (jobInfo) {
-      console.log(SOCKET_START_JOB, jobInfo);
+    [SOCKET_JOB_EXEC_START] (jobInfo) {
+      console.log(SOCKET_JOB_EXEC_START, jobInfo);
       this.updateJob(jobInfo);
     },
     [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo, item) {
       console.log(SOCKET_SYNC_ITEM_SUCCESS, jobInfo, item);
       this.updateJob(jobInfo);
     },
-    [SOCKET_SYNC_ITEM_FAILED] (jobInfo, item) {
-      console.warn(SOCKET_SYNC_ITEM_FAILED, jobInfo, item);
+    [SOCKET_SYNC_ITEM_ERROR] (jobInfo, item) {
+      console.warn(SOCKET_SYNC_ITEM_ERROR, jobInfo, item);
       this.updateJob(jobInfo);
     },
-    [SOCKET_FAILED_JOB] (jobInfo, e) {
-      console.warn(SOCKET_FAILED_JOB, jobInfo, e);
+    [SOCKET_JOB_EXEC_ERROR] (jobInfo, e) {
+      console.warn(SOCKET_JOB_EXEC_ERROR, jobInfo, e);
       this.updateJob(jobInfo);
     },
     [SOCKET_TO_MANY_REQUESTS_ERROR] (info) {
@@ -120,8 +120,8 @@ export default {
       this.blockedUser = info.blockedUser;
       this.period = format(info.period, 'YYYY-MM-DD HH:MM');
     },
-    [SOCKET_COMPLETED_JOB] (jobInfo) {
-      console.log(SOCKET_COMPLETED_JOB, jobInfo);
+    [SOCKET_JOB_EXEC_SUCCESS] (jobInfo) {
+      console.log(SOCKET_JOB_EXEC_SUCCESS, jobInfo);
       this.updateJob(jobInfo);
     }
   },

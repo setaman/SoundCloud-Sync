@@ -11,7 +11,9 @@
           </p>
         </div>
         <div class="flex flex-center">
-          <user-statistics-divider/>
+          <user-statistics-divider>
+            <q-btn id="sync-all-btn" flat color="primary" round icon="fas fa-sync-alt"></q-btn>
+          </user-statistics-divider>
         </div>
         <div class="text-center">
           <user-avatar :url="userTwo.avatar_url"/>
@@ -27,11 +29,6 @@
         <user-statistics-card type="followings" title="followings" :value-one="userOne.followings" :value-two="userTwo.followings"/>
         <user-statistics-card type="playlists" title="playlists" :value-one="userOne.playlists" :value-two="userTwo.playlists"/>
       </div>
-      <div class="col-12 q-pa-xl">
-        <q-btn large rounded size="lg" class="full-width" color="primary">
-          sync all
-        </q-btn>
-      </div>
     </div>
   </div>
 </template>
@@ -42,7 +39,7 @@ import UserStatisticsCard from 'components/UsersOverview/UserStatisticsCard';
 import UserStatisticsDivider from 'components/UsersOverview/UserStatisticsDivider';
 
 export default {
-  name: 'UsersStatistics',
+  name: 'UsersOverview',
   components: { UserStatisticsDivider, UserStatisticsCard, UserAvatar },
   props: {
     likes: {
@@ -74,7 +71,7 @@ export default {
 
 <style scoped lang="scss">
   $base_height: 0px;
-  $expanded_height: 460px;
+  $expanded_height: 362px;
 
   $c_bg: #231c45;
   $c_likes: #ff4966;
@@ -109,7 +106,7 @@ export default {
 
   .users-overview-head {
     display: grid;
-    grid-template-columns: 1fr 40px 1fr;
+    grid-template-columns: 1fr 42px 1fr;
   }
 
   #users-overview-stats {

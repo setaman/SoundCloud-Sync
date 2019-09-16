@@ -35,8 +35,6 @@ module.exports = function (ctx) {
         'QPage',
         'QScrollObserver',
         'QPageSticky',
-        'QToolbar',
-        'QToolbarTitle',
         'QBtn',
         'QIcon',
         'QAvatar',
@@ -62,6 +60,9 @@ module.exports = function (ctx) {
         'QRange',
         'QTabs',
         'QTab',
+        'QToolbar',
+        'QToolbarTitle',
+        'QTooltip',
         'QRouteTab'
       ],
 
