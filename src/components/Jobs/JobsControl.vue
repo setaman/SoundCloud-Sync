@@ -6,7 +6,7 @@
           enter-active-class="animated fadeIn"
           leave-active-class="animated fadeOut"
         >
-          <div v-if="expanded">
+          <div v-if="expanded && jobs.length > 0">
             <transition
               appear
               enter-active-class="animated fadeIn"
@@ -78,7 +78,7 @@
 import HorizontalProgress from 'components/Base/HorizontalProgress';
 import Job from 'components/Jobs/Job';
 import { format } from 'date-fns';
-const { SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_JOB_ADD_SUCCESS, SOCKET_JOB_ADD_ERROR,
+const { SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_JOB_ADD_SUCCESS, SOCKET_JOB_ADD_ERROR, SOCKET_INITIALIZATION_START,
   SOCKET_JOB_ADD, SOCKET_JOB_EXEC_SUCCESS, SOCKET_JOB_EXEC_START, SOCKET_JOB_EXEC_ERROR, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../background/const/socketEvents.js');
 export default {
   name: 'JobsControl',
@@ -87,7 +87,7 @@ export default {
     alert: false,
     blockedUser: '',
     period: '',
-    jobs: [],
+    // jobs: [],
     expanded: true
   }),
   sockets: {
@@ -96,23 +96,22 @@ export default {
     },
     [SOCKET_JOB_ADD_SUCCESS] (jobInfo) {
       console.log(SOCKET_JOB_ADD_SUCCESS, jobInfo);
-      this.jobs.unshift(jobInfo);
+      this.$store.dispatch('addJob', jobInfo);
     },
     [SOCKET_JOB_EXEC_START] (jobInfo) {
       console.log(SOCKET_JOB_EXEC_START, jobInfo);
-      this.updateJob(jobInfo);
     },
     [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo, item) {
       console.log(SOCKET_SYNC_ITEM_SUCCESS, jobInfo, item);
-      this.updateJob(jobInfo);
+      this.$store.dispatch('updateJob', jobInfo);
     },
     [SOCKET_SYNC_ITEM_ERROR] (jobInfo, item) {
       console.warn(SOCKET_SYNC_ITEM_ERROR, jobInfo, item);
-      this.updateJob(jobInfo);
+      this.$store.dispatch('updateJob', jobInfo);
     },
     [SOCKET_JOB_EXEC_ERROR] (jobInfo, e) {
       console.warn(SOCKET_JOB_EXEC_ERROR, jobInfo, e);
-      this.updateJob(jobInfo);
+      this.$store.dispatch('updateJob', jobInfo);
     },
     [SOCKET_TO_MANY_REQUESTS_ERROR] (info) {
       console.warn(SOCKET_TO_MANY_REQUESTS_ERROR, info);
@@ -121,11 +120,15 @@ export default {
       this.period = format(info.period, 'YYYY-MM-DD HH:MM');
     },
     [SOCKET_JOB_EXEC_SUCCESS] (jobInfo) {
+      this.refreshData();
       console.log(SOCKET_JOB_EXEC_SUCCESS, jobInfo);
-      this.updateJob(jobInfo);
+      this.$store.dispatch('updateJob', jobInfo);
     }
   },
   computed: {
+    jobs () {
+      return this.$store.state.jobs.jobs;
+    },
     progress () {
       const processed = this.jobs.map(job => job.failed ? job.progress.from || 0 : job.progress.done || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
       const from = this.jobs.map(job => job.progress.from || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
@@ -137,16 +140,29 @@ export default {
     jobsCountMessage () {
       const jobsCount = this.jobs.length;
       return `${jobsCount} Job${jobsCount > 1 ? 's' : ''}`;
+    },
+    userOne () {
+      return this.$store.state.users.userOne;
+    },
+    userTwo () {
+      return this.$store.state.users.userTwo;
     }
   },
   methods: {
-    updateJob (updatedJob) {
-      for (let i = 0; i < this.jobs.length; i++) {
-        if (this.jobs[i].id === updatedJob.id) {
-          this.jobs.splice(i, 1, updatedJob);
-          break;
+    refreshData () {
+      // refresh the hole data
+      this.$socket.emit(SOCKET_INITIALIZATION_START, {
+        userOne: {
+          userId: this.userOne.userId,
+          token: this.userOne.token,
+          clientId: this.userOne.clientId
+        },
+        userTwo: {
+          userId: this.userTwo.userId,
+          token: this.userTwo.token,
+          clientId: this.userTwo.clientId
         }
-      }
+      });
     }
   }
 };

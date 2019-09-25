@@ -23,7 +23,7 @@ io.on('connection', socket => {
 
   socket.on(SOCKET_JOB_ADD, job => handleJob(io, job));
 
-  socket.on(SOCKET_JOB_EXEC_CANCEL, () => getSyncStatus(io));
+  socket.on(SOCKET_JOB_EXEC_CANCEL, () => ({/* implement this */}));
 });
 
 http.listen(port, function () {

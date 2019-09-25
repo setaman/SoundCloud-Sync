@@ -1,16 +1,14 @@
 <template>
   <q-page>
-    <logo/>
-    <lists-group :items-one="[]" :items-two="[]" />
+    <web-view-test/>
   </q-page>
 </template>
 
 <script>
-import ListsGroup from 'components/ListsGroup/ListsGroup';
-import Logo from 'components/Base/Logo';
+import WebViewTest from '../components/WebViewTest/WebViewTest';
 export default {
   name: 'Followings',
-  components: { Logo, ListsGroup }
+  components: { WebViewTest }
 };
 </script>
 

@@ -56,7 +56,7 @@ import ListSyncControls from 'components/ListsGroup/ListSyncControls';
 import notificationMixin from 'components/notificationMixin';
 const uniqid = require('uniqid');
 const { SOCKET_LIKES_GET, SOCKET_LIKES_ONDATA, SOCKET_LIKES_GET_ERROR, SOCKET_SYNC_STAT_GET,
-  SOCKET_SYNC_STAT_ONDATA, SOCKET_SYNC_STAT_ERROR, SOCKET_JOB_ADD,
+  SOCKET_SYNC_STAT_ONDATA, SOCKET_SYNC_STAT_ERROR, SOCKET_JOB_ADD, SOCKET_INITIALIZATION_SUCCESS,
   SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS } = require('../background/const/socketEvents.js');
 const { JOB_TYPE_SELECTED, JOB_TYPE_ONE_USER, LIST_TYPE_LIKES, STATUS_WAITING, STATUS_SYNCHRONIZED,
   STATUS_ERROR } = require('../background/const/const.js');
@@ -138,6 +138,11 @@ export default {
     [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo, updatedItem) {
       console.log('LIKES: SOCKET_SYNC_ITEM_SUCCESS', updatedItem);
       this.updateItem(updatedItem);
+    },
+    [SOCKET_INITIALIZATION_SUCCESS] () {
+      console.log(SOCKET_INITIALIZATION_SUCCESS);
+      this.getSyncPercent();
+      this.getUsersLikes();
     }
   },
   computed: {
