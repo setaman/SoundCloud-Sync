@@ -27,7 +27,7 @@
       <div id="users-overview-stats" class="">
         <user-statistics-card :sync-progress="syncStats.likesSyncPercent || 0" title="likes" :value-one="userOne.likes" :value-two="userTwo.likes"/>
         <user-statistics-card :sync-progress="syncStats.followingsSyncPercent || 0" type="followings" title="followings" :value-one="userOne.followings" :value-two="userTwo.followings"/>
-        <user-statistics-card :sync-progress="0" type="playlists" title="playlists" :value-one="userOne.playlists" :value-two="userTwo.playlists"/>
+        <user-statistics-card :sync-progress="syncStats.playlistsSyncPercent || 0" type="playlists" title="playlists" :value-one="userOne.playlists" :value-two="userTwo.playlists"/>
       </div>
     </div>
   </div>
@@ -61,6 +61,7 @@ export default {
   }),
   sockets: {
     [SOCKET_SYNC_STAT_ONDATA] (syncStats) {
+      console.log(SOCKET_SYNC_STAT_ONDATA, syncStats);
       this.syncStats = syncStats;
     }
   },

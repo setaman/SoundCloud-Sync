@@ -68,7 +68,7 @@ const init = async (io, msg) => {
 
   try {
     io.emit(SOCKET_SYNC_STAT_START);
-    const { userOne, userTwo, likesSyncPercent, followingsSyncPercent,
+    const { userOne, userTwo, likesSyncPercent, followingsSyncPercent, playlistsSyncPercent,
       overallSyncPercent
     } = determineSyncStatus(usersData);
     // clear db before persisting new data
@@ -83,7 +83,8 @@ const init = async (io, msg) => {
       type: 'syncStatusInfo',
       overallSyncPercent,
       likesSyncPercent,
-      followingsSyncPercent
+      followingsSyncPercent,
+      playlistsSyncPercent
     });
 
     io.emit(SOCKET_SYNC_STAT_SUCCESS);

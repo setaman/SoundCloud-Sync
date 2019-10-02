@@ -1,5 +1,16 @@
-const { getUserById, getUserFollowings, getUserTracks, addUserFollowing, getUserPlaylists } = require('./soundcloudApi');
-const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, STATUS_WAITING, LIST_TYPE_PLAYLISTS } = require('./const/const');
+const {
+  getUserById,
+  getUserFollowings,
+  getUserTracks,
+  addUserFollowing,
+  getUserPlaylists
+} = require('./soundcloudApi');
+const {
+  LIST_TYPE_LIKES,
+  LIST_TYPE_FOLLOWINGS,
+  STATUS_WAITING,
+  LIST_TYPE_PLAYLISTS
+} = require('./const/const');
 
 const loadUserData = async (userId, clientId, token) => {
   const { username, avatar_url, permalink_url, userError } = await getUser(userId, clientId);
@@ -109,8 +120,9 @@ async function getPlaylists (userId, clientId, token) {
   try {
     const playlists = await getUserPlaylists(userId, clientId, token);
 
-    return { playlists: playlists.map((playlist, order) => ({
-      ...playlist,
+    return { playlists: playlists.map((playlistInfo, order) => ({
+      ...playlistInfo,
+      id: playlistInfo.playlist.id,
       type: LIST_TYPE_PLAYLISTS,
       userId,
       status: STATUS_WAITING,
