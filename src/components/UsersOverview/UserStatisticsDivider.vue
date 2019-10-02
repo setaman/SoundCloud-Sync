@@ -1,6 +1,9 @@
 <template>
     <div class="users-statistics-divider flex flex-center">
-      <div class="btn-wrapper relative-position" :style="{backgroundColor: btnWrapperColor}">
+      <div class="progress-container absolute" :style="{backgroundColor: btnWrapperColor}">
+        <sync-progress :progress="syncProgress || 0" :size="80" :legend="false"></sync-progress>
+      </div>
+      <div slot="caption" class="btn-wrapper relative-position">
         <slot>
         </slot>
       </div>
@@ -8,13 +11,19 @@
 </template>
 
 <script>
+import SyncProgress from '../Base/SyncProgress';
 export default {
   name: 'UserStatisticsDivider',
+  components: { SyncProgress },
   props: {
     btnWrapperColor: {
       type: String,
       required: false,
       default: '#231c45'
+    },
+    syncProgress: {
+      type: Number,
+      required: true
     }
   }
 };
@@ -44,6 +53,11 @@ export default {
 .btn-wrapper {
   display: inline-block;
   border-radius: 50%;
-  background-color: $c_bg;
+}
+.progress-container {
+  height: 100px;
+  border-radius: 50%;
+  padding: 10px;
+  //position: relative;
 }
 </style>

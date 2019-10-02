@@ -1,8 +1,9 @@
 <template>
   <vue-ellipse-progress
     :progress="progress"
-    :size="250"
+    :size="size"
     font-size="2rem"
+    :legend="legend"
     :color="options.color"
     :thickness="3"
     emptyColor="transparent"
@@ -13,6 +14,11 @@
     <span slot="legend-value">
       <slot name="legend-value"></slot>
     </span>
+    <div slot="legend-caption">
+      <slot name="caption">
+
+      </slot>
+    </div>
   </vue-ellipse-progress>
 </template>
 
@@ -25,6 +31,16 @@ export default {
     progress: {
       type: Number,
       required: true
+    },
+    size: {
+      type: Number,
+      required: false,
+      default: 250
+    },
+    legend: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   data: () => ({

@@ -10,7 +10,7 @@
           {{ valueOne }}
         </span>
         </div>
-        <user-statistics-divider :btn-wrapper-color="btnColor">
+        <user-statistics-divider :sync-progress="syncProgress" :btn-wrapper-color="btnColor">
           <q-btn flat color="primary" round icon="fas fa-sync-alt"></q-btn>
         </user-statistics-divider>
         <div class="flex flex-center">
@@ -45,6 +45,10 @@ export default {
     },
     valueTwo: {
       type: [String, Number],
+      required: true
+    },
+    syncProgress: {
+      type: Number,
       required: true
     }
   },
@@ -131,7 +135,7 @@ export default {
 
   .user-statistics-card-content {
     display: grid;
-    grid-template-columns: 1fr 42px 1fr;
+    grid-template-columns: 1fr 120px 1fr;
     grid-template-rows: 80px;
     grid-column-gap: 10px;
   }

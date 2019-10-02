@@ -58,6 +58,37 @@ const getUserFollowings = async (userId, clientId) => {
   }
 };
 
+const getUserPlaylists = async (userId, clientId, token) => {
+  const playlists = [];
+  try {
+    let response = await axios.get(
+      `https://api-v2.soundcloud.com/users/${userId}/playlists/liked_and_owned`,
+      {
+        params: {
+          client_id: clientId,
+          offset: 0,
+          limit: 200
+        },
+        headers: { Authorization: `OAuth ${token}` }
+      }
+    );
+    playlists.push(...response.data.collection);
+    while (response.data.next_href) {
+      response = await axios.get(`${response.data.next_href}`, {
+        params: {
+          client_id: clientId
+        },
+        headers: { Authorization: `OAuth ${token}` }
+      });
+      playlists.push(...response.data.collection);
+    }
+    return new Promise(resolve => resolve(playlists));
+  } catch (e) {
+    console.error(e);
+    return new Promise((resolve, reject) => reject(e));
+  }
+};
+
 const getUserById = (userId, clientId) =>
   axios.get(`https://api.soundcloud.com/users/${userId}`, {
     params: {
@@ -92,5 +123,6 @@ module.exports = {
   addUserLike,
   getUserFollowings,
   addUserFollowing,
+  getUserPlaylists,
   getUserById
 };

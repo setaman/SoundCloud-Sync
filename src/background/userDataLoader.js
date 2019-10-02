@@ -1,5 +1,5 @@
-const { getUserById, getUserFollowings, getUserTracks, addUserFollowing } = require('./soundcloudApi');
-const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, STATUS_WAITING } = require('./const/const');
+const { getUserById, getUserFollowings, getUserTracks, addUserFollowing, getUserPlaylists } = require('./soundcloudApi');
+const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, STATUS_WAITING, LIST_TYPE_PLAYLISTS } = require('./const/const');
 
 const loadUserData = async (userId, clientId, token) => {
   const { username, avatar_url, permalink_url, userError } = await getUser(userId, clientId);
@@ -14,6 +14,12 @@ const loadUserData = async (userId, clientId, token) => {
   if (followingsError) {
     return { errors: [followingsError] };
   }
+
+  const { playlists, playlistsError } = await getPlaylists(userId, clientId, token);
+  if (playlistsError) {
+    return { errors: [playlistsError] };
+  }
+
   const { tokenError } = await checkToken(token);
 
   const errors = [userError, likesError, followingsError, tokenError];
@@ -27,7 +33,7 @@ const loadUserData = async (userId, clientId, token) => {
     token,
     likes,
     followings,
-    playlists: [],
+    playlists,
     errors: errors.filter(e => e)
   };
 };
@@ -96,6 +102,30 @@ async function getFollowings (userId, clientId) {
       return { followingsError: `Can not find followings for user with id "${userId}"` };
     }
     return { followingsError: 'Some error occurred while loading user followings' };
+  }
+}
+
+async function getPlaylists (userId, clientId, token) {
+  try {
+    const playlists = await getUserPlaylists(userId, clientId, token);
+
+    return { playlists: playlists.map((playlist, order) => ({
+      ...playlist,
+      type: LIST_TYPE_PLAYLISTS,
+      userId,
+      status: STATUS_WAITING,
+      order,
+      synchronized: false
+    })),
+    playlistsError: null };
+  } catch (e) {
+    console.info('PLAYLISTS ERROR', e.response);
+    if (e.response.status === 401) {
+      return { playlistsError: `Token "${token}" seems to be invalid` };
+    } else if (e.response.status === 404) {
+      return { playlistsError: `Can not find followings for user with id "${userId}"` };
+    }
+    return { playlistsError: 'Some error occurred while loading user playlists' };
   }
 }
 

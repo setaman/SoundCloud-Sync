@@ -10,7 +10,7 @@
     </div>
     <div class="flex flex-center">
       <q-btn v-if="job.failed" round icon="refresh" flat color="primary"></q-btn>
-      <q-btn round icon="close" flat color="red"></q-btn>
+      <q-btn round icon="close" flat color="red" @click="removeJob(job)"></q-btn>
     </div>
   </div>
 </template>
@@ -34,6 +34,11 @@ export default {
         return 0;
       }
       return processed / from * 100;
+    }
+  },
+  methods: {
+    removeJob (job) {
+      this.$store.dispatch('removeJob', job);
     }
   }
 };

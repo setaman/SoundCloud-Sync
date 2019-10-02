@@ -5,7 +5,7 @@
           <q-checkbox :disable="max===selectedCount" v-model="allSelected" @input="emitAllChecked"/>
         </div>
         <div class="list-controls-status flex items-center">
-          selected <b>{{` ${selectedCount} `}}</b> from {{max}}
+          selected <b>{{` ${selectedCount} `}}</b> / {{max}}
         </div>
         <div>
           <q-btn round flat icon="save_alt" color="info"></q-btn>
