@@ -35,8 +35,6 @@ module.exports = function (ctx) {
         'QPage',
         'QScrollObserver',
         'QPageSticky',
-        'QToolbar',
-        'QToolbarTitle',
         'QBtn',
         'QIcon',
         'QAvatar',
@@ -59,14 +57,19 @@ module.exports = function (ctx) {
         'QStepper',
         'QStep',
         'QStepperNavigation',
+        'QRange',
         'QTabs',
         'QTab',
+        'QToolbar',
+        'QToolbarTitle',
+        'QTooltip',
         'QRouteTab'
       ],
 
       directives: [
         'Ripple',
-        'ClosePopup'
+        'ClosePopup',
+        'Scroll'
       ],
 
       // Quasar plugins

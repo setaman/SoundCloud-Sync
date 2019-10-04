@@ -1,9 +1,7 @@
 <template>
 <div class="list">
-  <list-controls :filters.sync="filters" :selected="checkedItems.length || maxItems" :max="maxItems" @all-checked="onAllChecked"/>
-  <div class="q-pt-md q-pb-sm">
-    <!--{{checkedItems}}
-    {{filters}}-->
+  <list-controls :filters.sync="filters" :selected="checkedItems.length" :max="maxItems" @all-checked="onAllChecked"/>
+  <div class="q-pt-sm q-pb-sm">
     <div class="relative-position">
       <divider></divider>
       <transition
@@ -17,17 +15,8 @@
       </transition>
     </div>
   </div>
-  <q-infinite-scroll @load="onLoad" :offset="200">
-      <list-item v-for="item in items" :key="item.id" :item="item" :checked-items="checkedItems" @checked="onChecked" @unchecked="onUnchecked"/>
-    <template v-slot:loading>
-      <div class="row justify-center q-my-md">
-        <q-spinner-audio
-          color="orange"
-          size="2em"
-        />
-      </div>
-    </template>
-  </q-infinite-scroll>
+  <list-item v-for="item in items" :key="item.id" :item="item" :checked-items="checkedItems" @checked="onChecked" @unchecked="onUnchecked"/>
+  <!-- Pagination goes here -->
   <slot>
 
   </slot>
@@ -39,12 +28,11 @@ import ListControls from 'components/ListsGroup/ListControls';
 import ListItem from 'components/ListsGroup/ListItem';
 import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
 import Divider from 'components/Base/Divider';
-import ListItemsTransition from 'components/Transitions/ListItemsTransition';
 import HorizontalProgress from 'components/Base/HorizontalProgress';
 
 export default {
   name: 'List',
-  components: { HorizontalProgress, ListItemsTransition, Divider, ListItem, ListControls },
+  components: { HorizontalProgress, Divider, ListItem, ListControls },
   props: {
     items: {
       type: Array,
@@ -60,21 +48,30 @@ export default {
       default: false
     }
   },
-  data: () => ({
-    filters: {
-      title: '',
-      status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-      sort: 'Oldest'
-    },
-    offset: 30,
-    checkedItems: []
-  }),
+  data () {
+    return {
+      filters: {
+        title: '',
+        status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
+        sort: 'Newest',
+        range: {
+          min: 1,
+          max: this.maxItems
+        }
+      },
+      offset: 30,
+      checkedItems: []
+    };
+  },
   watch: {
     filters: {
       handler () {
         this.emitFilterChanges();
       },
       deep: true
+    },
+    maxItems () {
+      this.filters.range.max = this.maxItems;
     },
     items () {
       this.checkedItems = [];
@@ -88,19 +85,10 @@ export default {
   },
   methods: {
     emitSelectedItems () {
-      this.$emit('selectedChange', this.selectedItems);
+      this.$emit('selectedChange', this.checkedItems);
     },
     emitFilterChanges () {
       this.$emit('filtersChange', this.filters);
-    },
-    onLoad (index, done) {
-      this.$emit('increasePage');
-      console.log('LOAD');
-      if (this.offset < this.items.length) {
-        this.offset = this.offset * 2;
-        console.log('LOAD', this.offset);
-      }
-      done();
     },
     onChecked (itemId) {
       this.checkedItems.push(itemId);
@@ -122,5 +110,4 @@ export default {
   .list {
     min-height: calc(100vh - 100px);
   }
-
 </style>

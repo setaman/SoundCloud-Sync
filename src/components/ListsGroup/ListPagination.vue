@@ -1,5 +1,5 @@
 <template>
-    <div class="list-pagination flex flex-center q-mt-lg">
+    <div class="list-pagination flex flex-center q-mt-lg q-mb-xl">
       <div>
         <q-pagination
           v-model.lazy="page"

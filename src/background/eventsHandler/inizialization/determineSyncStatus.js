@@ -12,7 +12,7 @@ const calculateItemsSyncPercent = (itemsOne = [], itemsTwo = []) => {
   };
 };
 
-const calculateOverallSyncPercent = (userOne, userTwo, notSynchronizedLikes, notSynchronizedFollowings) => {
+const calculateOverallSyncPercent = (userOne, userTwo, notSynchronizedLikes, notSynchronizedFollowings, notSynchronizedPlaylists) => {
   const uniqLikesIds = new Set([
     ...userOne.likes.map(item => item.id),
     ...userTwo.likes.map(item => item.id)
@@ -23,8 +23,13 @@ const calculateOverallSyncPercent = (userOne, userTwo, notSynchronizedLikes, not
     ...userTwo.followings.map(item => item.id)
   ]);
 
-  const uniqIdsCount = uniqLikesIds.size + uniqFollowingsIds.size;
-  const notSynchronized = notSynchronizedLikes + notSynchronizedFollowings;
+  const uniqPlaylistsIds = new Set([
+    ...userOne.playlists.map(item => item.id),
+    ...userTwo.playlists.map(item => item.id)
+  ]);
+
+  const uniqIdsCount = uniqLikesIds.size + uniqFollowingsIds.size + uniqPlaylistsIds.size;
+  const notSynchronized = notSynchronizedLikes + notSynchronizedFollowings + notSynchronizedPlaylists;
 
   const overallSyncPercent = 100 - (uniqIdsCount > 0 ? notSynchronized / uniqIdsCount * 100 : 0);
 
@@ -63,24 +68,29 @@ const determineItemsStatus = (itemsOne = [], itemsTwo = []) => {
 function determineSyncStatus ({ userOne, userTwo }) {
   const updatedLikesData = determineItemsStatus(userOne.likes, userTwo.likes);
   const updatedFollowingsData = determineItemsStatus(userOne.followings, userTwo.followings);
+  const updatedPlaylistsData = determineItemsStatus(userOne.playlists, userTwo.playlists);
 
   return {
     userOne: {
       ...userOne,
       likes: updatedLikesData.updatedItemsOne,
+      playlists: updatedPlaylistsData.updatedItemsOne,
       followings: updatedFollowingsData.updatedItemsOne
     },
     userTwo: {
       ...userOne,
       likes: updatedLikesData.updatedItemsTwo,
+      playlists: updatedPlaylistsData.updatedItemsTwo,
       followings: updatedFollowingsData.updatedItemsTwo
     },
     likesSyncPercent: updatedLikesData.itemsSyncPercent,
     followingsSyncPercent: updatedFollowingsData.itemsSyncPercent,
+    playlistsSyncPercent: updatedPlaylistsData.itemsSyncPercent,
     overallSyncPercent: calculateOverallSyncPercent(
       userOne, userTwo,
       updatedLikesData.notSynchronizedCount,
-      updatedFollowingsData.notSynchronizedCount
+      updatedFollowingsData.notSynchronizedCount,
+      updatedPlaylistsData.notSynchronizedCount
     )
   };
 }

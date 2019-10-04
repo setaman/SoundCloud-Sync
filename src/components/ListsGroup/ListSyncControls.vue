@@ -1,27 +1,22 @@
 <template>
   <div class="list-group-sync-controls-container relative-position text-center" :class="{expanded: isOverviewExpanded}">
-    <!--<div class="text-center">
-      <h5>
-        Sync your Likes
-      </h5>
-    </div>-->
     <div class="row list-group-sync-controls">
       <div class="col">
-        <q-btn round flat size="ms" color="primary" icon="fas fa-stream"/>
+        <q-btn round flat size="ms" color="primary" icon="fas fa-stream" @click="emitSyncSelectedOne"/>
       </div>
       <div class="col">
-        <q-btn round flat size="ms" color="primary" icon="fas fa-stream fa-flip-horizontal"/>
+        <q-btn round flat size="ms" color="primary" icon="fas fa-stream fa-flip-horizontal" @click="emitSyncSelectedTwo"/>
       </div>
     </div>
     <sync-progress :progress="progress">
-      <q-btn round flat size="lg" color="primary" icon="fas fa-sync-alt"/>
+      <span slot="legend-value">%</span>
     </sync-progress>
     <div class="row">
       <div class="col">
-        <q-btn round flat size="ms" color="primary" icon="fas fa-angle-double-right"/>
+        <q-btn round flat size="ms" color="primary" icon="fas fa-angle-double-right" @click="emitSyncFilteredOne"/>
       </div>
       <div class="col">
-        <q-btn round flat size="ms" color="primary" icon="fas fa-angle-double-left"/>
+        <q-btn round flat size="ms" color="primary" icon="fas fa-angle-double-left" @click="emitSyncFilteredTwo"/>
       </div>
     </div>
   </div>
@@ -41,6 +36,20 @@ export default {
   computed: {
     isOverviewExpanded () {
       return this.$store.state.overview.expanded;
+    }
+  },
+  methods: {
+    emitSyncSelectedOne () {
+      this.$emit('syncSelectedOne');
+    },
+    emitSyncFilteredOne () {
+      this.$emit('syncFilteredOne');
+    },
+    emitSyncSelectedTwo () {
+      this.$emit('syncSelectedTwo');
+    },
+    emitSyncFilteredTwo () {
+      this.$emit('syncFilteredTwo');
     }
   }
 };

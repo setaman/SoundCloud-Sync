@@ -2,10 +2,10 @@
     <div class="list-controls">
       <div class="list-controls-head">
         <div>
-          <q-checkbox :disable="max===selected" v-model="allSelected" @input="emitAllChecked"/>
+          <q-checkbox :disable="max===selectedCount" v-model="allSelected" @input="emitAllChecked"/>
         </div>
         <div class="list-controls-status flex items-center">
-          selected <b>{{` ${selected} `}}</b> from {{max}}
+          selected <b>{{` ${selectedCount} `}}</b> / {{max}}
         </div>
         <div>
           <q-btn round flat icon="save_alt" color="info"></q-btn>
@@ -18,6 +18,22 @@
         <div class="col-8">
           <q-input placeholder="Filter by track title" dense outlined v-model="filters.title">
           </q-input>
+        </div>
+      </div>
+
+      <div class="row list-controls-filters q-col-gutter-sm">
+        <div class="col-12">
+          <q-range
+            :value="filters.range"
+            @change="val => { filters.range = val }"
+            :min="1"
+            :max="max"
+            :step="1"
+            :disable="selected > 0"
+            label
+            drag-range
+            color="primary"
+          />
         </div>
       </div>
 
@@ -55,19 +71,41 @@ export default {
       required: true
     }
   },
-  data: () => ({
-    sortOptions: ['Oldest', 'Newest', 'A to Z', 'Status'],
-    allSelected: true,
-    statusFilters: ['waiting', 'synchronized', 'error']
-  }),
-  watch: {
-    selected () {
-      // check if specific items in the list selected
-      this.allSelected = (this.selected === this.max);
+  data () {
+    return {
+      sortOptions: ['Oldest', 'Newest', 'A to Z', 'Status'],
+      allSelected: true,
+      statusFilters: ['waiting', 'synchronized', 'error']
+    };
+  },
+  computed: {
+    selectedCount () {
+      if (this.selected > 0) {
+        this.setAllSelectedFalse();
+        return this.selected;
+      } else if (((this.filters.range.max - this.filters.range.min) + 1) < this.max) {
+        this.setAllSelectedFalse();
+        return (this.filters.range.max - this.filters.range.min) + 1;
+      }
+      this.setAllSelectedTrue();
+      return this.max;
     }
   },
   methods: {
+    resetRange () {
+      this.filters.range = {
+        min: 1,
+        max: this.max
+      };
+    },
+    setAllSelectedFalse () {
+      this.allSelected = false;
+    },
+    setAllSelectedTrue () {
+      this.allSelected = true;
+    },
     emitAllChecked () {
+      this.resetRange();
       this.$emit('all-checked');
     }
   }

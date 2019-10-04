@@ -1,6 +1,6 @@
-import { SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_FAIL, SOCKET_INITIALIZATION_SUCCESS,
-  SOCKET_INITIALIZATION_DATA_LOADED, SOCKET_SYNC_STATUS_START, SOCKET_SYNC_STATUS_SUCCESS, SOCKET_SYNC_STATUS_FAIL
-} from 'src/utils/socketEvents.js';
+import { SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_ERROR, SOCKET_INITIALIZATION_SUCCESS,
+  SOCKET_INITIALIZATION_ONDATA, SOCKET_SYNC_STAT_START, SOCKET_SYNC_STAT_SUCCESS, SOCKET_SYNC_STAT_ERROR
+} from 'src/background/const/socketEvents.js';
 import notificationMixin from 'src/components/notificationMixin';
 
 export default {
@@ -19,7 +19,7 @@ export default {
       this.isLoading = true;
       this.$store.dispatch('startInitialization');
     },
-    [SOCKET_INITIALIZATION_DATA_LOADED] (usersData) {
+    [SOCKET_INITIALIZATION_ONDATA] (usersData) {
       this.msg = 'Users data loaded';
       this.notifySuccess(this.msg);
       this.onDataLoaded(usersData);
@@ -31,7 +31,7 @@ export default {
       this.isLoading = false;
       this.onInitialisationSuccess();
     },
-    [SOCKET_INITIALIZATION_FAIL] (msg) {
+    [SOCKET_INITIALIZATION_ERROR] (msg) {
       this.isLoading = false;
       this.msg = 'Error while loading data';
       this.$store.dispatch('failInitialization');
@@ -46,15 +46,15 @@ export default {
         this.$router.push('settings');
       }, 3000);
     },
-    [SOCKET_SYNC_STATUS_START] () {
+    [SOCKET_SYNC_STAT_START] () {
       this.msg = 'Checking synchronization status...';
       this.notifySuccess(this.msg);
     },
-    [SOCKET_SYNC_STATUS_SUCCESS] () {
+    [SOCKET_SYNC_STAT_SUCCESS] () {
       this.msg = 'Checking done!!!';
       this.notifySuccess(this.msg);
     },
-    [SOCKET_SYNC_STATUS_FAIL] () {
+    [SOCKET_SYNC_STAT_ERROR] () {
       this.msg = 'Error while checking synchronization status';
       this.notifyError(this.msg);
     }

@@ -11,7 +11,9 @@
           </p>
         </div>
         <div class="flex flex-center">
-          <user-statistics-divider/>
+          <user-statistics-divider :sync-progress="syncStats.overallSyncPercent || 0">
+            <q-btn id="sync-all-btn" flat color="primary" round icon="fas fa-sync-alt"></q-btn>
+          </user-statistics-divider>
         </div>
         <div class="text-center">
           <user-avatar :url="userTwo.avatar_url"/>
@@ -23,14 +25,9 @@
         </div>
       </div>
       <div id="users-overview-stats" class="">
-        <user-statistics-card title="likes" :value-one="userOne.likes" :value-two="userTwo.likes"/>
-        <user-statistics-card type="followings" title="followings" :value-one="userOne.followings" :value-two="userTwo.followings"/>
-        <user-statistics-card type="playlists" title="playlists" :value-one="userOne.playlists" :value-two="userTwo.playlists"/>
-      </div>
-      <div class="col-12 q-pa-xl">
-        <q-btn large rounded size="lg" class="full-width" color="primary">
-          sync all
-        </q-btn>
+        <user-statistics-card :sync-progress="syncStats.likesSyncPercent || 0" title="likes" :value-one="userOne.likes" :value-two="userTwo.likes"/>
+        <user-statistics-card :sync-progress="syncStats.followingsSyncPercent || 0" type="followings" title="followings" :value-one="userOne.followings" :value-two="userTwo.followings"/>
+        <user-statistics-card :sync-progress="syncStats.playlistsSyncPercent || 0" type="playlists" title="playlists" :value-one="userOne.playlists" :value-two="userTwo.playlists"/>
       </div>
     </div>
   </div>
@@ -40,9 +37,10 @@
 import UserAvatar from 'components/Base/UserAvatar';
 import UserStatisticsCard from 'components/UsersOverview/UserStatisticsCard';
 import UserStatisticsDivider from 'components/UsersOverview/UserStatisticsDivider';
+const { SOCKET_SYNC_STAT_ONDATA } = require('../../background/const/socketEvents.js');
 
 export default {
-  name: 'UsersStatistics',
+  name: 'UsersOverview',
   components: { UserStatisticsDivider, UserStatisticsCard, UserAvatar },
   props: {
     likes: {
@@ -58,6 +56,16 @@ export default {
       default: 0
     }
   },
+  data: () => ({
+    syncStats: {}
+  }),
+  sockets: {
+    [SOCKET_SYNC_STAT_ONDATA] (syncStats) {
+      console.log(SOCKET_SYNC_STAT_ONDATA, syncStats);
+      this.syncStats = syncStats;
+    }
+  },
+
   computed: {
     isOverviewExpanded () {
       return this.$store.state.overview.expanded;
@@ -74,7 +82,7 @@ export default {
 
 <style scoped lang="scss">
   $base_height: 0px;
-  $expanded_height: 460px;
+  $expanded_height: 362px;
 
   $c_bg: #231c45;
   $c_likes: #ff4966;
@@ -86,6 +94,8 @@ export default {
     transition: 0.5s;
     //border-left: 2px solid rgba(255, 255, 255, 0.1);
     background-color: $c_bg;
+    position: relative;
+    z-index: 1000;
     height: $base_height;
     &.expanded {
       height: $expanded_height;
@@ -109,7 +119,7 @@ export default {
 
   .users-overview-head {
     display: grid;
-    grid-template-columns: 1fr 40px 1fr;
+    grid-template-columns: 1fr 120px 1fr;
   }
 
   #users-overview-stats {

@@ -1,13 +1,12 @@
-const { SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR } = require('../const/socketEvents');
+const { SOCKET_LIKES_ONDATA, SOCKET_LIKES_GET_ERROR } = require('../const/socketEvents');
 const { datastore } = require('../db');
-const { LIST_SORT_OPTION_ALPHABETIC, LIST_SORT_OPTION_NEWEST, LIST_SORT_OPTION_OLDEST, LIST_SORT_OPTION_STATUS } = require('../const/const');
+const { LIST_SORT_OPTION_ALPHABETIC, LIST_SORT_OPTION_NEWEST, LIST_SORT_OPTION_OLDEST,
+  LIST_SORT_OPTION_STATUS, LIST_TYPE_LIKES } = require('../const/const');
 
-const formulateSort = sortOption => {
+const formulateSort = (sortOption, type) => {
   switch (sortOption) {
     case LIST_SORT_OPTION_ALPHABETIC:
-      return {
-        title: 1
-      };
+      return type === LIST_TYPE_LIKES ? { title: 1 } : { username: 1 };
     case LIST_SORT_OPTION_NEWEST:
       return {
         order: 1
@@ -27,12 +26,9 @@ const formulateSort = sortOption => {
   }
 };
 
-const countItems = filter => datastore.count(filter);
-const countItemsPages = (itemsCount, pageSize) => Math.ceil((itemsCount / pageSize));
-
-const getUserLikes = async (io, { userId, title, status, sort, page = 1 }) => {
-  const filter = {
-    type: 'likes',
+const formulateFilter = (type, userId, title, status) => {
+  return {
+    type,
     userId,
     $or: [
       {
@@ -40,34 +36,58 @@ const getUserLikes = async (io, { userId, title, status, sort, page = 1 }) => {
       },
       {
         'user.username': new RegExp(`${title}`, 'i')
+      },
+      {
+        username: new RegExp(`${title}`, 'i')
       }
     ],
     status: { $in: status }
   };
+};
 
-  console.log('FILTERS:', filter, formulateSort(sort), page);
+const countItems = filter => datastore.count(filter);
+const countItemsPages = (itemsCount, pageSize) => Math.ceil((itemsCount / pageSize));
 
+const getPaginatedUserItems = async (io, { type, userId, title, status, sort, page = 1 }) => {
+  const filter = formulateFilter(type, userId, title, status);
   const pageSize = 30;
 
+  // console.log('FILTERS AFTER:', filter, formulateSort(sort, type), page);
+
   try {
-    const likes = await datastore.find(filter).sort(formulateSort(sort)).skip(pageSize * (page - 1)).limit(pageSize).exec();
+    const items = await datastore.find(filter).sort(formulateSort(sort)).skip(pageSize * (page - 1)).limit(pageSize).exec();
     const itemsCount = await countItems(filter);
-    io.emit(SOCKET_USER_LIKES, {
-      userId,
-      items: likes,
-      from: itemsCount,
-      page,
-      pages: itemsCount > pageSize ? countItemsPages(itemsCount, pageSize) : 1
-    });
+
+    if (io) {
+      io.emit(SOCKET_LIKES_ONDATA, {
+        userId,
+        items: items,
+        from: itemsCount,
+        page,
+        pages: itemsCount > pageSize ? countItemsPages(itemsCount, pageSize) : 1
+      });
+    }
   } catch (e) {
     console.error(e);
-    io.emit(SOCKET_USER_LIKES_ERROR, {
-      userId,
-      error: e.toString()
-    });
+    if (io) {
+      io.emit(SOCKET_LIKES_GET_ERROR, {
+        userId,
+        error: e.toString()
+      });
+    }
   }
 };
 
+const getUserItems = async query => {
+  const filter = formulateFilter(query.type, query.userId, query.title, query.status);
+  const items = await datastore.find(filter).sort(formulateSort(query.sort)).exec();
+  if (query.range && query.range.min > 0 && query.range.max > 0) {
+    return items.slice(query.range.min - 1, query.range.max);
+  }
+  return items;
+};
+
 module.exports = {
-  getUserLikes
+  getPaginatedUserItems,
+  getUserItems
 };

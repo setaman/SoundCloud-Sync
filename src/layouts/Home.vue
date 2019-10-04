@@ -2,19 +2,21 @@
   <q-layout view="hhh lpr lFf" id="home">
     <navigation/>
     <q-page-container>
-      <user-statistics/>
+      <users-overview/>
       <router-view/>
     </q-page-container>
+    <tasks-overview-control/>
   </q-layout>
 </template>
 
 <script>
 import Navigation from 'components/Navigation/Navigation';
-import UserStatistics from 'components/UsersOverview/UsersStatistics';
+import UsersOverview from 'components/UsersOverview/UsersOverview';
+import TasksOverviewControl from 'components/Tasks/TasksOverview/TasksOverviewControl';
 
 export default {
   name: 'Home',
-  components: { UserStatistics, Navigation },
+  components: { TasksOverviewControl, UsersOverview, Navigation },
   data: () => ({}),
   methods: {}
 };

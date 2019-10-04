@@ -1,8 +1,5 @@
 <template>
   <q-page class="q-px-lg q-pt-xl q-px-xs-sm">
-    <!--<q-btn @click="getUsersLikes">
-      load likes
-    </q-btn>-->
     <transition
       appear
       mode="out-in"
@@ -11,7 +8,9 @@
     >
       <splash-loading v-if="!isInitialized"/>
       <lists-group v-else>
-        <list slot="list-one" :isLoading="isLoadingOne" :items="itemsOne" :maxItems="itemsCountOne" @filtersChange="onFiltersChangeOne">
+        <list slot="list-one" :isLoading="isLoadingOne" :items="itemsOne" :maxItems="itemsCountOne"
+              @selectedChange="onSelectedChangeOne"
+              @filtersChange="onFiltersChangeOne">
           <div>
             <transition
               appear
@@ -24,14 +23,17 @@
           </div>
         </list>
         <div slot="list-sync-controls">
-          <list-sync-controls :progress="syncPercent"></list-sync-controls>
-          {{ pageOne}}<br>
-          {{ pageTwo}}
-          <q-btn @click="pageOne = pagesTwo = 2">
-            reset page
-          </q-btn>
+          <list-sync-controls
+            :progress="syncPercent"
+            @syncSelectedOne="onSyncSelectedOne"
+            @syncSelectedTwo="onSyncSelectedTwo"
+            @syncFilteredOne="onSyncFilteredOne"
+            @syncFilteredTwo="onSyncFilteredTwo"
+          ></list-sync-controls>
         </div>
-        <list slot="list-two" :isLoading="isLoadingTwo" :items="itemsTwo" :maxItems="itemsCountTwo" @filtersChange="onFiltersChangeTwo">
+        <list slot="list-two" :isLoading="isLoadingTwo" :items="itemsTwo" :maxItems="itemsCountTwo"
+              @selectedChange="onSelectedChangeTwo"
+              @filtersChange="onFiltersChangeTwo">
           <div>
             <transition
               appear
@@ -51,30 +53,52 @@
 import ListsGroup from 'components/ListsGroup/ListsGroup';
 import List from 'components/ListsGroup/List';
 import ListSyncControls from 'components/ListsGroup/ListSyncControls';
-import { SOCKET_GET_USER_LIKES, SOCKET_USER_LIKES, SOCKET_USER_LIKES_ERROR, SOCKET_SYNC_STATUS_GET,
-  SOCKET_SYNC_STATUS_DATA, SOCKET_SYNC_STATUS_FAIL } from 'src/utils/socketEvents.js';
+import notificationMixin from 'components/notificationMixin';
+import { SOCKET_LIKES_GET, SOCKET_LIKES_ONDATA, SOCKET_LIKES_GET_ERROR, SOCKET_SYNC_STAT_GET,
+  SOCKET_SYNC_STAT_ONDATA, SOCKET_SYNC_STAT_ERROR, SOCKET_TASK_ADD, SOCKET_INITIALIZATION_SUCCESS,
+  SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS } from 'src/background/const/socketEvents.js';
+import {
+  TASK_TYPE_SELECTED,
+  TASK_TYPE_FILTERED,
+  LIST_TYPE_LIKES,
+  STATUS_WAITING,
+  STATUS_SYNCHRONIZED,
+  STATUS_ERROR } from 'src/background/const/const.js';
 import SplashLoading from 'components/Base/SplashLoading';
-import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
 import ListPagination from 'components/ListsGroup/ListPagination';
+import { createTask } from 'components/Tasks/createTask';
 
 export default {
   name: 'Likes',
   components: { ListPagination, SplashLoading, ListSyncControls, List, ListsGroup },
+  mixins: [notificationMixin],
   data: () => ({
     filtersTwo: {
+      type: LIST_TYPE_LIKES,
       title: '',
       status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-      sort: ''
+      sort: 'Newest',
+      range: {
+        min: 1,
+        max: 0
+      }
     },
     filtersOne: {
+      type: LIST_TYPE_LIKES,
       title: '',
       status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-      sort: 'Oldest'
+      sort: 'Newest',
+      range: {
+        min: 1,
+        max: 0
+      }
     },
     itemsCountOne: 0,
     itemsCountTwo: 0,
     itemsOne: [],
+    checkedItemsOne: [],
     itemsTwo: [],
+    checkedItemsTwo: [],
     isLoadingOne: true,
     isLoadingTwo: true,
     isInitialized: false,
@@ -85,33 +109,46 @@ export default {
     pagesTwo: 1
   }),
   sockets: {
-    [SOCKET_USER_LIKES] ({ userId, items, from, page, pages }) {
-      console.log('LOADED LIkES', userId, items, from, page, pages);
-      this.isInitialized = true;
-      /* setTimeout(() => {
-      }, 1000); */
+    [SOCKET_LIKES_ONDATA] ({ userId, items, from, page, pages }) {
       if (userId === this.userOne.userId) {
         this.itemsOne = items;
         this.itemsCountOne = from;
+        this.filtersOne.range.max = from;
         this.isLoadingOne = false;
         this.pagesOne = pages;
       } else {
         this.itemsTwo = items;
         this.itemsCountTwo = from;
+        this.filtersTwo.range.max = from;
         this.isLoadingTwo = false;
         this.pagesTwo = pages;
       }
+      console.log('LOADED LIkES', userId, items, from, page, pages);
+      this.isInitialized = true;
     },
-    [SOCKET_USER_LIKES_ERROR] (e) {
+    [SOCKET_LIKES_GET_ERROR] (e) {
       console.log('ERROR LIkES', e);
     },
-    [SOCKET_SYNC_STATUS_DATA] ({ likesSyncPercent }) {
+    [SOCKET_SYNC_STAT_ONDATA] ({ likesSyncPercent }) {
       console.log('SYNC PERCENT', likesSyncPercent);
       this.syncPercent = likesSyncPercent || 0;
     },
-    [SOCKET_SYNC_STATUS_FAIL] (e) {
-      console.log('SYNC ERROR', e);
+    [SOCKET_SYNC_STAT_ERROR] (e) {
+      console.log(SOCKET_SYNC_STAT_ERROR, e);
       this.syncPercent = 0;
+    },
+    [SOCKET_SYNC_ITEM_ERROR] (taskInfo, updatedItem) {
+      console.log('LIKES: SOCKET_SYNC_ITEM_FAILED', updatedItem);
+      this.updateItem(updatedItem);
+    },
+    [SOCKET_SYNC_ITEM_SUCCESS] (taskInfo, updatedItem) {
+      console.log('LIKES: SOCKET_SYNC_ITEM_SUCCESS', updatedItem);
+      this.updateItem(updatedItem);
+    },
+    [SOCKET_INITIALIZATION_SUCCESS] () {
+      console.log(SOCKET_INITIALIZATION_SUCCESS);
+      this.getSyncPercent();
+      this.getUsersLikes();
     }
   },
   computed: {
@@ -132,7 +169,7 @@ export default {
     },
     getUserOneLikes () {
       this.isLoadingOne = true;
-      this.$socket.emit(SOCKET_GET_USER_LIKES, {
+      this.$socket.emit(SOCKET_LIKES_GET, {
         userId: this.userOne.userId,
         ...this.filtersOne,
         page: this.pageOne
@@ -140,34 +177,59 @@ export default {
     },
     getUserTwoLikes () {
       this.isLoadingTwo = true;
-      this.$socket.emit(SOCKET_GET_USER_LIKES, {
+      this.$socket.emit(SOCKET_LIKES_GET, {
         userId: this.userTwo.userId,
         ...this.filtersTwo,
         page: this.pageTwo
       });
     },
     getSyncPercent () {
-      this.$socket.emit(SOCKET_SYNC_STATUS_GET);
+      this.$socket.emit(SOCKET_SYNC_STAT_GET);
     },
     onFiltersChangeOne (filters) {
+      const oldFilters = this.filtersOne;
+      if (oldFilters.range.min !== filters.range.min || oldFilters.range.max !== filters.range.max) {
+        this.filtersOne = { type: this.filtersOne.type, ...filters };
+        // do not refetch the items if range was changed
+        return;
+      }
       this.isLoadingOne = true;
       this.pageOne = 1;
-      this.filtersOne = filters;
+      this.filtersOne = { type: this.filtersOne.type, ...filters };
       this.getUserOneLikes();
     },
     onFiltersChangeTwo (filters) {
+      const oldFilters = this.filtersTwo;
+      if (oldFilters.range.min !== filters.range.min || oldFilters.range.max !== filters.range.max) {
+        this.filtersTwo = { type: this.filtersTwo.type, ...filters };
+        // do not refetch the items if range was changed
+        return;
+      }
       this.isLoadingTwo = true;
       this.pageTwo = 1;
-      this.filtersTwo = filters;
+      this.filtersTwo = { type: this.filtersTwo.type, ...filters };
       this.getUserTwoLikes();
     },
-    onChecked (itemId) {
-      this.checkedItems.push(itemId);
+    onSelectedChangeOne (items) {
+      this.checkedItemsOne = items;
     },
-    onUnchecked (itemId) {
-      const index = this.checkedItems.findIndex(item => item.id === itemId);
-      this.checkedItems.splice(index, 1);
+    onSelectedChangeTwo (items) {
+      this.checkedItemsTwo = items;
     },
+    onSyncSelectedOne () {
+      if (this.checkedItemsOne.length < 1) {
+        this.notifyWarn('No items selected');
+      } else {
+        const selectedIds = this.checkedItemsOne.join(' ');
+        const itemsToSync = this.itemsOne.filter(item => selectedIds.includes(item.id));
+        this.createTask(TASK_TYPE_SELECTED, this.userOne, this.userTwo, itemsToSync);
+      }
+    },
+    onSyncFilteredOne () {
+      this.createTask(TASK_TYPE_FILTERED, this.userOne, this.userTwo, [], this.filtersOne);
+    },
+    onSyncFilteredTwo () {},
+    onSyncSelectedTwo () {},
     changePageOne (newPage) {
       this.pageOne = newPage;
       this.getUserOneLikes();
@@ -175,6 +237,31 @@ export default {
     changePageTwo (newPage) {
       this.pageTwo = newPage;
       this.getUserTwoLikes();
+    },
+    createTask (taskType, userFrom, userTo, items = [], query = {}) {
+      console.log('CREATE');
+      this.$socket.emit(SOCKET_TASK_ADD, createTask(
+        taskType,
+        LIST_TYPE_LIKES,
+        items,
+        userFrom,
+        userTo,
+        query
+      ));
+    },
+    updateItem (updatedItem) {
+      for (let i = 0; i < this.itemsOne.length; i++) {
+        if (this.itemsOne[i].id === updatedItem.id) {
+          this.itemsOne.splice(i, 1, updatedItem);
+          return;
+        }
+      }
+      for (let i = 0; i < this.itemsTwo.length; i++) {
+        if (this.itemsTwo[i].id === updatedItem.id) {
+          this.itemsTwo.splice(i, 1, updatedItem);
+          return;
+        }
+      }
     }
   },
   mounted () {
@@ -185,5 +272,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

@@ -3,15 +3,21 @@
     <h6 class="user-statistics-card-title q-my-none q-pb-sm text-uppercase text-white">
       {{ title }}
     </h6>
-    <div class="user-statistics-card-content flex flex-center">
-      <div>
-        <span class="user-statistics-card-value">
+    <div class="user-statistics-card-content-container flex flex-center">
+      <div class="user-statistics-card-content">
+        <div class="flex flex-center">
+           <span class="user-statistics-card-value">
           {{ valueOne }}
         </span>
-        <user-statistics-divider/>
-        <span class="user-statistics-card-value">
+        </div>
+        <user-statistics-divider :sync-progress="syncProgress" :btn-wrapper-color="btnColor">
+          <!--<q-btn flat color="primary" round icon="fas fa-sync-alt"></q-btn>-->
+        </user-statistics-divider>
+        <div class="flex flex-center">
+          <span class="user-statistics-card-value">
           {{ valueTwo}}
         </span>
+        </div>
       </div>
     </div>
   </div>
@@ -40,6 +46,24 @@ export default {
     valueTwo: {
       type: [String, Number],
       required: true
+    },
+    syncProgress: {
+      type: Number,
+      required: true
+    }
+  },
+  computed: {
+    btnColor () {
+      switch (this.title) {
+        case 'likes':
+          return '#392048';
+        case 'followings':
+          return '#222458';
+        case 'playlists':
+          return '#233350';
+        default:
+          return '#392048';
+      }
     }
   }
 };
@@ -110,6 +134,10 @@ export default {
   }
 
   .user-statistics-card-content {
+    display: grid;
+    grid-template-columns: 1fr 120px 1fr;
+    grid-template-rows: 80px;
+    grid-column-gap: 10px;
   }
 
   .user-statistics-card-value {

@@ -1,8 +1,9 @@
 <template>
   <vue-ellipse-progress
     :progress="progress"
-    :size="250"
-    font-size="2rem"
+    :size="size"
+    font-size="1.5rem"
+    :legend="legend"
     :color="options.color"
     :thickness="3"
     emptyColor="transparent"
@@ -10,22 +11,35 @@
     fontColor="white"
     legendClass="sync-progress-legend"
     :animation="{type: 'rs', delay: 1000, duration: 700}">
-    <span slot="legend-value"></span>
-    <p slot="legend-caption">
-      hello
-    </p>
+    <span slot="legend-value">
+      <slot name="legend-value"></slot>
+    </span>
+    <div slot="legend-caption">
+      <slot name="caption">
+
+      </slot>
+    </div>
   </vue-ellipse-progress>
 </template>
 
 <script>
 const waveColor = '#004aef';
-const waveColor2 = '#3260FC';
 export default {
   name: 'SyncProgress',
   props: {
     progress: {
       type: Number,
       required: true
+    },
+    size: {
+      type: Number,
+      required: false,
+      default: 250
+    },
+    legend: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   data: () => ({

@@ -82,7 +82,7 @@ import UserAvatar from 'components/Navigation/UserAvatar';
 import UserStatistics from 'components/Settings/UserStatisticsCheck';
 import initializationMixin from 'components/initializationMixin';
 
-import { SOCKET_INITIALIZATION_START } from 'src/utils/socketEvents.js';
+import { SOCKET_INITIALIZATION_START } from 'src/background/const/socketEvents.js';
 
 const userPlaceholder = { userId: '', token: '', clientId: '' };
 

@@ -16,6 +16,13 @@ export default {
         color: 'red',
         position: 'top-right'
       });
+    },
+    notifyWarn (message) {
+      this.$q.notify({
+        message,
+        color: 'orange',
+        position: 'top-right'
+      });
     }
   }
 };

@@ -1,5 +1,5 @@
 <template>
-    <div class="list-item" :class="{checked: isChecked}" @click="toggleCheck">
+    <div class="list-item" :class="[{checked: isChecked}, statusClass]" @click="toggleCheck">
      <!-- <div class="flex flex-center">
         &lt;!&ndash;<q-checkbox v-model="val" />&ndash;&gt;
       </div>-->
@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="list-item-action flex items-center">
-        <q-btn round flat :icon="icon" :color="item.synchronized ? 'green' : 'primary'"></q-btn>
+        <q-btn round flat :icon="icon" :loading="processing" :color="btnColor" @click="createTask"></q-btn>
       </div>
     </div>
 </template>
@@ -36,6 +36,16 @@
 <script>
 import UserAvatar from 'components/Navigation/UserAvatar';
 import { shell } from 'electron';
+import { createTask } from 'components/Tasks/createTask';
+import { SOCKET_TASK_ADD } from 'src/background/const/socketEvents.js';
+
+import {
+  LIST_TYPE_LIKES,
+  LIST_TYPE_FOLLOWINGS,
+  TASK_TYPE_SELECTED,
+  STATUS_ERROR,
+  STATUS_SYNCHRONIZED,
+  STATUS_WAITING } from '../../background/const/const.js';
 
 export default {
   name: 'ListItem',
@@ -54,8 +64,14 @@ export default {
     return {
       checked: false,
       progressColor: 'transparent',
-      isLoading: false
+      isLoading: false,
+      isProcessing: false
     };
+  },
+  sockets: {
+    [SOCKET_TASK_ADD] (jobInfo) {
+      console.log('ADDED JOB', jobInfo);
+    }
   },
   computed: {
     isChecked () {
@@ -65,19 +81,58 @@ export default {
       return this.item.avatar_url || this.item.artwork_url;
     },
     statusColor () {
-      if (this.item.status === 'error') return 'rgba(255,113,130,0.3)';
+      if (this.item.status === STATUS_ERROR) return 'rgba(255,113,130,0.3)';
       return !this.item.synchronized ? 'transparent' : 'rgba(60,186,146,0.3)';
     },
+    btnColor () {
+      if (this.item.status === STATUS_ERROR) {
+        return 'red';
+      }
+      if (this.item.status === STATUS_SYNCHRONIZED) {
+        return 'green';
+      }
+      return 'primary';
+    },
+    statusClass () {
+      return this.item.status;
+    },
     icon () {
-      return !this.item.synchronized ? 'fas fa-angle-right' : 'refresh';
+      return this.item.status === STATUS_WAITING ? 'fas fa-angle-right' : 'refresh';
+    },
+    processing () {
+      return this.item.isProcessing || this.isProcessing;
     }
   },
   methods: {
+    createTask () {
+      this.$socket.emit(SOCKET_TASK_ADD, createTask(
+        TASK_TYPE_SELECTED,
+        this.getItemType(),
+        [this.item],
+        this.getFromAndToUser().userFrom,
+        this.getFromAndToUser().userTo
+      ));
+    },
     openUserLinkInBrowser () {
       shell.openExternal(this.item.permalink_url);
     },
     toggleCheck () {
       !this.isChecked ? this.$emit('checked', this.item.id) : this.$emit('unchecked', this.item.id);
+    },
+    getItemType () {
+      if (this.item.type === LIST_TYPE_LIKES) {
+        return LIST_TYPE_LIKES;
+      } else if (this.item.type === LIST_TYPE_FOLLOWINGS) {
+        return LIST_TYPE_FOLLOWINGS;
+      }
+    },
+    getFromAndToUser () {
+      const userOne = this.$store.state.users.userOne;
+      const userTwo = this.$store.state.users.userTwo;
+      return {
+        userFrom: userOne.userId === this.item.userId ? userOne : userTwo,
+        userTo: userOne.userId !== this.item.userId ? userOne : userTwo
+      };
     }
   }
 };
@@ -98,8 +153,29 @@ export default {
     cursor: pointer;
     border: 2px transparent solid;
     &:hover {
-      box-shadow: 7px 9px 32px 10px rgba(0, 0, 0, 0.06);
+      // box-shadow: 7px 9px 32px 10px rgba(0, 0, 0, 0.06);
+        &.waiting {
+          box-shadow: 7px 9px 32px 10px rgba(0, 0, 0, 0.06);
+        }
+        &.synchronized {
+          box-shadow: 5px 5px 32px 1px #e1ffeb;
+        }
+        &.error {
+          box-shadow: 5px 5px 32px 1px #ffe8e8;
+        }
     }
+    /*&.waiting {
+      // opacity: 0.5;
+      background-image: linear-gradient(to bottom, #e6e9f0 0%, #eef1f5 100%);
+    }
+    &.synchronized {
+      // opacity: 0.2;
+      border: 2px solid #e1ffeb;
+    }
+    &.error {
+      // opacity: 0.2;
+      background-color: #ffe8e8;
+    }*/
     &.checked {
       //border: 2px rgba(34, 156, 255, 0.5) solid;
       background: rgba(34, 156, 255, 0.1);
