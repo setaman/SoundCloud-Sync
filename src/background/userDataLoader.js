@@ -122,7 +122,7 @@ async function getPlaylists (userId, clientId, token) {
 
     return { playlists: playlists.map((playlistInfo, order) => ({
       ...playlistInfo,
-      id: playlistInfo.playlist.id,
+      ...playlistInfo.playlist,
       type: LIST_TYPE_PLAYLISTS,
       userId,
       status: STATUS_WAITING,

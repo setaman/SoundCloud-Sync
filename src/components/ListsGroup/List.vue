@@ -15,7 +15,13 @@
       </transition>
     </div>
   </div>
-  <list-item v-for="item in items" :key="item.id" :item="item" :checked-items="checkedItems" @checked="onChecked" @unchecked="onUnchecked"/>
+  <list-item
+    v-for="(item, i) in items"
+    :key="`${i}_${item.id}`"
+    :item="item"
+    :checked-items="checkedItems"
+    @checked="onChecked"
+    @unchecked="onUnchecked"/>
   <!-- Pagination goes here -->
   <slot>
 

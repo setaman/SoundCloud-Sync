@@ -1,8 +1,5 @@
 <template>
     <div class="list-item" :class="[{checked: isChecked}, statusClass]" @click="toggleCheck">
-     <!-- <div class="flex flex-center">
-        &lt;!&ndash;<q-checkbox v-model="val" />&ndash;&gt;
-      </div>-->
       <div class="list-item-content">
         <div class="list-item-status">
           <vue-ellipse-progress
@@ -18,17 +15,19 @@
         <div class="list-item-avatar shadow-8">
           <user-avatar size="50" :url="avatar || ''"/>
         </div>
-        <div class="list-item-title ellipsis">
-          <p v-if="item.user && item.user.username" class="q-ma-none">
+        <div class="list-item-title ellipsis flex flex-center">
+          <p v-if="item.user && item.user.username" class="q-ma-none ellipsis full-width">
             {{item.user.username}}
           </p>
-          <a @click="openUserLinkInBrowser">
-            {{item.title}}
-          </a>
+          <div class="ellipsis full-width">
+            <a @click.stop="openUserLinkInBrowser">
+              {{item.title || item.username}}
+            </a>
+          </div>
         </div>
       </div>
       <div class="list-item-action flex items-center">
-        <q-btn round flat :icon="icon" :loading="processing" :color="btnColor" @click="createTask"></q-btn>
+        <q-btn round flat :icon="icon" :loading="processing" :color="btnColor" @click.stop="createTask"></q-btn>
       </div>
     </div>
 </template>
@@ -42,6 +41,7 @@ import { SOCKET_TASK_ADD } from 'src/background/const/socketEvents.js';
 import {
   LIST_TYPE_LIKES,
   LIST_TYPE_FOLLOWINGS,
+  LIST_TYPE_PLAYLISTS,
   TASK_TYPE_SELECTED,
   STATUS_ERROR,
   STATUS_SYNCHRONIZED,
@@ -67,11 +67,6 @@ export default {
       isLoading: false,
       isProcessing: false
     };
-  },
-  sockets: {
-    [SOCKET_TASK_ADD] (jobInfo) {
-      console.log('ADDED JOB', jobInfo);
-    }
   },
   computed: {
     isChecked () {
@@ -125,6 +120,7 @@ export default {
       } else if (this.item.type === LIST_TYPE_FOLLOWINGS) {
         return LIST_TYPE_FOLLOWINGS;
       }
+      return LIST_TYPE_PLAYLISTS;
     },
     getFromAndToUser () {
       const userOne = this.$store.state.users.userOne;
@@ -153,7 +149,6 @@ export default {
     cursor: pointer;
     border: 2px transparent solid;
     &:hover {
-      // box-shadow: 7px 9px 32px 10px rgba(0, 0, 0, 0.06);
         &.waiting {
           box-shadow: 7px 9px 32px 10px rgba(0, 0, 0, 0.06);
         }
@@ -164,20 +159,7 @@ export default {
           box-shadow: 5px 5px 32px 1px #ffe8e8;
         }
     }
-    /*&.waiting {
-      // opacity: 0.5;
-      background-image: linear-gradient(to bottom, #e6e9f0 0%, #eef1f5 100%);
-    }
-    &.synchronized {
-      // opacity: 0.2;
-      border: 2px solid #e1ffeb;
-    }
-    &.error {
-      // opacity: 0.2;
-      background-color: #ffe8e8;
-    }*/
     &.checked {
-      //border: 2px rgba(34, 156, 255, 0.5) solid;
       background: rgba(34, 156, 255, 0.1);
     }
   }
@@ -211,7 +193,6 @@ export default {
     left: 0;
     top: 0;
     &.waiting {
-      // opacity: 0.5;
       background-image: linear-gradient(to bottom, #e6e9f0 0%, #eef1f5 100%);
     }
     &.synchronized {

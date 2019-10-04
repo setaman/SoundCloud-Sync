@@ -4,10 +4,10 @@ const { loadUserData } = require('../../userDataLoader');
 const { datastore, clear } = require('../../db');
 const determineSyncStatus = require('./determineSyncStatus');
 
-const persistUserData = (userId, likes, followings) => {
+const persistUserData = (userId, likes, followings, playlists) => {
   const likesToPersist = likes.map(like => ({ userId, type: 'likes', ...like }));
   const followingsToPersist = followings.map(following => ({ userId, type: 'following', ...following }));
-  return datastore.insert([likesToPersist, followingsToPersist]);
+  return datastore.insert([likesToPersist, followingsToPersist, playlists]);
 };
 
 const sanitizeUsersDataResponse = ({ userOne, userTwo }) => ({
@@ -75,8 +75,8 @@ const init = async (io, msg) => {
     await clear();
 
     await Promise.all([
-      persistUserData(userOne.userId, userOne.likes, userOne.followings),
-      persistUserData(userTwo.userId, userTwo.likes, userTwo.followings)
+      persistUserData(userOne.userId, userOne.likes, userOne.followings, userOne.playlists),
+      persistUserData(userTwo.userId, userTwo.likes, userTwo.followings, userTwo.playlists)
     ]);
 
     await datastore.insert({
