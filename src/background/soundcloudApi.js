@@ -118,11 +118,14 @@ const addUserFollowing = (followingId, token) =>
     }
   );
 
-const addUserPlaylist = (userId, playlistId, token) =>
-  axios.post(
+const addUserPlaylist = (userId, playlistId, clientId, token) =>
+  axios.put(
     `https://api-v2.soundcloud.com/users/${userId}/playlist_likes/${playlistId}`,
     {},
     {
+      params: {
+        client_id: clientId
+      },
       headers: { Authorization: `OAuth ${token}` }
     }
   );

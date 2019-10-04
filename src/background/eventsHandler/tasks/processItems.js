@@ -1,4 +1,4 @@
-const { addUserLike, addUserFollowing } = require('../../soundcloudApi');
+const { addUserLike, addUserFollowing, addUserPlaylist } = require('../../soundcloudApi');
 const {
   SOCKET_SYNC_ITEM_SUCCESS,
   SOCKET_SYNC_ITEM_ERROR,
@@ -32,8 +32,7 @@ const createProcessingPromise = task => {
     case LIST_TYPE_FOLLOWINGS:
       return addUserFollowing(item.id, userTo.token);
     case LIST_TYPE_PLAYLISTS:
-      // TODO
-      break;
+      return addUserPlaylist(userTo.userId, item.id, userTo.clientId, userTo.token);
   }
 };
 

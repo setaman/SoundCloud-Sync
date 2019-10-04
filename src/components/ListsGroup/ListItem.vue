@@ -15,13 +15,15 @@
         <div class="list-item-avatar shadow-8">
           <user-avatar size="50" :url="avatar || ''"/>
         </div>
-        <div class="list-item-title ellipsis">
-          <p v-if="item.user && item.user.username" class="q-ma-none">
+        <div class="list-item-title ellipsis flex flex-center">
+          <p v-if="item.user && item.user.username" class="q-ma-none ellipsis full-width">
             {{item.user.username}}
           </p>
-          <a @click.stop="openUserLinkInBrowser">
-            {{item.title}}
-          </a>
+          <div class="ellipsis full-width">
+            <a @click.stop="openUserLinkInBrowser">
+              {{item.title || item.username}}
+            </a>
+          </div>
         </div>
       </div>
       <div class="list-item-action flex items-center">
@@ -39,6 +41,7 @@ import { SOCKET_TASK_ADD } from 'src/background/const/socketEvents.js';
 import {
   LIST_TYPE_LIKES,
   LIST_TYPE_FOLLOWINGS,
+  LIST_TYPE_PLAYLISTS,
   TASK_TYPE_SELECTED,
   STATUS_ERROR,
   STATUS_SYNCHRONIZED,
@@ -117,6 +120,7 @@ export default {
       } else if (this.item.type === LIST_TYPE_FOLLOWINGS) {
         return LIST_TYPE_FOLLOWINGS;
       }
+      return LIST_TYPE_PLAYLISTS;
     },
     getFromAndToUser () {
       const userOne = this.$store.state.users.userOne;
