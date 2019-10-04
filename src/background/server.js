@@ -10,7 +10,7 @@ const { SOCKET_INITIALIZATION_START, SOCKET_LIKES_GET,
 const { getPaginatedUserItems } = require('./eventsHandler/persistedUsersDataLoding');
 const { init } = require('./eventsHandler/inizialization/initialization');
 const { getSyncStatus } = require('./eventsHandler/syncStatus');
-const { handleJob } = require('./eventsHandler/jobs/jobsHandler');
+const { handleTask } = require('./eventsHandler/tasks/tasksHandler');
 
 io.on('connection', socket => {
   console.log('--- CLIENT CONNECTED ---');
@@ -21,7 +21,7 @@ io.on('connection', socket => {
 
   socket.on(SOCKET_SYNC_STAT_GET, () => getSyncStatus(io));
 
-  socket.on(SOCKET_TASK_ADD, job => handleJob(io, job));
+  socket.on(SOCKET_TASK_ADD, task => handleTask(io, task));
 
   socket.on(SOCKET_TASK_EXEC_CANCEL, () => ({/* implement this */}));
 });

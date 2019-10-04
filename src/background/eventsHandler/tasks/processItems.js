@@ -11,23 +11,23 @@ const calculateDelay = itemsCount => Math.log10(itemsCount) * 1000;
 const updateItemStatus = (id, status, synchronized) => datastore.update({ id }, { $set: { status, synchronized } },
   { multi: false, returnUpdatedDocs: true });
 
-const processLike = (io, job) => {
-  const { userTo, item } = job;
+const processLike = (io, task) => {
+  const { userTo, item } = task;
   return addUserLike(userTo.userId, userTo.clientId, item.id, userTo.token)
     .then(async response => {
       console.log('ON RESPONSE:', response.data);
-      job.progress.done += 1;
+      task.progress.done += 1;
       const updatedItem = await updateItemStatus(item.id, STATUS_SYNCHRONIZED, true);
-      io.emit(SOCKET_SYNC_ITEM_SUCCESS, job, updatedItem);
+      io.emit(SOCKET_SYNC_ITEM_SUCCESS, task, updatedItem);
     })
     .catch(async error => {
       console.error('ON ERROR:', error.message);
-      job.progress.done += 1;
+      task.progress.done += 1;
       const updatedItem = await updateItemStatus(item.id, STATUS_ERROR, false);
-      io.emit(SOCKET_SYNC_ITEM_ERROR, job, updatedItem);
+      io.emit(SOCKET_SYNC_ITEM_ERROR, task, updatedItem);
       if (error.response && error.response.status === 429) {
         io.emit(SOCKET_TO_MANY_REQUESTS_ERROR, {
-          blockedUser: job.userTo,
+          blockedUser: task.userTo,
           period: error.response.data.errors[0].spam_warning.expires_at
         });
         throw Error(error);
@@ -35,21 +35,21 @@ const processLike = (io, job) => {
     });
 };
 
-const processFollowing = (io, job) => {
-  const { userTo, item } = job;
+const processFollowing = (io, task) => {
+  const { userTo, item } = task;
   return addUserFollowing(item.id, userTo.token)
     .then(response => {
       console.log(response);
-      job.progress.done += 1;
-      io.emit(SOCKET_SYNC_ITEM_SUCCESS, job, item);
+      task.progress.done += 1;
+      io.emit(SOCKET_SYNC_ITEM_SUCCESS, task, item);
     })
     .catch(error => {
       console.log(error);
-      io.emit(SOCKET_SYNC_ITEM_ERROR, job, item);
+      io.emit(SOCKET_SYNC_ITEM_ERROR, task, item);
     });
 };
 
-const chunkJobItems = items => {
+const chunkTaskItems = items => {
   const chunkSize = 10;
   let tempArray = [];
 
@@ -65,52 +65,52 @@ const chunkJobItems = items => {
   return tempArray;
 };
 
-const processItems = async (io, job) => {
-  job.pending = false;
-  job.finished = false;
-  job.processing = true;
-  io.emit(SOCKET_TASK_EXEC_START, job);
+const processItems = async (io, task) => {
+  task.pending = false;
+  task.finished = false;
+  task.processing = true;
+  io.emit(SOCKET_TASK_EXEC_START, task);
 
-  const chunkedJobItems = chunkJobItems(job.items);
+  const chunkedTaskItems = chunkTaskItems(task.items);
 
-  switch (job.itemsType) {
+  switch (task.itemsType) {
     case LIST_TYPE_LIKES:
-      for (let chunk of chunkedJobItems) {
+      for (let chunk of chunkedTaskItems) {
         try {
           for (let item of chunk) {
             await processLike(io, {
-              ...job,
+              ...task,
               item
             });
             // Let SC API cool down
-            // console.log('delay:', calculateDelay(job.items.length));
+            // console.log('delay:', calculateDelay(task.items.length));
             // await wait(2000);
           }
         } catch (e) {
           console.error(SOCKET_TO_MANY_REQUESTS_ERROR, e);
-          // Remove all pending jobs
+          // Remove all pending Tasks
           clearQueue();
 
-          job.failed = true;
-          job.processing = false;
-          job.pending = false;
+          task.failed = true;
+          task.processing = false;
+          task.pending = false;
 
-          io.emit(SOCKET_TASK_EXEC_ERROR, job, e);
-          // cancel job execution
+          io.emit(SOCKET_TASK_EXEC_ERROR, task, e);
+          // cancel task execution
           return;
         }
       }
 
-      job.processing = false;
-      job.finished = true;
+      task.processing = false;
+      task.finished = true;
 
-      io.emit(SOCKET_TASK_EXEC_SUCCESS, job);
+      io.emit(SOCKET_TASK_EXEC_SUCCESS, task);
       break;
     case LIST_TYPE_FOLLOWINGS:
-      for (let chunk of chunkedJobItems) {
+      for (let chunk of chunkedTaskItems) {
         for (let item of chunk) {
           await processFollowing(io, {
-            ...job,
+            ...task,
             item
           })
             .catch(err => console.error('CATCH SPAM', err));
@@ -118,7 +118,7 @@ const processItems = async (io, job) => {
         // Let SC API coll down
         await wait(2000);
       }
-      io.emit(SOCKET_TASK_EXEC_SUCCESS, job);
+      io.emit(SOCKET_TASK_EXEC_SUCCESS, task);
       break;
   }
 };

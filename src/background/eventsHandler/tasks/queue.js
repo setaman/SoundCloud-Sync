@@ -14,25 +14,25 @@ queue.on('active', () => {
 
 (async () => {
   await queue.onIdle();
-  console.log('[ QUEUE ]: all jobs are done!');
+  console.log('[ QUEUE ]: all task are done!');
 })();
 
 const clearQueue = () => queue.clear();
 
-const addQueueJob = async (io, job, jobFunction) => {
+const addQueueTask = async (io, task, taskMethod) => {
   try {
     queue.add(() => {
-      io.emit(SOCKET_TASK_ADD_SUCCESS, job);
-      jobFunction();
+      io.emit(SOCKET_TASK_ADD_SUCCESS, task);
+      taskMethod();
     });
   } catch (e) {
     console.log(e);
-    io.emit(SOCKET_TASK_ADD_ERROR, job);
+    io.emit(SOCKET_TASK_ADD_ERROR, task);
   }
 };
 
 module.exports = {
-  addQueueJob,
+  addQueueTask,
   clearQueue,
   queue
 };
