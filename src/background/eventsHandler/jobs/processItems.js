@@ -67,6 +67,7 @@ const chunkJobItems = items => {
 
 const processItems = async (io, job) => {
   job.pending = false;
+  job.finished = false;
   job.processing = true;
   io.emit(SOCKET_JOB_EXEC_START, job);
 
@@ -82,8 +83,8 @@ const processItems = async (io, job) => {
               item
             });
             // Let SC API cool down
-            console.log('delay:', calculateDelay(job.items.length));
-            await wait(2000);
+            // console.log('delay:', calculateDelay(job.items.length));
+            // await wait(2000);
           }
         } catch (e) {
           console.error(SOCKET_TO_MANY_REQUESTS_ERROR, e);

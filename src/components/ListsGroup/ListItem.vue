@@ -36,7 +36,7 @@
 <script>
 import UserAvatar from 'components/Navigation/UserAvatar';
 import { shell } from 'electron';
-import { createJob } from 'components/Jobs/create job';
+import { createTask } from 'components/Jobs/createTask';
 const { SOCKET_JOB_ADD } = require('../../background/const/socketEvents.js');
 
 const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, JOB_TYPE_ONE, STATUS_ERROR, STATUS_SYNCHRONIZED, STATUS_WAITING } = require('../../background/const/const.js');
@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     createJob () {
-      this.$socket.emit(SOCKET_JOB_ADD, createJob(
+      this.$socket.emit(SOCKET_JOB_ADD, createTask(
         JOB_TYPE_ONE,
         this.getItemType(),
         [this.item],

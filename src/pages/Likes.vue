@@ -62,7 +62,7 @@ const { JOB_TYPE_SELECTED, JOB_TYPE_ONE_USER, LIST_TYPE_LIKES, STATUS_WAITING, S
   STATUS_ERROR } = require('../background/const/const.js');
 import SplashLoading from 'components/Base/SplashLoading';
 import ListPagination from 'components/ListsGroup/ListPagination';
-import { createJob } from 'components/Jobs/create job';
+import { createTask } from 'components/Jobs/createTask';
 
 export default {
   name: 'Likes',
@@ -73,7 +73,7 @@ export default {
       type: LIST_TYPE_LIKES,
       title: '',
       status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-      sort: 'Oldest',
+      sort: 'Newest',
       range: {
         min: 1,
         max: 0
@@ -83,7 +83,7 @@ export default {
       type: LIST_TYPE_LIKES,
       title: '',
       status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-      sort: 'Oldest',
+      sort: 'Newest',
       range: {
         min: 1,
         max: 0
@@ -237,7 +237,7 @@ export default {
     },
     createJob (type, userFrom, userTo, items = [], query = {}) {
       console.log('adding new job');
-      this.$socket.emit(SOCKET_JOB_ADD, createJob(
+      this.$socket.emit(SOCKET_JOB_ADD, createTask(
         type,
         LIST_TYPE_LIKES,
         items,

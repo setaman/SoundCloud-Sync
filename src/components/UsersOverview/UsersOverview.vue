@@ -94,6 +94,8 @@ export default {
     transition: 0.5s;
     //border-left: 2px solid rgba(255, 255, 255, 0.1);
     background-color: $c_bg;
+    position: relative;
+    z-index: 1000;
     height: $base_height;
     &.expanded {
       height: $expanded_height;

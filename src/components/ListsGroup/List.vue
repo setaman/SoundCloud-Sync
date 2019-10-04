@@ -54,7 +54,7 @@ export default {
       filters: {
         title: '',
         status: [STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR],
-        sort: 'Oldest',
+        sort: 'Newest',
         range: {
           min: 1,
           max: this.maxItems

@@ -36,6 +36,10 @@ const routes = [
       { path: 'playlists',
         name: 'playlists',
         component: () => import('pages/Playlists.vue')
+      },
+      { path: 'tasks',
+        name: 'tasks',
+        component: () => import('pages/Tasks.vue')
       }
     ]
   },

@@ -1,9 +1,10 @@
 const uniqid = require('uniqid');
 
-export const createJob = (type, itemsType, items = [], userFrom, userTo, query = {}) => ({
+export const createTask = (type, itemsType, items = [], userFrom, userTo, query = {}) => ({
   id: uniqid(),
-  date: Date(),
+  date: new Date(),
   type,
+  title: generateTitle(itemsType),
   itemsType,
   items,
   query,
@@ -18,3 +19,5 @@ export const createJob = (type, itemsType, items = [], userFrom, userTo, query =
   finished: false,
   failed: false
 });
+
+const generateTitle = itemsType => `Sync ${itemsType}`;

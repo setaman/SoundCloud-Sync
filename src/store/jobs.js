@@ -5,14 +5,14 @@ const state = {
 };
 
 const getters = {
-  someIsLoading: state => state.jobs.some(job => job.processing || job.pending)
+  someTasksIsProcessing: state => state.jobs.some(job => job.processing || job.pending)
 };
 
 const persistJobs = () => setValue('jobs', state.jobs);
 
 const ADD_JOB = 'ADD_JOB';
 const REMOVE_JOB = 'REMOVE_JOB';
-const CLEAR_JOBS = 'CLEAR_JOBS';
+const CLEAR_TASKS = 'CLEAR_TASKS';
 const UPDATE_JOB = 'UPDATE_JOB';
 
 const mutations = {
@@ -30,7 +30,7 @@ const mutations = {
     state.jobs.splice(jobIndex, 1, job);
     persistJobs();
   },
-  [CLEAR_JOBS] (state) {
+  [CLEAR_TASKS] (state) {
     state.jobs = [];
     persistJobs();
   }
@@ -46,8 +46,8 @@ const actions = {
   updateJob ({ commit }, job) {
     commit(UPDATE_JOB, job);
   },
-  clearJobs ({ commit }) {
-    commit(CLEAR_JOBS);
+  clearTasks ({ commit }) {
+    commit(CLEAR_TASKS);
   }
 };
 

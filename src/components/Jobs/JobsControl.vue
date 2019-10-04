@@ -27,7 +27,9 @@
         <div class="jobs-control-container" v-if="jobs.length > 0">
           <div class="flex flex-center">
             <p class="q-ma-none text-bold">
-              {{jobsCountMessage}}
+              <router-link class="tasks-status-link" to="/home/tasks">
+                {{jobsCountMessage}}
+              </router-link>
             </p>
           </div>
           <div class="flex flex-center">
@@ -88,7 +90,7 @@ export default {
     blockedUser: '',
     period: '',
     // jobs: [],
-    expanded: true
+    expanded: false
   }),
   sockets: {
     [SOCKET_JOB_ADD] (jobInfo) {
@@ -96,10 +98,13 @@ export default {
     },
     [SOCKET_JOB_ADD_SUCCESS] (jobInfo) {
       console.log(SOCKET_JOB_ADD_SUCCESS, jobInfo);
-      this.$store.dispatch('addJob', jobInfo);
+      if (!this.taskAlreadyAdded(jobInfo.id)) {
+        this.$store.dispatch('addJob', jobInfo);
+      }
     },
     [SOCKET_JOB_EXEC_START] (jobInfo) {
       console.log(SOCKET_JOB_EXEC_START, jobInfo);
+      this.$store.dispatch('updateJob', jobInfo);
     },
     [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo, item) {
       console.log(SOCKET_SYNC_ITEM_SUCCESS, jobInfo, item);
@@ -130,7 +135,8 @@ export default {
       return this.$store.state.jobs.jobs;
     },
     progress () {
-      const processed = this.jobs.map(job => job.failed ? job.progress.from || 0 : job.progress.done || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
+      const processed = this.jobs.map(job => job.failed ? job.progress.from || 0 : job.progress.done || 0)
+        .reduce((acc, jobProcessed) => acc + jobProcessed);
       const from = this.jobs.map(job => job.progress.from || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
       if (from === 0) {
         return 0;
@@ -139,7 +145,7 @@ export default {
     },
     jobsCountMessage () {
       const jobsCount = this.jobs.length;
-      return `${jobsCount} Job${jobsCount > 1 ? 's' : ''}`;
+      return `${jobsCount} Task${jobsCount > 1 ? 's' : ''}`;
     },
     userOne () {
       return this.$store.state.users.userOne;
@@ -163,6 +169,9 @@ export default {
           clientId: this.userTwo.clientId
         }
       });
+    },
+    taskAlreadyAdded (taskId) {
+      return this.jobs.map(({ id }) => id).includes(taskId);
     }
   }
 };
@@ -192,6 +201,15 @@ export default {
     bottom: 0;
   }
 }
+.tasks-status-link {
+  color: $c_followings;
+  text-decoration: none;
+  transition: 0.3s;
+  &:hover {
+    color: $c_settings;
+  }
+}
+
 .jobs-control-container {
   transition: 0.5s;
   display: grid;
