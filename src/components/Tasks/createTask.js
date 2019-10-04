@@ -1,9 +1,9 @@
 const uniqid = require('uniqid');
 
-export const createTask = (type, itemsType, items = [], userFrom, userTo, query = {}) => ({
+export const createTask = (taskType, itemsType, items = [], userFrom, userTo, query = {}) => ({
   id: uniqid(),
   date: new Date(),
-  type,
+  taskType,
   title: generateTitle(itemsType),
   itemsType,
   items,

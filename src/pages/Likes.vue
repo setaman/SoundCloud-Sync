@@ -54,11 +54,16 @@ import ListsGroup from 'components/ListsGroup/ListsGroup';
 import List from 'components/ListsGroup/List';
 import ListSyncControls from 'components/ListsGroup/ListSyncControls';
 import notificationMixin from 'components/notificationMixin';
-const { SOCKET_LIKES_GET, SOCKET_LIKES_ONDATA, SOCKET_LIKES_GET_ERROR, SOCKET_SYNC_STAT_GET,
+import { SOCKET_LIKES_GET, SOCKET_LIKES_ONDATA, SOCKET_LIKES_GET_ERROR, SOCKET_SYNC_STAT_GET,
   SOCKET_SYNC_STAT_ONDATA, SOCKET_SYNC_STAT_ERROR, SOCKET_TASK_ADD, SOCKET_INITIALIZATION_SUCCESS,
-  SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS } = require('../background/const/socketEvents.js');
-const { JOB_TYPE_SELECTED, JOB_TYPE_ONE_USER, LIST_TYPE_LIKES, STATUS_WAITING, STATUS_SYNCHRONIZED,
-  STATUS_ERROR } = require('../background/const/const.js');
+  SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS } from 'src/background/const/socketEvents.js';
+import {
+  TASK_TYPE_SELECTED,
+  TASK_TYPE_FILTERED,
+  LIST_TYPE_LIKES,
+  STATUS_WAITING,
+  STATUS_SYNCHRONIZED,
+  STATUS_ERROR } from 'src/background/const/const.js';
 import SplashLoading from 'components/Base/SplashLoading';
 import ListPagination from 'components/ListsGroup/ListPagination';
 import { createTask } from 'components/Tasks/createTask';
@@ -217,12 +222,11 @@ export default {
       } else {
         const selectedIds = this.checkedItemsOne.join(' ');
         const itemsToSync = this.itemsOne.filter(item => selectedIds.includes(item.id));
-        this.createTask(JOB_TYPE_SELECTED, this.userOne, this.userTwo, itemsToSync);
+        this.createTask(TASK_TYPE_SELECTED, this.userOne, this.userTwo, itemsToSync);
       }
     },
     onSyncFilteredOne () {
-      console.log(JOB_TYPE_ONE_USER);
-      this.createTask(JOB_TYPE_ONE_USER, this.userOne, this.userTwo, [], this.filtersOne);
+      this.createTask(TASK_TYPE_FILTERED, this.userOne, this.userTwo, [], this.filtersOne);
     },
     onSyncFilteredTwo () {},
     onSyncSelectedTwo () {},
@@ -234,9 +238,10 @@ export default {
       this.pageTwo = newPage;
       this.getUserTwoLikes();
     },
-    createTask (type, userFrom, userTo, items = [], query = {}) {
+    createTask (taskType, userFrom, userTo, items = [], query = {}) {
+      console.log('CREATE');
       this.$socket.emit(SOCKET_TASK_ADD, createTask(
-        type,
+        taskType,
         LIST_TYPE_LIKES,
         items,
         userFrom,
@@ -267,5 +272,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

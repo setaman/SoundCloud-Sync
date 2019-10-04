@@ -22,7 +22,6 @@ const clearQueue = () => queue.clear();
 const addQueueTask = async (io, task, taskMethod) => {
   try {
     queue.add(() => {
-      io.emit(SOCKET_TASK_ADD_SUCCESS, task);
       taskMethod();
     });
   } catch (e) {

@@ -52,7 +52,7 @@ const getPaginatedUserItems = async (io, { type, userId, title, status, sort, pa
   const filter = formulateFilter(type, userId, title, status);
   const pageSize = 30;
 
-  console.log('FILTERS AFTER:', filter, formulateSort(sort, type), page);
+  // console.log('FILTERS AFTER:', filter, formulateSort(sort, type), page);
 
   try {
     const items = await datastore.find(filter).sort(formulateSort(sort)).skip(pageSize * (page - 1)).limit(pageSize).exec();

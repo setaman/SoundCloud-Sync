@@ -39,7 +39,13 @@ import { shell } from 'electron';
 import { createTask } from 'components/Tasks/createTask';
 import { SOCKET_TASK_ADD } from 'src/background/const/socketEvents.js';
 
-const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, JOB_TYPE_ONE, STATUS_ERROR, STATUS_SYNCHRONIZED, STATUS_WAITING } = require('../../background/const/const.js');
+import {
+  LIST_TYPE_LIKES,
+  LIST_TYPE_FOLLOWINGS,
+  TASK_TYPE_SELECTED,
+  STATUS_ERROR,
+  STATUS_SYNCHRONIZED,
+  STATUS_WAITING } from '../../background/const/const.js';
 
 export default {
   name: 'ListItem',
@@ -100,7 +106,7 @@ export default {
   methods: {
     createTask () {
       this.$socket.emit(SOCKET_TASK_ADD, createTask(
-        JOB_TYPE_ONE,
+        TASK_TYPE_SELECTED,
         this.getItemType(),
         [this.item],
         this.getFromAndToUser().userFrom,

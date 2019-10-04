@@ -80,8 +80,9 @@
 import HorizontalProgress from 'components/Base/HorizontalProgress';
 import SimpleTask from 'components/Tasks/TasksOverview/SimpleTask';
 import { format } from 'date-fns';
-const { SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_TASK_ADD_SUCCESS, SOCKET_TASK_ADD_ERROR, SOCKET_INITIALIZATION_START,
-  SOCKET_TASK_ADD, SOCKET_TASK_EXEC_SUCCESS, SOCKET_TASK_EXEC_START, SOCKET_TASK_EXEC_ERROR, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../../background/const/socketEvents.js');
+import { SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_TASK_ADD_SUCCESS, SOCKET_TASK_ADD_ERROR, SOCKET_INITIALIZATION_START,
+  SOCKET_TASK_ADD, SOCKET_TASK_EXEC_SUCCESS, SOCKET_TASK_EXEC_START, SOCKET_TASK_EXEC_ERROR, SOCKET_TO_MANY_REQUESTS_ERROR
+} from 'src/background/const/socketEvents.js';
 export default {
   name: 'TasksOverviewControl',
   components: { SimpleTask, HorizontalProgress },
@@ -101,6 +102,9 @@ export default {
       if (!this.taskAlreadyAdded(taskInfo.id)) {
         this.$store.dispatch('addTask', taskInfo);
       }
+    },
+    [SOCKET_TASK_ADD_ERROR] (taskInfo, e) {
+      console.log(SOCKET_TASK_ADD_ERROR, taskInfo, e);
     },
     [SOCKET_TASK_EXEC_START] (taskInfo) {
       console.log(SOCKET_TASK_EXEC_START, taskInfo);

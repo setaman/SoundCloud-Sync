@@ -146,12 +146,12 @@ async function checkToken (token) {
     await addUserFollowing('', token);
     return { tokenError: null };
   } catch (e) {
-    console.info('TOKEN ERROR', e.response);
     if (e.response.status === 401) {
       return { tokenError: `Token "${token}" seems to be invalid` };
     } else if (e.response.status === 404) {
       return { tokenError: null };
     }
+    console.info('TOKEN ERROR', e.response);
     return { tokenError: e };
   }
 }
