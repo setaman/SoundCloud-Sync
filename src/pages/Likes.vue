@@ -228,8 +228,18 @@ export default {
     onSyncFilteredOne () {
       this.createTask(TASK_TYPE_FILTERED, this.userOne, this.userTwo, [], this.filtersOne);
     },
-    onSyncFilteredTwo () {},
-    onSyncSelectedTwo () {},
+    onSyncFilteredTwo () {
+      this.createTask(TASK_TYPE_FILTERED, this.userTwo, this.userOne, [], this.filtersTwo);
+    },
+    onSyncSelectedTwo () {
+      if (this.checkedItemsTwo.length < 1) {
+        this.notifyWarn('No items selected');
+      } else {
+        const selectedIds = this.checkedItemsTwo.join(' ');
+        const itemsToSync = this.itemsTwo.filter(item => selectedIds.includes(item.id));
+        this.createTask(TASK_TYPE_SELECTED, this.userTwo, this.userOne, itemsToSync);
+      }
+    },
     changePageOne (newPage) {
       this.pageOne = newPage;
       this.getUserOneLikes();
