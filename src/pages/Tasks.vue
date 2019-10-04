@@ -39,7 +39,7 @@ export default {
       this.$store.dispatch('clearTasks');
     },
     removeTask (task) {
-      this.$store.dispatch('removeJob', task);
+      this.$store.dispatch('removeTask', task);
     },
     restartTask (task) {
       const progress = {
