@@ -67,7 +67,6 @@
 
 <script>
 import HorizontalProgress from 'components/Base/HorizontalProgress';
-const { SOCKET_TASK_ADD } = require('../../background/const/socketEvents.js');
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import parseISO from 'date-fns/parseISO';
 import UserLink from 'components/Base/UserLink';
@@ -107,8 +106,6 @@ export default {
 
 <style scoped lang="scss">
 .task-card {
-  // border-radius: 10px;
-  // margin: 20px 0;
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 .task-card-info {

@@ -28,12 +28,11 @@ import ListControls from 'components/ListsGroup/ListControls';
 import ListItem from 'components/ListsGroup/ListItem';
 import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
 import Divider from 'components/Base/Divider';
-import ListItemsTransition from 'components/Transitions/ListItemsTransition';
 import HorizontalProgress from 'components/Base/HorizontalProgress';
 
 export default {
   name: 'List',
-  components: { HorizontalProgress, ListItemsTransition, Divider, ListItem, ListControls },
+  components: { HorizontalProgress, Divider, ListItem, ListControls },
   props: {
     items: {
       type: Array,

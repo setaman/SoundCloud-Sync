@@ -1,4 +1,4 @@
-const { SOCKET_TASK_ADD_SUCCESS, SOCKET_TASK_ADD_ERROR } = require('../../const/socketEvents');
+const { SOCKET_TASK_ADD_ERROR } = require('../../const/socketEvents');
 const { default: PQueue } = require('p-queue');
 
 const queue = new PQueue({ concurrency: 1 });

@@ -24,7 +24,6 @@
 
 <script>
 const waveColor = '#004aef';
-const waveColor2 = '#3260FC';
 export default {
   name: 'SyncProgress',
   props: {
