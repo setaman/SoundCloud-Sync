@@ -3,7 +3,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
 
-const { SOCKET_INITIALIZATION_START, SOCKET_LIKES_GET,
+const { SOCKET_INITIALIZATION_START, SOCKET_ITEMS_GET,
   SOCKET_SYNC_STAT_GET, SOCKET_TASK_ADD, SOCKET_TASK_EXEC_CANCEL } = require('./const/socketEvents');
 
 // Event handler
@@ -17,7 +17,7 @@ io.on('connection', socket => {
 
   socket.on(SOCKET_INITIALIZATION_START, msg => init(io, msg));
 
-  socket.on(SOCKET_LIKES_GET, data => getPaginatedUserItems(io, data));
+  socket.on(SOCKET_ITEMS_GET, data => getPaginatedUserItems(io, data));
 
   socket.on(SOCKET_SYNC_STAT_GET, () => getSyncStatus(io));
 

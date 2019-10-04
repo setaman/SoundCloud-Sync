@@ -1,12 +1,17 @@
-const { SOCKET_LIKES_ONDATA, SOCKET_LIKES_GET_ERROR } = require('../const/socketEvents');
+const { SOCKET_ITEMS_ONDATA, SOCKET_ITEMS_GET_ERROR } = require('../const/socketEvents');
 const { datastore } = require('../db');
-const { LIST_SORT_OPTION_ALPHABETIC, LIST_SORT_OPTION_NEWEST, LIST_SORT_OPTION_OLDEST,
-  LIST_SORT_OPTION_STATUS, LIST_TYPE_LIKES } = require('../const/const');
+const {
+  LIST_SORT_OPTION_ALPHABETIC,
+  LIST_SORT_OPTION_NEWEST,
+  LIST_SORT_OPTION_OLDEST,
+  LIST_SORT_OPTION_STATUS,
+  LIST_TYPE_FOLLOWINGS
+} = require('../const/const');
 
 const formulateSort = (sortOption, type) => {
   switch (sortOption) {
     case LIST_SORT_OPTION_ALPHABETIC:
-      return type === LIST_TYPE_LIKES ? { title: 1 } : { username: 1 };
+      return type === LIST_TYPE_FOLLOWINGS ? { username: 1 } : { title: 1 };
     case LIST_SORT_OPTION_NEWEST:
       return {
         order: 1
@@ -59,7 +64,7 @@ const getPaginatedUserItems = async (io, { type, userId, title, status, sort, pa
     const itemsCount = await countItems(filter);
 
     if (io) {
-      io.emit(SOCKET_LIKES_ONDATA, {
+      io.emit(SOCKET_ITEMS_ONDATA, {
         userId,
         items: items,
         from: itemsCount,
@@ -70,7 +75,7 @@ const getPaginatedUserItems = async (io, { type, userId, title, status, sort, pa
   } catch (e) {
     console.error(e);
     if (io) {
-      io.emit(SOCKET_LIKES_GET_ERROR, {
+      io.emit(SOCKET_ITEMS_GET_ERROR, {
         userId,
         error: e.toString()
       });
