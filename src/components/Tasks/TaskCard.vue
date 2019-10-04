@@ -106,7 +106,7 @@ export default {
 
 <style scoped lang="scss">
 .task-card {
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  // border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 .task-card-info {
   color: #eaeaea;

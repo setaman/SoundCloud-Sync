@@ -143,7 +143,11 @@ export default {
         this.pagesTwo = pages;
       }
       console.log('LOADED ITEMS', userId, items, from, page, pages);
-      this.isInitialized = true;
+      if (!this.isInitialized) {
+        setTimeout(() => {
+          this.isInitialized = true;
+        }, 500);
+      }
     },
     [SOCKET_ITEMS_GET_ERROR] (e) {
       console.log('ERROR ITEMS', e);
@@ -303,7 +307,7 @@ export default {
     }
   },
   mounted () {
-    setTimeout(() => this.getUsersItems(), 500);
+    this.getUsersItems();
     this.getSyncPercent();
   }
 };
