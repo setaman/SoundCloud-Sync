@@ -22,11 +22,11 @@
 
 <script>
 import Divider from 'components/Base/Divider';
-import ScrollMixin from 'components/scrollObserverMixin';
+import scrollObserverMixin from 'components/scrollObserverMixin';
 
 export default {
   name: 'ListsGroup',
-  mixins: [ScrollMixin],
+  mixins: [scrollObserverMixin],
   components: { Divider },
   data: () => ({
     offset: 30,

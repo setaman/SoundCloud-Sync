@@ -54,15 +54,14 @@ import ListsGroup from 'components/ListsGroup/ListsGroup';
 import List from 'components/ListsGroup/List';
 import ListSyncControls from 'components/ListsGroup/ListSyncControls';
 import notificationMixin from 'components/notificationMixin';
-const uniqid = require('uniqid');
 const { SOCKET_LIKES_GET, SOCKET_LIKES_ONDATA, SOCKET_LIKES_GET_ERROR, SOCKET_SYNC_STAT_GET,
-  SOCKET_SYNC_STAT_ONDATA, SOCKET_SYNC_STAT_ERROR, SOCKET_JOB_ADD, SOCKET_INITIALIZATION_SUCCESS,
+  SOCKET_SYNC_STAT_ONDATA, SOCKET_SYNC_STAT_ERROR, SOCKET_TASK_ADD, SOCKET_INITIALIZATION_SUCCESS,
   SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS } = require('../background/const/socketEvents.js');
 const { JOB_TYPE_SELECTED, JOB_TYPE_ONE_USER, LIST_TYPE_LIKES, STATUS_WAITING, STATUS_SYNCHRONIZED,
   STATUS_ERROR } = require('../background/const/const.js');
 import SplashLoading from 'components/Base/SplashLoading';
 import ListPagination from 'components/ListsGroup/ListPagination';
-import { createTask } from 'components/Jobs/createTask';
+import { createTask } from 'components/Tasks/createTask';
 
 export default {
   name: 'Likes',
@@ -133,11 +132,11 @@ export default {
       console.log(SOCKET_SYNC_STAT_ERROR, e);
       this.syncPercent = 0;
     },
-    [SOCKET_SYNC_ITEM_ERROR] (jobInfo, updatedItem) {
+    [SOCKET_SYNC_ITEM_ERROR] (taskInfo, updatedItem) {
       console.log('LIKES: SOCKET_SYNC_ITEM_FAILED', updatedItem);
       this.updateItem(updatedItem);
     },
-    [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo, updatedItem) {
+    [SOCKET_SYNC_ITEM_SUCCESS] (taskInfo, updatedItem) {
       console.log('LIKES: SOCKET_SYNC_ITEM_SUCCESS', updatedItem);
       this.updateItem(updatedItem);
     },
@@ -218,12 +217,12 @@ export default {
       } else {
         const selectedIds = this.checkedItemsOne.join(' ');
         const itemsToSync = this.itemsOne.filter(item => selectedIds.includes(item.id));
-        this.createJob(JOB_TYPE_SELECTED, this.userOne, this.userTwo, itemsToSync);
+        this.createTask(JOB_TYPE_SELECTED, this.userOne, this.userTwo, itemsToSync);
       }
     },
     onSyncFilteredOne () {
       console.log(JOB_TYPE_ONE_USER);
-      this.createJob(JOB_TYPE_ONE_USER, this.userOne, this.userTwo, [], this.filtersOne);
+      this.createTask(JOB_TYPE_ONE_USER, this.userOne, this.userTwo, [], this.filtersOne);
     },
     onSyncFilteredTwo () {},
     onSyncSelectedTwo () {},
@@ -235,9 +234,8 @@ export default {
       this.pageTwo = newPage;
       this.getUserTwoLikes();
     },
-    createJob (type, userFrom, userTo, items = [], query = {}) {
-      console.log('adding new job');
-      this.$socket.emit(SOCKET_JOB_ADD, createTask(
+    createTask (type, userFrom, userTo, items = [], query = {}) {
+      this.$socket.emit(SOCKET_TASK_ADD, createTask(
         type,
         LIST_TYPE_LIKES,
         items,

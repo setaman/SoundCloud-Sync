@@ -2,15 +2,15 @@
   <div class="job">
     <div class="flex flex-center">
       <p class="q-ma-none">
-        {{job.progress.done}} / {{ job.progress.from }}
+        {{task.progress.done}} / {{ task.progress.from }}
       </p>
     </div>
     <div class="flex flex-center">
-      <horizontal-progress :progress="progress" :error="job.failed" :pending="job.pending" :done="job.finished"/>
+      <horizontal-progress :progress="progress" :error="task.failed" :pending="task.pending" :done="task.finished"/>
     </div>
     <div class="flex flex-center">
-      <q-btn v-if="job.failed" round icon="refresh" flat color="primary"></q-btn>
-      <q-btn round icon="close" flat color="red" @click="removeJob(job)"></q-btn>
+      <q-btn v-if="task.failed" round icon="refresh" flat color="primary"></q-btn>
+      <q-btn round icon="close" flat color="red" @click="removeTask(task)"></q-btn>
     </div>
   </div>
 </template>
@@ -18,18 +18,18 @@
 <script>
 import HorizontalProgress from 'components/Base/HorizontalProgress';
 export default {
-  name: 'Job',
+  name: 'SimpleTask',
   components: { HorizontalProgress },
   props: {
-    job: {
+    task: {
       type: [Object, Number],
       required: true
     }
   },
   computed: {
     progress () {
-      const processed = this.job.progress.done || 0;
-      const from = this.job.progress.from || 0;
+      const processed = this.task.progress.done || 0;
+      const from = this.task.progress.from || 0;
       if (from === 0) {
         return 0;
       }
@@ -37,8 +37,8 @@ export default {
     }
   },
   methods: {
-    removeJob (job) {
-      this.$store.dispatch('removeJob', job);
+    removeTask (task) {
+      this.$store.dispatch('removeTask', task);
     }
   }
 };

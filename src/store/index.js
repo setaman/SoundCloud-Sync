@@ -5,7 +5,7 @@ import users from './users';
 import overview from './overview';
 import socket from './socket';
 import initialization from './initialization';
-import jobs from './jobs';
+import tasks from './tasks';
 
 Vue.use(Vuex);
 
@@ -18,7 +18,7 @@ const Store = new Vuex.Store({
     users,
     overview,
     socket,
-    jobs,
+    tasks,
     initialization
   },
   // enable strict mode (adds overhead!)

@@ -5,18 +5,18 @@
       <users-overview/>
       <router-view/>
     </q-page-container>
-    <jobs-control/>
+    <tasks-overview-control/>
   </q-layout>
 </template>
 
 <script>
 import Navigation from 'components/Navigation/Navigation';
 import UsersOverview from 'components/UsersOverview/UsersOverview';
-import JobsControl from 'components/Jobs/JobsControl';
+import TasksOverviewControl from 'components/Tasks/TasksOverview/TasksOverviewControl';
 
 export default {
   name: 'Home',
-  components: { JobsControl, UsersOverview, Navigation },
+  components: { TasksOverviewControl, UsersOverview, Navigation },
   data: () => ({}),
   methods: {}
 };

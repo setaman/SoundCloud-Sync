@@ -1,20 +1,20 @@
 <template>
-    <div class="jobs-control shadow-20" :class="{expanded: jobs.length > 0}">
+    <div class="jobs-control shadow-20" :class="{expanded: tasks.length > 0}">
       <div class="jobs-control-jobs-container" :class="{expanded: expanded}">
         <transition
           appear
           enter-active-class="animated fadeIn"
           leave-active-class="animated fadeOut"
         >
-          <div v-if="expanded && jobs.length > 0">
+          <div v-if="expanded && tasks.length > 0">
             <transition
               appear
               enter-active-class="animated fadeIn"
               leave-active-class="animated fadeOut"
-              v-for="(job, i) in jobs"
+              v-for="(task, i) in tasks"
               :key="i"
             >
-              <job :job="job"/>
+              <simple-task :task="task"/>
             </transition>
           </div>
         </transition>
@@ -24,7 +24,7 @@
         enter-active-class="animated fadeIn"
         leave-active-class="animated fadeOut"
       >
-        <div class="jobs-control-container" v-if="jobs.length > 0">
+        <div class="jobs-control-container" v-if="tasks.length > 0">
           <div class="flex flex-center">
             <p class="q-ma-none text-bold">
               <router-link class="tasks-status-link" to="/home/tasks">
@@ -36,7 +36,7 @@
             <horizontal-progress :progress="progress" :done="progress === 100"/>
           </div>
           <div class="flex flex-center">
-            <q-btn v-if="jobs.length > 0" :class="{expanded: expanded}" class="jobs-control-btn" round icon="expand_less"
+            <q-btn v-if="tasks.length > 0" :class="{expanded: expanded}" class="jobs-control-btn" round icon="expand_less"
                    flat color="primary" @click="expanded = !expanded">
             </q-btn>
           </div>
@@ -78,45 +78,45 @@
 
 <script>
 import HorizontalProgress from 'components/Base/HorizontalProgress';
-import Job from 'components/Jobs/Job';
+import SimpleTask from 'components/Tasks/TasksOverview/SimpleTask';
 import { format } from 'date-fns';
-const { SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_JOB_ADD_SUCCESS, SOCKET_JOB_ADD_ERROR, SOCKET_INITIALIZATION_START,
-  SOCKET_JOB_ADD, SOCKET_JOB_EXEC_SUCCESS, SOCKET_JOB_EXEC_START, SOCKET_JOB_EXEC_ERROR, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../background/const/socketEvents.js');
+const { SOCKET_SYNC_ITEM_ERROR, SOCKET_SYNC_ITEM_SUCCESS, SOCKET_TASK_ADD_SUCCESS, SOCKET_TASK_ADD_ERROR, SOCKET_INITIALIZATION_START,
+  SOCKET_TASK_ADD, SOCKET_TASK_EXEC_SUCCESS, SOCKET_TASK_EXEC_START, SOCKET_TASK_EXEC_ERROR, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../../background/const/socketEvents.js');
 export default {
-  name: 'JobsControl',
-  components: { Job, HorizontalProgress },
+  name: 'TasksOverviewControl',
+  components: { SimpleTask, HorizontalProgress },
   data: () => ({
     alert: false,
     blockedUser: '',
     period: '',
-    // jobs: [],
+    // tasks: [],
     expanded: false
   }),
   sockets: {
-    [SOCKET_JOB_ADD] (jobInfo) {
-      console.log(SOCKET_JOB_ADD, jobInfo);
+    [SOCKET_TASK_ADD] (taskInfo) {
+      console.log(SOCKET_TASK_ADD, taskInfo);
     },
-    [SOCKET_JOB_ADD_SUCCESS] (jobInfo) {
-      console.log(SOCKET_JOB_ADD_SUCCESS, jobInfo);
-      if (!this.taskAlreadyAdded(jobInfo.id)) {
-        this.$store.dispatch('addJob', jobInfo);
+    [SOCKET_TASK_ADD_SUCCESS] (taskInfo) {
+      console.log(SOCKET_TASK_ADD_SUCCESS, taskInfo);
+      if (!this.taskAlreadyAdded(taskInfo.id)) {
+        this.$store.dispatch('addTask', taskInfo);
       }
     },
-    [SOCKET_JOB_EXEC_START] (jobInfo) {
-      console.log(SOCKET_JOB_EXEC_START, jobInfo);
-      this.$store.dispatch('updateJob', jobInfo);
+    [SOCKET_TASK_EXEC_START] (taskInfo) {
+      console.log(SOCKET_TASK_EXEC_START, taskInfo);
+      this.$store.dispatch('updateTask', taskInfo);
     },
-    [SOCKET_SYNC_ITEM_SUCCESS] (jobInfo, item) {
-      console.log(SOCKET_SYNC_ITEM_SUCCESS, jobInfo, item);
-      this.$store.dispatch('updateJob', jobInfo);
+    [SOCKET_SYNC_ITEM_SUCCESS] (taskInfo, item) {
+      console.log(SOCKET_SYNC_ITEM_SUCCESS, taskInfo, item);
+      this.$store.dispatch('updateTask', taskInfo);
     },
-    [SOCKET_SYNC_ITEM_ERROR] (jobInfo, item) {
-      console.warn(SOCKET_SYNC_ITEM_ERROR, jobInfo, item);
-      this.$store.dispatch('updateJob', jobInfo);
+    [SOCKET_SYNC_ITEM_ERROR] (taskInfo, item) {
+      console.warn(SOCKET_SYNC_ITEM_ERROR, taskInfo, item);
+      this.$store.dispatch('updateTask', taskInfo);
     },
-    [SOCKET_JOB_EXEC_ERROR] (jobInfo, e) {
-      console.warn(SOCKET_JOB_EXEC_ERROR, jobInfo, e);
-      this.$store.dispatch('updateJob', jobInfo);
+    [SOCKET_TASK_EXEC_ERROR] (taskInfo, e) {
+      console.warn(SOCKET_TASK_EXEC_ERROR, taskInfo, e);
+      this.$store.dispatch('updateTask', taskInfo);
     },
     [SOCKET_TO_MANY_REQUESTS_ERROR] (info) {
       console.warn(SOCKET_TO_MANY_REQUESTS_ERROR, info);
@@ -124,27 +124,27 @@ export default {
       this.blockedUser = info.blockedUser;
       this.period = format(info.period, 'YYYY-MM-DD HH:MM');
     },
-    [SOCKET_JOB_EXEC_SUCCESS] (jobInfo) {
+    [SOCKET_TASK_EXEC_SUCCESS] (taskInfo) {
       this.refreshData();
-      console.log(SOCKET_JOB_EXEC_SUCCESS, jobInfo);
-      this.$store.dispatch('updateJob', jobInfo);
+      console.log(SOCKET_TASK_EXEC_SUCCESS, taskInfo);
+      this.$store.dispatch('updateTask', taskInfo);
     }
   },
   computed: {
-    jobs () {
-      return this.$store.state.jobs.jobs;
+    tasks () {
+      return this.$store.state.tasks.tasks;
     },
     progress () {
-      const processed = this.jobs.map(job => job.failed ? job.progress.from || 0 : job.progress.done || 0)
+      const processed = this.tasks.map(task => task.failed ? task.progress.from || 0 : task.progress.done || 0)
         .reduce((acc, jobProcessed) => acc + jobProcessed);
-      const from = this.jobs.map(job => job.progress.from || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
+      const from = this.tasks.map(task => task.progress.from || 0).reduce((acc, jobProcessed) => acc + jobProcessed);
       if (from === 0) {
         return 0;
       }
       return processed / from * 100;
     },
     jobsCountMessage () {
-      const jobsCount = this.jobs.length;
+      const jobsCount = this.tasks.length;
       return `${jobsCount} Task${jobsCount > 1 ? 's' : ''}`;
     },
     userOne () {
@@ -171,7 +171,7 @@ export default {
       });
     },
     taskAlreadyAdded (taskId) {
-      return this.jobs.map(({ id }) => id).includes(taskId);
+      return this.tasks.map(({ id }) => id).includes(taskId);
     }
   }
 };

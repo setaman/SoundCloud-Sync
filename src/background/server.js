@@ -4,7 +4,7 @@ const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
 
 const { SOCKET_INITIALIZATION_START, SOCKET_LIKES_GET,
-  SOCKET_SYNC_STAT_GET, SOCKET_JOB_ADD, SOCKET_JOB_EXEC_CANCEL } = require('./const/socketEvents');
+  SOCKET_SYNC_STAT_GET, SOCKET_TASK_ADD, SOCKET_TASK_EXEC_CANCEL } = require('./const/socketEvents');
 
 // Event handler
 const { getPaginatedUserItems } = require('./eventsHandler/persistedUsersDataLoding');
@@ -21,9 +21,9 @@ io.on('connection', socket => {
 
   socket.on(SOCKET_SYNC_STAT_GET, () => getSyncStatus(io));
 
-  socket.on(SOCKET_JOB_ADD, job => handleJob(io, job));
+  socket.on(SOCKET_TASK_ADD, job => handleJob(io, job));
 
-  socket.on(SOCKET_JOB_EXEC_CANCEL, () => ({/* implement this */}));
+  socket.on(SOCKET_TASK_EXEC_CANCEL, () => ({/* implement this */}));
 });
 
 http.listen(port, function () {

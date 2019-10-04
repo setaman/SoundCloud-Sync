@@ -2,7 +2,7 @@
   <vue-ellipse-progress
     :progress="progress"
     :size="size"
-    font-size="2rem"
+    font-size="1.5rem"
     :legend="legend"
     :color="options.color"
     :thickness="3"

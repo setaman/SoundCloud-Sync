@@ -67,7 +67,7 @@
 
 <script>
 import HorizontalProgress from 'components/Base/HorizontalProgress';
-const { SOCKET_JOB_ADD } = require('../../background/const/socketEvents.js');
+const { SOCKET_TASK_ADD } = require('../../background/const/socketEvents.js');
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import parseISO from 'date-fns/parseISO';
 import UserLink from 'components/Base/UserLink';

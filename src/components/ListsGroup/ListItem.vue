@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="list-item-action flex items-center">
-        <q-btn round flat :icon="icon" :loading="processing" :color="btnColor" @click="createJob"></q-btn>
+        <q-btn round flat :icon="icon" :loading="processing" :color="btnColor" @click="createTask"></q-btn>
       </div>
     </div>
 </template>
@@ -36,8 +36,8 @@
 <script>
 import UserAvatar from 'components/Navigation/UserAvatar';
 import { shell } from 'electron';
-import { createTask } from 'components/Jobs/createTask';
-const { SOCKET_JOB_ADD } = require('../../background/const/socketEvents.js');
+import { createTask } from 'components/Tasks/createTask';
+import { SOCKET_TASK_ADD } from 'src/background/const/socketEvents.js';
 
 const { LIST_TYPE_LIKES, LIST_TYPE_FOLLOWINGS, JOB_TYPE_ONE, STATUS_ERROR, STATUS_SYNCHRONIZED, STATUS_WAITING } = require('../../background/const/const.js');
 
@@ -63,7 +63,7 @@ export default {
     };
   },
   sockets: {
-    [SOCKET_JOB_ADD] (jobInfo) {
+    [SOCKET_TASK_ADD] (jobInfo) {
       console.log('ADDED JOB', jobInfo);
     }
   },
@@ -98,8 +98,8 @@ export default {
     }
   },
   methods: {
-    createJob () {
-      this.$socket.emit(SOCKET_JOB_ADD, createTask(
+    createTask () {
+      this.$socket.emit(SOCKET_TASK_ADD, createTask(
         JOB_TYPE_ONE,
         this.getItemType(),
         [this.item],

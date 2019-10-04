@@ -14,16 +14,16 @@
 
 <script>
 import TaskCard from 'components/Tasks/TaskCard';
-import ScrollMixin from 'components/ScrollObserverMixin';
-import { SOCKET_JOB_ADD } from 'src/background/const/socketEvents.js';
+import scrollObserverMixin from 'components/scrollObserverMixin';
+import { SOCKET_TASK_ADD } from 'src/background/const/socketEvents.js';
 
 export default {
   name: 'Tasks',
-  mixins: [ScrollMixin],
+  mixins: [scrollObserverMixin],
   components: { TaskCard },
   computed: {
     tasks () {
-      return this.$store.state.jobs.jobs;
+      return this.$store.state.tasks.tasks;
     },
     someTasksIsProcessing () {
       return this.$store.getters.someTasksIsProcessing;
@@ -46,7 +46,7 @@ export default {
         done: 0,
         from: task.progress.from
       };
-      this.$socket.emit(SOCKET_JOB_ADD, { ...task, date: new Date(), progress });
+      this.$socket.emit(SOCKET_TASK_ADD, { ...task, date: new Date(), progress });
     }
   }
 };

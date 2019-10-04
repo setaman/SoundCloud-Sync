@@ -1,6 +1,6 @@
 const { addUserLike, addUserFollowing } = require('../../soundcloudApi');
-const { SOCKET_SYNC_ITEM_SUCCESS, SOCKET_SYNC_ITEM_ERROR, SOCKET_JOB_EXEC_SUCCESS,
-  SOCKET_JOB_EXEC_START, SOCKET_JOB_EXEC_ERROR, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../const/socketEvents');
+const { SOCKET_SYNC_ITEM_SUCCESS, SOCKET_SYNC_ITEM_ERROR, SOCKET_TASK_EXEC_SUCCESS,
+  SOCKET_TASK_EXEC_START, SOCKET_TASK_EXEC_ERROR, SOCKET_TO_MANY_REQUESTS_ERROR } = require('../../const/socketEvents');
 const { LIST_TYPE_FOLLOWINGS, LIST_TYPE_LIKES, STATUS_ERROR, STATUS_SYNCHRONIZED } = require('../../const/const');
 const { clearQueue } = require('./queue');
 const { datastore } = require('../../db');
@@ -69,7 +69,7 @@ const processItems = async (io, job) => {
   job.pending = false;
   job.finished = false;
   job.processing = true;
-  io.emit(SOCKET_JOB_EXEC_START, job);
+  io.emit(SOCKET_TASK_EXEC_START, job);
 
   const chunkedJobItems = chunkJobItems(job.items);
 
@@ -95,7 +95,7 @@ const processItems = async (io, job) => {
           job.processing = false;
           job.pending = false;
 
-          io.emit(SOCKET_JOB_EXEC_ERROR, job, e);
+          io.emit(SOCKET_TASK_EXEC_ERROR, job, e);
           // cancel job execution
           return;
         }
@@ -104,7 +104,7 @@ const processItems = async (io, job) => {
       job.processing = false;
       job.finished = true;
 
-      io.emit(SOCKET_JOB_EXEC_SUCCESS, job);
+      io.emit(SOCKET_TASK_EXEC_SUCCESS, job);
       break;
     case LIST_TYPE_FOLLOWINGS:
       for (let chunk of chunkedJobItems) {
@@ -118,7 +118,7 @@ const processItems = async (io, job) => {
         // Let SC API coll down
         await wait(2000);
       }
-      io.emit(SOCKET_JOB_EXEC_SUCCESS, job);
+      io.emit(SOCKET_TASK_EXEC_SUCCESS, job);
       break;
   }
 };

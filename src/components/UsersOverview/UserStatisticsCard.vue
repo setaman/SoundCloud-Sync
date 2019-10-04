@@ -11,7 +11,7 @@
         </span>
         </div>
         <user-statistics-divider :sync-progress="syncProgress" :btn-wrapper-color="btnColor">
-          <q-btn flat color="primary" round icon="fas fa-sync-alt"></q-btn>
+          <!--<q-btn flat color="primary" round icon="fas fa-sync-alt"></q-btn>-->
         </user-statistics-divider>
         <div class="flex flex-center">
           <span class="user-statistics-card-value">
