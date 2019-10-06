@@ -3,8 +3,14 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
 
-import { SOCKET_INITIALIZATION_START, SOCKET_ITEMS_GET,
-  SOCKET_SYNC_STAT_GET, SOCKET_TASK_ADD, SOCKET_TASK_EXEC_CANCEL } from './const/socketEvents';
+import {
+  SOCKET_CLIENT_CONNECTED,
+  SOCKET_INITIALIZATION_START,
+  SOCKET_ITEMS_GET,
+  SOCKET_SYNC_STAT_GET,
+  SOCKET_TASK_ADD,
+  SOCKET_TASK_EXEC_CANCEL
+} from './const/socketEvents';
 
 // Event handler
 import { getPaginatedUserItems } from './eventsHandler/persistedUsersDataLoding';
@@ -24,6 +30,13 @@ io.on('connection', socket => {
   socket.on(SOCKET_TASK_ADD, task => handleTask(io, task));
 
   socket.on(SOCKET_TASK_EXEC_CANCEL, () => ({/* implement this */}));
+
+  socket.on('disconnect', () => {
+    console.log('--- CLIENT DISCONNECTED ---');
+    console.log('--- closing server ---');
+    socket.disconnect();
+    io.close();
+  });
 });
 
 http.listen(port, function () {

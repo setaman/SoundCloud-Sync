@@ -1,7 +1,8 @@
 import { app, BrowserWindow } from 'electron';
-const { fork } = require('child_process');
-fork(`src/background/server.js`);
-import '../../src/background/ws.js';
+/* const { fork } = require('child_process');
+fork(`src/background/server.js`); */
+// import '../../src/background/ws.js';
+// import '../../src/background/server.js';
 /**
  * Set `__statics` path to static files in production;
  * The reason we are setting it here is that the path needs to be evaluated at runtime
