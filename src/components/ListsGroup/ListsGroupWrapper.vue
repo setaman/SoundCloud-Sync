@@ -78,6 +78,7 @@ import {
 import SplashLoading from 'components/Base/SplashLoading';
 import ListPagination from 'components/ListsGroup/ListPagination';
 import { createTask } from 'components/Tasks/createTask';
+import { debounce } from 'quasar';
 
 export default {
   name: 'ListsGroupWrapper',
@@ -146,7 +147,7 @@ export default {
       if (!this.isInitialized) {
         setTimeout(() => {
           this.isInitialized = true;
-        }, 500);
+        }, 0);
       }
     },
     [SOCKET_ITEMS_GET_ERROR] (e) {
@@ -305,6 +306,10 @@ export default {
         }
       }
     }
+  },
+  created () {
+    this.getUserOneItems = debounce(this.getUserOneItems, 1000);
+    this.getUserTwoItems = debounce(this.getUserTwoItems, 1000);
   },
   mounted () {
     this.getUsersItems();
