@@ -2,8 +2,8 @@
   <div id="q-app">
     <transition
       appear
-      enter-active-class="animated fadeIn"
-      leave-active-class="animated fadeOut"
+      enter-active-class="animated fadeIn slideInDown"
+      leave-active-class="animated fadeOut slideOutUp"
     >
       <div v-if="serverError" id="server-connection-error-banner" class="full-width full-height text-center">
         <div id="server-connection-error-banner-content" class="full-width q-pa-md">
@@ -25,7 +25,7 @@
 
 <script>
 import notificationMixin from 'components/notificationMixin';
-import ViewsTransition from 'components/ViewsTransition';
+import ViewsTransition from 'src/components/Transitions/ViewsTransition';
 
 export default {
   name: 'App',

@@ -15,7 +15,7 @@
 import Navigation from 'components/Navigation/Navigation';
 import UsersOverview from 'components/UsersOverview/UsersOverview';
 import TasksOverviewControl from 'components/Tasks/TasksOverview/TasksOverviewControl';
-import ViewsTransition from 'components/ViewsTransition';
+import ViewsTransition from 'components/Transitions/ViewsTransition';
 
 export default {
   name: 'Home',

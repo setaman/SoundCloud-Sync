@@ -7,7 +7,9 @@
       </div>
     </div>
     <div id="tasks-container">
-      <task-card v-for="task in tasks" :key="task.id" :task="task" @removeTask="removeTask" @restartTask="restartTask"/>
+      <transition-group name="list-item" tag="div">
+        <task-card v-for="task in tasks" :key="task.id" :task="task" @removeTask="removeTask" @restartTask="restartTask"/>
+      </transition-group>
     </div>
   </q-page>
 </template>
@@ -76,5 +78,12 @@ export default {
   z-index: 2;
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
+  .list-item-enter, .list-item-leave-to {
+    opacity: 0;
+    transform: translatex(30px);
+  }
+  .list-item-leave-active {
+    position: absolute;
+  }
 
 </style>
