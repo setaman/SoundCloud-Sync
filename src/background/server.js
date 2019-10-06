@@ -4,7 +4,7 @@ const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
 
 import {
-  SOCKET_CLIENT_CONNECTED,
+  SOCKET_CONNECTION_ERROR,
   SOCKET_INITIALIZATION_START,
   SOCKET_ITEMS_GET,
   SOCKET_SYNC_STAT_GET,
@@ -12,7 +12,7 @@ import {
   SOCKET_TASK_EXEC_CANCEL
 } from './const/socketEvents';
 
-// Event handler
+// Events handler
 import { getPaginatedUserItems } from './eventsHandler/persistedUsersDataLoding';
 import init from './eventsHandler/inizialization/initialization';
 import { getSyncStatus } from './eventsHandler/syncStatus';
@@ -20,6 +20,8 @@ import { handleTask } from './eventsHandler/tasks/tasksHandler';
 
 io.on('connection', socket => {
   console.log('--- CLIENT CONNECTED ---');
+
+  socket.on(SOCKET_CONNECTION_ERROR, msg => init(io, msg));
 
   socket.on(SOCKET_INITIALIZATION_START, msg => init(io, msg));
 
@@ -33,11 +35,13 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     console.log('--- CLIENT DISCONNECTED ---');
-    console.log('--- closing server ---');
+    /* console.log('--- closing server ---');
     socket.disconnect();
-    io.close();
+    io.close(); */
   });
 });
+
+io.on('error', () => io.emit(SOCKET_CONNECTION_ERROR));
 
 http.listen(port, function () {
   console.log('listening on localhost:' + port);
