@@ -90,13 +90,13 @@ module.exports = function (ctx) {
       // gzip: true,
       // analyze: true,
       // extractCSS: false,
-      extendWebpack (cfg) {
+      extendWebpack (cfg, { isServer, isClient }) {
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
           exclude: /node_modules/
-        })
+        });
       }
     },
 
@@ -160,7 +160,7 @@ module.exports = function (ctx) {
     },
 
     electron: {
-      // bundler: 'builder', // or 'packager'
+      bundler: 'packager', // or 'packager'
 
       extendWebpack (cfg) {
         // do something with Electron main process Webpack cfg
@@ -186,5 +186,5 @@ module.exports = function (ctx) {
         // appId: 'quasar-app'
       }
     }
-  }
-}
+  };
+};

@@ -1,5 +1,5 @@
-const { datastore } = require('../db');
-const { SOCKET_SYNC_STAT_ONDATA, SOCKET_SYNC_STAT_ERROR } = require('../const/socketEvents');
+import { datastore } from '../db';
+import { SOCKET_SYNC_STAT_ONDATA, SOCKET_SYNC_STAT_ERROR } from '../const/socketEvents';
 
 const getSyncStatus = async io => {
   try {
@@ -30,7 +30,7 @@ const updateSyncStatus = async (io, { likesSyncPercent, followingsSyncPercent, o
   }
 };
 
-module.exports = {
+export {
   getSyncStatus,
   updateSyncStatus
 };

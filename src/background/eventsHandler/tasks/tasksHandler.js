@@ -1,8 +1,8 @@
-const { TASK_TYPE_FILTERED, TASK_TYPE_SELECTED } = require('../../const/const');
-const { SOCKET_TASK_ADD_ERROR, SOCKET_TASK_ADD_SUCCESS } = require('../../const/socketEvents');
-const { processFilteredTaskType } = require('./tasksTypesHanlder/handleFilteredTaskType');
-const { processSelectedTaskType } = require('./tasksTypesHanlder/handleSelectedTaskType');
-const { addQueueTask } = require('./queue');
+import { TASK_TYPE_FILTERED, TASK_TYPE_SELECTED } from '../../const/const';
+import { SOCKET_TASK_ADD_ERROR, SOCKET_TASK_ADD_SUCCESS } from '../../const/socketEvents';
+import { processFilteredTaskType } from './tasksTypesHanlder/handleFilteredTaskType';
+import { processSelectedTaskType } from './tasksTypesHanlder/handleSelectedTaskType';
+import { addQueueTask } from './queue';
 
 const processTask = async (io, task) => {
   switch (task.taskType) {
@@ -22,6 +22,6 @@ const processTask = async (io, task) => {
 
 const handleTask = (io, task) => addQueueTask(io, task, () => processTask(io, task));
 
-module.exports = {
+export {
   handleTask
 };

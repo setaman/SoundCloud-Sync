@@ -1,9 +1,9 @@
-const { processItems } = require('../processItems');
+import { processItems } from '../processItems';
 
 const processSelectedTaskType = async (io, task) => {
   processItems(io, task);
 };
 
-module.exports = {
+export {
   processSelectedTaskType
 };

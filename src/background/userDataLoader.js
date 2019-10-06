@@ -1,16 +1,16 @@
-const {
+import {
   getUserById,
   getUserFollowings,
   getUserTracks,
   addUserFollowing,
   getUserPlaylists
-} = require('./soundcloudApi');
-const {
+} from './soundcloudApi';
+import {
   LIST_TYPE_LIKES,
   LIST_TYPE_FOLLOWINGS,
   STATUS_WAITING,
   LIST_TYPE_PLAYLISTS
-} = require('./const/const');
+} from './const/const';
 
 const loadUserData = async (userId, clientId, token) => {
   const { username, avatar_url, permalink_url, userError } = await getUser(userId, clientId);
@@ -156,6 +156,6 @@ async function checkToken (token) {
   }
 }
 
-module.exports = {
+export {
   loadUserData
 };

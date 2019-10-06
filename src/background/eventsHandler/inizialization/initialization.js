@@ -1,8 +1,16 @@
-const { SOCKET_INITIALIZATION_ERROR, SOCKET_INITIALIZATION_START, SOCKET_INITIALIZATION_SUCCESS, SOCKET_INITIALIZATION_ONDATA,
-  SOCKET_SYNC_STAT_START, SOCKET_SYNC_STAT_SUCCESS, SOCKET_SYNC_STAT_ERROR } = require('../../const/socketEvents');
-const { loadUserData } = require('../../userDataLoader');
-const { datastore, clear } = require('../../db');
-const determineSyncStatus = require('./determineSyncStatus');
+import {
+  SOCKET_INITIALIZATION_ERROR,
+  SOCKET_INITIALIZATION_START,
+  SOCKET_INITIALIZATION_SUCCESS,
+  SOCKET_INITIALIZATION_ONDATA,
+  SOCKET_SYNC_STAT_START,
+  SOCKET_SYNC_STAT_SUCCESS,
+  SOCKET_SYNC_STAT_ERROR
+} from '../../const/socketEvents';
+
+import { loadUserData } from '../../userDataLoader';
+import { datastore, clear } from '../../db';
+import { determineSyncStatus } from './determineSyncStatus';
 
 const persistUserData = (userId, likes, followings, playlists) => {
   const likesToPersist = likes.map(like => ({ userId, type: 'likes', ...like }));
@@ -96,6 +104,4 @@ const init = async (io, msg) => {
   }
 };
 
-module.exports = {
-  init
-};
+export default init;

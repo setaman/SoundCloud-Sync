@@ -3,14 +3,14 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
 
-const { SOCKET_INITIALIZATION_START, SOCKET_ITEMS_GET,
-  SOCKET_SYNC_STAT_GET, SOCKET_TASK_ADD, SOCKET_TASK_EXEC_CANCEL } = require('./const/socketEvents');
+import { SOCKET_INITIALIZATION_START, SOCKET_ITEMS_GET,
+  SOCKET_SYNC_STAT_GET, SOCKET_TASK_ADD, SOCKET_TASK_EXEC_CANCEL } from './const/socketEvents';
 
 // Event handler
-const { getPaginatedUserItems } = require('./eventsHandler/persistedUsersDataLoding');
-const { init } = require('./eventsHandler/inizialization/initialization');
-const { getSyncStatus } = require('./eventsHandler/syncStatus');
-const { handleTask } = require('./eventsHandler/tasks/tasksHandler');
+import { getPaginatedUserItems } from './eventsHandler/persistedUsersDataLoding';
+import init from './eventsHandler/inizialization/initialization';
+import { getSyncStatus } from './eventsHandler/syncStatus';
+import { handleTask } from './eventsHandler/tasks/tasksHandler';
 
 io.on('connection', socket => {
   console.log('--- CLIENT CONNECTED ---');

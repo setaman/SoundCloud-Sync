@@ -130,7 +130,7 @@ const addUserPlaylist = (userId, playlistId, clientId, token) =>
     }
   );
 
-module.exports = {
+export {
   getUserTracks,
   addUserLike,
   getUserFollowings,

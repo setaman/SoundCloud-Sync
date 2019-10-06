@@ -1,4 +1,4 @@
-const { SOCKET_TASK_ADD_ERROR } = require('../../const/socketEvents');
+import { SOCKET_TASK_ADD_ERROR } from '../../const/socketEvents';
 const { default: PQueue } = require('p-queue');
 
 const queue = new PQueue({ concurrency: 1 });
@@ -30,7 +30,7 @@ const addQueueTask = async (io, task, taskMethod) => {
   }
 };
 
-module.exports = {
+export {
   addQueueTask,
   clearQueue,
   queue

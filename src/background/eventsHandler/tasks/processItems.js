@@ -1,22 +1,22 @@
-const { addUserLike, addUserFollowing, addUserPlaylist } = require('../../soundcloudApi');
-const {
+import { addUserLike, addUserFollowing, addUserPlaylist } from '../../soundcloudApi';
+import {
   SOCKET_SYNC_ITEM_SUCCESS,
   SOCKET_SYNC_ITEM_ERROR,
   SOCKET_TASK_EXEC_SUCCESS,
   SOCKET_TASK_EXEC_START,
   SOCKET_TASK_EXEC_ERROR,
   SOCKET_TO_MANY_REQUESTS_ERROR
-} = require('../../const/socketEvents');
-const {
+} from '../../const/socketEvents';
+import {
   LIST_TYPE_FOLLOWINGS,
   LIST_TYPE_LIKES,
   STATUS_ERROR,
   STATUS_SYNCHRONIZED,
   LIST_TYPE_PLAYLISTS
-} = require('../../const/const');
+} from '../../const/const';
 
-const { clearQueue } = require('./queue');
-const { datastore } = require('../../db');
+import { clearQueue } from './queue';
+import { datastore } from '../../db';
 
 /* const wait = (ms = 3000) => new Promise(resolve => setTimeout(resolve, ms));
 const calculateDelay = itemsCount => Math.log10(itemsCount) * 1000; */
@@ -108,6 +108,6 @@ const processItems = async (io, task) => {
   io.emit(SOCKET_TASK_EXEC_SUCCESS, task);
 };
 
-module.exports = {
+export {
   processItems
 };

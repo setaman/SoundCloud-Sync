@@ -95,4 +95,4 @@ function determineSyncStatus ({ userOne, userTwo }) {
   };
 }
 
-module.exports = determineSyncStatus;
+export { determineSyncStatus };

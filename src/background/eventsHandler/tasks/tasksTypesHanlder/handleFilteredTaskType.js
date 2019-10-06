@@ -1,6 +1,6 @@
-const { SOCKET_TASK_EXEC_ERROR } = require('../../../const/socketEvents');
-const { processItems } = require('../processItems');
-const { getUserItems } = require('../../persistedUsersDataLoding');
+import { SOCKET_TASK_EXEC_ERROR } from '../../../const/socketEvents';
+import { processItems } from '../processItems';
+import { getUserItems } from '../../persistedUsersDataLoding';
 
 const processFilteredTaskType = async (io, task) => {
   let itemsToSync = [];
@@ -16,6 +16,6 @@ const processFilteredTaskType = async (io, task) => {
   }
 };
 
-module.exports = {
+export {
   processFilteredTaskType
 };
