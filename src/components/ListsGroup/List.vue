@@ -15,17 +15,22 @@
       </transition>
     </div>
   </div>
-  <list-item
-    v-for="(item, i) in items"
-    :key="`${i}_${item.id}`"
-    :item="item"
-    :checked-items="checkedItems"
-    @checked="onChecked"
-    @unchecked="onUnchecked"/>
+  <transition-group name="list-item" tag="div">
+    <list-item
+      v-for="(item, i) in items"
+      :key="`${i}_${item.id}`"
+      :item="item"
+      :checked-items="checkedItems"
+      @checked="onChecked"
+      @unchecked="onUnchecked"/>
+  </transition-group>
   <!-- Pagination goes here -->
   <slot>
 
   </slot>
+  <div v-if="items.length > 0" class="list-stop q-pt-lg q-pb-xl">
+    <divider></divider>
+  </div>
 </div>
 </template>
 
@@ -114,6 +119,16 @@ export default {
 
 <style scoped lang="scss">
   .list {
-    min-height: calc(100vh - 100px);
+    // min-height: calc(100vh - 100px);
+  }
+.list-stop {
+  padding-bottom: 60px;
+}
+  .list-item-enter, .list-item-leave-to {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  .list-item-leave-active {
+    // position: absolute;
   }
 </style>

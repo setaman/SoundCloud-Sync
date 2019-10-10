@@ -78,6 +78,7 @@ import {
 import SplashLoading from 'components/Base/SplashLoading';
 import ListPagination from 'components/ListsGroup/ListPagination';
 import { createTask } from 'components/Tasks/createTask';
+import { debounce } from 'quasar';
 
 export default {
   name: 'ListsGroupWrapper',
@@ -143,11 +144,7 @@ export default {
         this.pagesTwo = pages;
       }
       console.log('LOADED ITEMS', userId, items, from, page, pages);
-      if (!this.isInitialized) {
-        setTimeout(() => {
-          this.isInitialized = true;
-        }, 500);
-      }
+      this.isInitialized = true;
     },
     [SOCKET_ITEMS_GET_ERROR] (e) {
       console.log('ERROR ITEMS', e);
@@ -309,6 +306,8 @@ export default {
   mounted () {
     this.getUsersItems();
     this.getSyncPercent();
+    this.getUserOneItems = debounce(this.getUserOneItems, 1000);
+    this.getUserTwoItems = debounce(this.getUserTwoItems, 1000);
   }
 };
 </script>

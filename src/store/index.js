@@ -3,7 +3,6 @@ import Vuex from 'vuex';
 
 import users from './users';
 import overview from './overview';
-import socket from './socket';
 import initialization from './initialization';
 import tasks from './tasks';
 
@@ -17,7 +16,6 @@ const Store = new Vuex.Store({
   modules: {
     users,
     overview,
-    socket,
     tasks,
     initialization
   },

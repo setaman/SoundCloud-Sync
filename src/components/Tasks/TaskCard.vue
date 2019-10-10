@@ -1,5 +1,5 @@
 <template>
-<div class="task-card q-pb-xl q-mb-xl q-mx-md">
+<div class="task-card q-pb-xl q-mb-xl q-px-md">
   <div class="task-card-content">
     <div class="task-card-title flex justify-between q-mt-none q-mb-xs">
       <div>
@@ -106,6 +106,8 @@ export default {
 
 <style scoped lang="scss">
 .task-card {
+  transition: 0.3s;
+  width: 100%;
   // border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 .task-card-info {

@@ -1,12 +1,12 @@
-const { SOCKET_ITEMS_ONDATA, SOCKET_ITEMS_GET_ERROR } = require('../const/socketEvents');
-const { datastore } = require('../db');
-const {
+import { SOCKET_ITEMS_ONDATA, SOCKET_ITEMS_GET_ERROR } from '../const/socketEvents';
+import { datastore } from '../db';
+import {
   LIST_SORT_OPTION_ALPHABETIC,
   LIST_SORT_OPTION_NEWEST,
   LIST_SORT_OPTION_OLDEST,
   LIST_SORT_OPTION_STATUS,
   LIST_TYPE_FOLLOWINGS
-} = require('../const/const');
+} from '../const/const';
 
 const formulateSort = (sortOption, type) => {
   switch (sortOption) {
@@ -92,7 +92,7 @@ const getUserItems = async query => {
   return items;
 };
 
-module.exports = {
+export {
   getPaginatedUserItems,
   getUserItems
 };

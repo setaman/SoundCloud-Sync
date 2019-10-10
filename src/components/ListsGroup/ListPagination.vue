@@ -1,5 +1,5 @@
 <template>
-    <div class="list-pagination flex flex-center q-mt-lg q-mb-xl">
+    <div class="list-pagination flex flex-center q-mt-lg">
       <div>
         <q-pagination
           v-model.lazy="page"
@@ -48,9 +48,4 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .list-pagination {
-    /*position: fixed;
-    width: 300px;
-    bottom: 5%;*/
-  }
 </style>

@@ -1,15 +1,15 @@
-import { app, BrowserWindow } from 'electron'
-// require('../../src/background/server.js')
+import { app, BrowserWindow, ipcMain } from 'electron';
+import getServerPort from '../../src/background/server.js';
 
 /**
  * Set `__statics` path to static files in production;
  * The reason we are setting it here is that the path needs to be evaluated at runtime
  */
 if (process.env.PROD) {
-  global.__statics = require('path').join(__dirname, 'statics').replace(/\\/g, '\\\\')
+  global.__statics = require('path').join(__dirname, 'statics').replace(/\\/g, '\\\\');
 }
 
-let mainWindow
+let mainWindow;
 
 function createWindow () {
   /**
@@ -21,27 +21,38 @@ function createWindow () {
     height: 800,
     useContentSize: true,
     webPreferences: {
-      webSecurity: false
+      webSecurity: false,
+      nodeIntegration: true
     }
-  })
+  });
 
-  mainWindow.loadURL(process.env.APP_URL)
+  mainWindow.loadURL(process.env.APP_URL);
 
   mainWindow.on('closed', () => {
-    mainWindow = null
-  })
+    mainWindow = null;
+  });
+
+  mainWindow.openDevTools();
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.send('serverPort', getServerPort());
+  });
 }
 
-app.on('ready', createWindow)
+app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
-})
+});
 
 app.on('activate', () => {
   if (mainWindow === null) {
-    createWindow()
+    createWindow();
   }
-})
+});
+
+ipcMain.on('getServerPort', () => {
+  mainWindow.webContents.send('serverPort', getServerPort());
+});

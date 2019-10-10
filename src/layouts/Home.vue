@@ -3,7 +3,9 @@
     <navigation/>
     <q-page-container>
       <users-overview/>
-      <router-view/>
+      <views-transition>
+        <router-view/>
+      </views-transition>
     </q-page-container>
     <tasks-overview-control/>
   </q-layout>
@@ -13,10 +15,11 @@
 import Navigation from 'components/Navigation/Navigation';
 import UsersOverview from 'components/UsersOverview/UsersOverview';
 import TasksOverviewControl from 'components/Tasks/TasksOverview/TasksOverviewControl';
+import ViewsTransition from 'components/Transitions/ViewsTransition';
 
 export default {
   name: 'Home',
-  components: { TasksOverviewControl, UsersOverview, Navigation },
+  components: { ViewsTransition, TasksOverviewControl, UsersOverview, Navigation },
   data: () => ({}),
   methods: {}
 };
