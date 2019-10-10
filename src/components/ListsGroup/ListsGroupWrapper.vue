@@ -144,11 +144,7 @@ export default {
         this.pagesTwo = pages;
       }
       console.log('LOADED ITEMS', userId, items, from, page, pages);
-      if (!this.isInitialized) {
-        setTimeout(() => {
-          this.isInitialized = true;
-        }, 0);
-      }
+      this.isInitialized = true;
     },
     [SOCKET_ITEMS_GET_ERROR] (e) {
       console.log('ERROR ITEMS', e);
@@ -307,13 +303,11 @@ export default {
       }
     }
   },
-  created () {
-    this.getUserOneItems = debounce(this.getUserOneItems, 1000);
-    this.getUserTwoItems = debounce(this.getUserTwoItems, 1000);
-  },
   mounted () {
     this.getUsersItems();
     this.getSyncPercent();
+    this.getUserOneItems = debounce(this.getUserOneItems, 1000);
+    this.getUserTwoItems = debounce(this.getUserTwoItems, 1000);
   }
 };
 </script>

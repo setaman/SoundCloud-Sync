@@ -1,7 +1,7 @@
 const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const port = process.env.PORT || 3000;
+const port = 0;
 
 import {
   SOCKET_CONNECTION_ERROR,
@@ -43,6 +43,8 @@ io.on('connection', socket => {
 
 io.on('error', () => io.emit(SOCKET_CONNECTION_ERROR));
 
-http.listen(port, function () {
-  console.log('listening on localhost:' + port);
+const server = http.listen(port, () => {
+  console.log('listening on localhost:' + server.address().port);
 });
+
+export default () => server.address().port;

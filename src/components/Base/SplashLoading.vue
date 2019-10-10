@@ -1,23 +1,27 @@
 <template>
     <div class="splash-loading flex flex-center full-height full-width">
       <div class="text-center">
-        <q-img
-          src="assets/soundcloud.svg"
-          spinner-color="white"
-          style="width: 240px"/>
-        <div class="q-mt-md">
-          <q-spinner-audio
-            color="orange"
-            size="2em"
-          />
-        </div>
+        <lottie :options="animationOptions"/>
       </div>
     </div>
 </template>
 
 <script>
+import animation from 'src/lottie-animations/sc.json';
+import Lottie from 'components/Base/Lottie';
 export default {
-  name: 'SplashLoading'
+  name: 'SplashLoading',
+  components: { Lottie },
+  computed: {
+    animationOptions () {
+      return {
+        speed: 0.5,
+        animationData: animation,
+        width: 150,
+        height: 150
+      };
+    }
+  }
 };
 </script>
 

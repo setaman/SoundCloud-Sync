@@ -11,9 +11,6 @@ export default {
     isLoading: false
   }),
   sockets: {
-    connect: function () {
-      console.log('socket connected');
-    },
     [SOCKET_INITIALIZATION_START] () {
       this.msg = 'Loading data...';
       this.isLoading = true;

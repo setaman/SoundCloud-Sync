@@ -1,8 +1,6 @@
-import { app, BrowserWindow } from 'electron';
-/* const { fork } = require('child_process');
-fork(`src/background/server.js`); */
-// import '../../src/background/ws.js';
-// import '../../src/background/server.js';
+import { app, BrowserWindow, ipcMain } from 'electron';
+import getServerPort from '../../src/background/server.js';
+
 /**
  * Set `__statics` path to static files in production;
  * The reason we are setting it here is that the path needs to be evaluated at runtime
@@ -35,6 +33,10 @@ function createWindow () {
   });
 
   mainWindow.openDevTools();
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.send('serverPort', getServerPort());
+  });
 }
 
 app.on('ready', createWindow);
@@ -49,4 +51,8 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.on('getServerPort', () => {
+  mainWindow.webContents.send('serverPort', getServerPort());
 });
