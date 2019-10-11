@@ -119,6 +119,8 @@ export default {
   @import url('https://fonts.googleapis.com/css?family=Quicksand:300,400,700&display=swap');
   @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,700&display=swap');
 
+  @import "../src/styles/common";
+
   $c_bg: #231c45;
   $c_likes: #ff4966;
   $c_followings: #2069ff;

@@ -1,0 +1,14 @@
+.notification {
+  box-shadow: 4px 9px 32px 1px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  font-family: "Quicksand Medium", serif;
+  &.warn {
+    background-color: #efbc4e !important;
+  }
+  &.error {
+    background-color: #ef405b !important;
+  }
+  &.success {
+    background-color: #09a874 !important;
+  }
+}
