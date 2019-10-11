@@ -95,42 +95,37 @@ export default {
   }),
   sockets: {
     [SOCKET_TASK_ADD] (taskInfo) {
-      console.log(SOCKET_TASK_ADD, taskInfo);
     },
     [SOCKET_TASK_ADD_SUCCESS] (taskInfo) {
-      console.log(SOCKET_TASK_ADD_SUCCESS, taskInfo);
       if (!this.taskAlreadyAdded(taskInfo.id)) {
         this.$store.dispatch('addTask', taskInfo);
       }
     },
     [SOCKET_TASK_ADD_ERROR] (taskInfo, e) {
-      console.log(SOCKET_TASK_ADD_ERROR, taskInfo, e);
+      // TODO: handle error
+      console.error(SOCKET_TASK_ADD_ERROR, taskInfo, e);
     },
     [SOCKET_TASK_EXEC_START] (taskInfo) {
-      console.log(SOCKET_TASK_EXEC_START, taskInfo);
       this.$store.dispatch('updateTask', taskInfo);
     },
     [SOCKET_SYNC_ITEM_SUCCESS] (taskInfo, item) {
-      console.log(SOCKET_SYNC_ITEM_SUCCESS, taskInfo, item);
       this.$store.dispatch('updateTask', taskInfo);
     },
     [SOCKET_SYNC_ITEM_ERROR] (taskInfo, item) {
-      console.warn(SOCKET_SYNC_ITEM_ERROR, taskInfo, item);
+      console.error(SOCKET_SYNC_ITEM_ERROR, taskInfo, item);
       this.$store.dispatch('updateTask', taskInfo);
     },
     [SOCKET_TASK_EXEC_ERROR] (taskInfo, e) {
-      console.warn(SOCKET_TASK_EXEC_ERROR, taskInfo, e);
+      console.error(SOCKET_TASK_EXEC_ERROR, taskInfo, e);
       this.$store.dispatch('updateTask', taskInfo);
     },
     [SOCKET_TO_MANY_REQUESTS_ERROR] (info) {
-      console.warn(SOCKET_TO_MANY_REQUESTS_ERROR, info);
       this.alert = true;
       this.blockedUser = info.blockedUser;
       this.period = format(info.period, 'YYYY-MM-DD HH:MM');
     },
     [SOCKET_TASK_EXEC_SUCCESS] (taskInfo) {
       this.refreshData();
-      console.log(SOCKET_TASK_EXEC_SUCCESS, taskInfo);
       this.$store.dispatch('updateTask', taskInfo);
     }
   },

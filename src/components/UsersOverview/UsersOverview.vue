@@ -5,22 +5,18 @@
         <div class="text-center">
           <user-avatar :url="userOne.avatar_url"/>
           <p class="ellipsis text-white text-bold q-mt-md q-px-sm">
-            <a class="user-link" :href="userOne.permalink_url">
-              {{ userOne.username.slice(0, 60) }}
-            </a>
+            <user-link :url="userOne.permalink_url" :username="userOne.username"/>
           </p>
         </div>
         <div class="flex flex-center">
           <user-statistics-divider :sync-progress="syncStats.overallSyncPercent || 0">
-            <q-btn id="sync-all-btn" flat color="primary" round icon="fas fa-sync-alt"></q-btn>
+            <!--<q-btn id="sync-all-btn" flat color="primary" round icon="fas fa-sync-alt"></q-btn>-->
           </user-statistics-divider>
         </div>
         <div class="text-center">
           <user-avatar :url="userTwo.avatar_url"/>
           <p class="ellipsis text-white text-bold q-mt-md q-px-sm">
-            <a class="user-link" :href="userTwo.permalink_url">
-              {{ userTwo.username.slice(0, 60) }}
-            </a>
+            <user-link :url="userTwo.permalink_url" :username="userTwo.username"/>
           </p>
         </div>
       </div>
@@ -34,14 +30,15 @@
 </template>
 
 <script>
-import UserAvatar from 'components/Base/UserAvatar';
+import UserAvatar from 'components/Navigation/UserAvatar';
 import UserStatisticsCard from 'components/UsersOverview/UserStatisticsCard';
 import UserStatisticsDivider from 'components/UsersOverview/UserStatisticsDivider';
-const { SOCKET_SYNC_STAT_ONDATA } = require('../../background/const/socketEvents.js');
+import UserLink from 'components/Base/UserLink';
+const { SOCKET_SYNC_STAT_ONDATA } = require('src/background/const/socketEvents.js');
 
 export default {
   name: 'UsersOverview',
-  components: { UserStatisticsDivider, UserStatisticsCard, UserAvatar },
+  components: { UserLink, UserStatisticsDivider, UserStatisticsCard, UserAvatar },
   props: {
     likes: {
       type: Number,
@@ -61,7 +58,6 @@ export default {
   }),
   sockets: {
     [SOCKET_SYNC_STAT_ONDATA] (syncStats) {
-      console.log(SOCKET_SYNC_STAT_ONDATA, syncStats);
       this.syncStats = syncStats;
     }
   },

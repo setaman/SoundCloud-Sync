@@ -47,14 +47,11 @@ export default {
   }),
   sockets: {
     connect () {
-      console.log('SOCKET CONNECTED');
       this.serverError = '';
     },
     connecting () {
-      console.log('SOCKET CONNECTING');
     },
     reconnecting () {
-      console.log('SOCKET RECONNECTING');
       this.reconnectionAttempts++;
       this.tryGetPort();
     },
@@ -96,20 +93,13 @@ export default {
   mounted () {
     console.log(this.$socket);
     ipcRenderer.on('serverPort', (event, port) => {
-      console.log('ON GET PORT', port);
+      console.info('[PORT]', port);
       this.serverPort = port;
       if (this.reconnectionAttempts > 0) {
         this.reconnectToServer();
       } else {
         this.connectToServer();
       }
-    });
-    ipcRenderer.on('serverPortError', (event, error) => {
-      console.log(error);
-      this.serverError = `Initial connection error with ws.
-          clientUri: ${this.$socket.io.uri},
-          ${error}
-        `;
     });
   }
 };

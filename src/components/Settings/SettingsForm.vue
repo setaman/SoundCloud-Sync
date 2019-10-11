@@ -170,15 +170,12 @@ export default {
       });
     },
     onDataLoaded (usersData) {
-      console.log('USERS', usersData);
       this.userOne = usersData.userOne;
       this.userTwo = usersData.userTwo;
       this.loaded = true;
       this.step = 2;
     },
-    onInitialisationSuccess () {
-      console.log('initialized');
-    },
+    onInitialisationSuccess () { },
     persistData () {
       this.$store.dispatch('setUserOne', this.userOne);
       this.$store.dispatch('setUserTwo', this.userTwo);

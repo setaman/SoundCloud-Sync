@@ -29,12 +29,6 @@ export default {
         backgroundImage: this.url && !this.isDefaultImg ? '' : randomGradient()
       };
     },
-    borderRadiusStyle () {
-      return `border-radius:${this.size / 2}px`;
-    },
-    backgroundStyle () {
-      return this.url && !this.isDefaultImg ? '' : randomGradient();
-    },
     isDefaultImg () {
       return this.url.toLowerCase().includes('default');
     }

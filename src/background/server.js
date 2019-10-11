@@ -35,13 +35,12 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     console.log('--- CLIENT DISCONNECTED ---');
-    /* console.log('--- closing server ---');
-    socket.disconnect();
-    io.close(); */
   });
 });
 
 io.on('error', () => io.emit(SOCKET_CONNECTION_ERROR));
+
+app.get('/', (req, res) => res.send('[SoundCloudSync server check]'));
 
 const server = http.listen(port, () => {
   console.log('listening on localhost:' + server.address().port);

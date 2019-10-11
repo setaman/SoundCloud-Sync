@@ -143,14 +143,11 @@ export default {
         this.isLoadingTwo = false;
         this.pagesTwo = pages;
       }
-      console.log('LOADED ITEMS', userId, items, from, page, pages);
       this.isInitialized = true;
     },
     [SOCKET_ITEMS_GET_ERROR] (e) {
-      console.log('ERROR ITEMS', e);
     },
     [SOCKET_SYNC_STAT_ONDATA] (syncInfo) {
-      console.log('SYNC PERCENT', syncInfo.likesSyncPercent);
       switch (this.itemsType) {
         case LIST_TYPE_LIKES:
           this.syncPercent = syncInfo.likesSyncPercent || 0;
@@ -164,19 +161,16 @@ export default {
       }
     },
     [SOCKET_SYNC_STAT_ERROR] (e) {
-      console.log(SOCKET_SYNC_STAT_ERROR, e);
+      console.error(SOCKET_SYNC_STAT_ERROR, e);
       this.syncPercent = 0;
     },
     [SOCKET_SYNC_ITEM_ERROR] (taskInfo, updatedItem) {
-      console.log('WRAPPER: SOCKET_SYNC_ITEM_FAILED', updatedItem);
       this.updateItem(updatedItem);
     },
     [SOCKET_SYNC_ITEM_SUCCESS] (taskInfo, updatedItem) {
-      console.log('WRAPPER: SOCKET_SYNC_ITEM_SUCCESS', updatedItem);
       this.updateItem(updatedItem);
     },
     [SOCKET_INITIALIZATION_SUCCESS] () {
-      console.log(SOCKET_INITIALIZATION_SUCCESS);
       this.getSyncPercent();
       this.getUsersItems();
     }

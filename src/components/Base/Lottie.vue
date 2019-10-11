@@ -20,7 +20,7 @@ export default {
     this.anim = lottie.loadAnimation({
       container: this.$refs.animContainer,
       renderer: 'svg',
-      loop: true,
+      loop: this.options.loop !== undefined ? this.options.loop : true,
       autoplay: true,
       animationData: this.options.animationData
     });
