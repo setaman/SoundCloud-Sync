@@ -124,7 +124,7 @@ import initializationMixin from 'components/initializationMixin';
 import { SOCKET_INITIALIZATION_START } from 'src/background/const/socketEvents.js';
 import lockedAnimation from 'src/lottie-animations/locked.json';
 import browserAnimation from 'src/lottie-animations/browser.json';
-import Lottie from '../Base/Lottie';
+import Lottie from 'components/Base/Lottie';
 
 const userPlaceholder = { userId: '', token: '', clientId: '' };
 

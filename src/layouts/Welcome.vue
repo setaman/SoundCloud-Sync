@@ -1,21 +1,11 @@
 <template>
 <div id="welcome" class="fullscreen flex flex-center">
   <div class="text-center">
-    <h3>
+    <h3 class="q-mb-none">
       Welcome to SoundCloudSync
     </h3>
-    <div style="height: 140px">
-      <q-img
-        src="assets/soundcloud.svg"
-        spinner-color="white"
-        style="width: 240px"
-      />
-    </div>
-    <div class="q-mt-md">
-      <q-spinner-audio
-        color="orange"
-        size="2em"
-      />
+    <div>
+      <lottie :options="options"/>
     </div>
     <p class="msg q-mt-md" :class="{blinking: blinking}">
       Doing awesome stuff for you
@@ -27,11 +17,20 @@
 <script>
 import { SOCKET_INITIALIZATION_START } from 'src/utils/socketEvents.js';
 import initializationMixin from 'components/initializationMixin';
+import Lottie from 'components/Base/Lottie';
+import animation from 'src/lottie-animations/sc.json';
+
 export default {
   name: 'Welcome',
+  components: { Lottie },
   mixins: [initializationMixin],
   data: () => ({
-    blinking: true
+    blinking: true,
+    options: {
+      animationData: animation,
+      height: 200,
+      width: 400
+    }
   }),
   computed: {
     userOne () {

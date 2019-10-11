@@ -43,6 +43,12 @@ export default {
     expanded: true,
     routes: [
       {
+        route: '/',
+        icon: 'list',
+        title: 'welcome',
+        color: 'red'
+      },
+      {
         route: '/home/likes',
         icon: 'favorite',
         title: 'likes',
