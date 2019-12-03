@@ -15,6 +15,19 @@
       </transition>
     </div>
   </div>
+  <transition
+    appear
+    enter-active-class="animated fadeIn"
+    leave-active-class="animated fadeOut"
+  >
+    <div v-if="items.length < 1" class="text-center">
+      <empty-animation>
+        <p>
+          Nothing found here. Try to adjust filters
+        </p>
+      </empty-animation>
+    </div>
+  </transition>
   <transition-group name="list-item" tag="div">
     <list-item
       v-for="(item, i) in items"
@@ -40,10 +53,11 @@ import ListItem from 'components/ListsGroup/ListItem';
 import { STATUS_SYNCHRONIZED, STATUS_WAITING, STATUS_ERROR } from 'src/utils/const';
 import Divider from 'components/Base/Divider';
 import HorizontalProgress from 'components/Base/HorizontalProgress';
+import EmptyAnimation from 'components/Base/EmptyAnimation';
 
 export default {
   name: 'List',
-  components: { HorizontalProgress, Divider, ListItem, ListControls },
+  components: { EmptyAnimation, HorizontalProgress, Divider, ListItem, ListControls },
   props: {
     items: {
       type: Array,
@@ -119,7 +133,7 @@ export default {
 
 <style scoped lang="scss">
   .list {
-    // min-height: calc(100vh - 100px);
+    position: relative;
   }
 .list-stop {
   padding-bottom: 60px;

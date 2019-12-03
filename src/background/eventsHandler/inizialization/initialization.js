@@ -47,9 +47,6 @@ const loadUsersData = async (userOne, userTwo) => {
   const loadedUserOne = result.find(data => data.userId === userOne.userId);
   const loadedUserTwo = result.find(data => data.userId === userTwo.userId);
 
-  console.log('USER ONE', loadedUserOne.userId);
-  console.log('USER TWO', loadedUserTwo.userId);
-
   return {
     userOne: {
       ...loadedUserOne
@@ -98,7 +95,7 @@ const init = async (io, msg) => {
     io.emit(SOCKET_SYNC_STAT_SUCCESS);
     io.emit(SOCKET_INITIALIZATION_SUCCESS);
   } catch (e) {
-    console.log(e);
+    console.error(e);
     io.emit(SOCKET_SYNC_STAT_ERROR, e);
     io.emit(SOCKET_INITIALIZATION_ERROR, e);
   }

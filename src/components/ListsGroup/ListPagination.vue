@@ -39,7 +39,6 @@ export default {
   },
   methods: {
     emitPageChange () {
-      console.log('NEW PAGE', this.page);
       this.$emit('pageChange', this.page);
     }
   },

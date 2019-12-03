@@ -5,14 +5,11 @@
         <div>
           <div class="flex justify-end q-pt-md q-pr-md">
             <q-btn round size="large" flat @click="toggleOverview">
-        <span class="navigation-burger" :class="{expanded: isOverviewExpanded}">
-        </span>
               <span class="navigation-burger" :class="{expanded: isOverviewExpanded}">
-        </span>
+              </span>
+                <span class="navigation-burger" :class="{expanded: isOverviewExpanded}">
+              </span>
             </q-btn>
-          </div>
-
-          <div>
           </div>
         </div>
         <div class="flex justify-end">

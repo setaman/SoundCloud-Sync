@@ -18,11 +18,10 @@ export default {
     },
     [SOCKET_INITIALIZATION_ONDATA] (usersData) {
       this.msg = 'Users data loaded';
-      this.notifySuccess(this.msg);
       this.onDataLoaded(usersData);
     },
     [SOCKET_INITIALIZATION_SUCCESS] () {
-      this.msg = 'We are ready to go';
+      this.msg = 'All is fine! We are ready to go';
       this.notifySuccess(this.msg);
       this.$store.dispatch('successInitialization');
       this.isLoading = false;
@@ -30,7 +29,7 @@ export default {
     },
     [SOCKET_INITIALIZATION_ERROR] (msg) {
       this.isLoading = false;
-      this.msg = 'Error while loading data';
+      this.msg = 'Error while loading data. Please check users credentials';
       this.$store.dispatch('failInitialization');
       if (Array.isArray(msg)) {
         msg.forEach(e => {
@@ -45,11 +44,9 @@ export default {
     },
     [SOCKET_SYNC_STAT_START] () {
       this.msg = 'Checking synchronization status...';
-      this.notifySuccess(this.msg);
     },
     [SOCKET_SYNC_STAT_SUCCESS] () {
       this.msg = 'Checking done!!!';
-      this.notifySuccess(this.msg);
     },
     [SOCKET_SYNC_STAT_ERROR] () {
       this.msg = 'Error while checking synchronization status';

@@ -7,6 +7,20 @@
       </div>
     </div>
     <div id="tasks-container">
+      <transition
+        appear
+        enter-active-class="animated fadeIn"
+        leave-active-class="animated fadeOut"
+        mode="out-in"
+      >
+        <div v-if="tasks.length < 1" class="text-center">
+          <empty-animation dark>
+            <p>
+              No more tasks left
+            </p>
+          </empty-animation>
+        </div>
+      </transition>
       <transition-group name="list-item" tag="div">
         <task-card v-for="task in tasks" :key="task.id" :task="task" @removeTask="removeTask" @restartTask="restartTask"/>
       </transition-group>
@@ -18,11 +32,12 @@
 import TaskCard from 'components/Tasks/TaskCard';
 import scrollObserverMixin from 'components/scrollObserverMixin';
 import { SOCKET_TASK_ADD } from 'src/background/const/socketEvents.js';
+import EmptyAnimation from 'components/Base/EmptyAnimation';
 
 export default {
   name: 'Tasks',
   mixins: [scrollObserverMixin],
-  components: { TaskCard },
+  components: { EmptyAnimation, TaskCard },
   computed: {
     tasks () {
       return this.$store.state.tasks.tasks;

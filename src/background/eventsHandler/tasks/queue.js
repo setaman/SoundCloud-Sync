@@ -25,7 +25,7 @@ const addQueueTask = async (io, task, taskMethod) => {
       taskMethod();
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     io.emit(SOCKET_TASK_ADD_ERROR, task);
   }
 };

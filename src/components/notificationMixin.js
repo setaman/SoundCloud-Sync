@@ -6,7 +6,8 @@ export default {
         message,
         color: 'green',
         avatar,
-        position: 'top-right'
+        position: 'top-right',
+        classes: 'notification success'
       });
     },
 
@@ -14,14 +15,17 @@ export default {
       this.$q.notify({
         message,
         color: 'red',
-        position: 'top-right'
+        position: 'top-right',
+        classes: 'notification error'
       });
     },
     notifyWarn (message) {
       this.$q.notify({
+        timeout: 0,
         message,
         color: 'orange',
-        position: 'top-right'
+        position: 'top-right',
+        classes: 'notification warn'
       });
     }
   }

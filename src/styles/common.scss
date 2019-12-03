@@ -1,0 +1,36 @@
+.notification {
+  box-shadow: 4px 9px 32px 1px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  font-family: "Quicksand Medium", serif;
+  &.warn {
+    background-color: #efbc4e !important;
+  }
+  &.error {
+    background-color: #ef405b !important;
+  }
+  &.success {
+    background-color: #09a874 !important;
+  }
+}
+
+.q-btn {
+  font-weight: bold;
+  font-family: "Quicksand Medium", serif;
+  letter-spacing: 0.1rem;
+  &.success {
+    background-image: linear-gradient(to top right, #0ba360 0%, #3cba92 100%) !important;
+  }
+  &.primary {
+    background-image: linear-gradient(to top right, #6a11cb 0%, #2575fc 100%) !important;
+  }
+}
+
+.q-dialog__backdrop {
+  backdrop-filter: blur(3px);
+}
+
+.q-card {
+  box-shadow: 4px 9px 32px 1px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 8px !important;
+  font-family: "Quicksand Medium", serif;
+}
