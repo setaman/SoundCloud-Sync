@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 
 export default ({ Vue, store }) => {
   Vue.use(VueEllipseProgress);
-  Vue.use(VueSocketio, io({
+  Vue.use(VueSocketio, io('http://localhost:', {
     autoConnect: false,
     reconnectionAttempts: 5,
     reconnectionDelay: 2000

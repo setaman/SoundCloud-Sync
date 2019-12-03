@@ -78,7 +78,7 @@ export default {
 
 <style scoped lang="scss">
   $base_height: 0px;
-  $expanded_height: 362px;
+  $expanded_height: 380px;
 
   $c_bg: #231c45;
   $c_likes: #ff4966;

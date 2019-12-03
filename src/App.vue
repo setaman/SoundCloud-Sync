@@ -91,7 +91,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$socket);
     ipcRenderer.on('serverPort', (event, port) => {
       console.info('[PORT]', port);
       this.serverPort = port;
