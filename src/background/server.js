@@ -1,7 +1,7 @@
 const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const port = 0;
+const port = process.env.NODE_ENV === 'dev' ? 3000 : 0;
 
 import {
   SOCKET_CONNECTION_ERROR,

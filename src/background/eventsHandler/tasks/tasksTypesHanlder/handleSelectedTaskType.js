@@ -1,6 +1,6 @@
 import { processItems } from '../processItems';
 
-const processSelectedTaskType = async (io, task) => {
+const processSelectedTaskType = (io, task) => {
   processItems(io, task);
 };
 

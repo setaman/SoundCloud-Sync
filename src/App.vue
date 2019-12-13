@@ -91,6 +91,7 @@ export default {
     }
   },
   mounted () {
+    console.log('hui');
     ipcRenderer.on('serverPort', (event, port) => {
       console.info('[PORT]', port);
       this.serverPort = port;

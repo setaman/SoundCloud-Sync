@@ -83,9 +83,13 @@ const getPaginatedUserItems = async (io, { type, userId, title, status, sort, pa
 
 const getUserItems = async query => {
   const filter = formulateFilter(query.type, query.userId, query.title, query.status);
-  const items = await datastore.find(filter).sort(formulateSort(query.sort)).exec();
+  let items = await datastore.find(filter).sort(formulateSort(query.sort)).exec();
   if (query.range && query.range.min > 0 && query.range.max > 0) {
-    return items.slice(query.range.min - 1, query.range.max);
+    items = items.slice(query.range.min - 1, query.range.max);
+  }
+  if (query.sort !== LIST_SORT_OPTION_OLDEST) {
+    // reverse items so they will be synchronized in to soundcloud corresponding order
+    return items.reverse();
   }
   return items;
 };
