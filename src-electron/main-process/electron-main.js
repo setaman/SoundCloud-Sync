@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
+import runServer from '../../src/background/server.js';
 
 /**
  * Set `__statics` path to static files in production;
@@ -36,8 +37,7 @@ function createWindow () {
   mainWindow.webContents.on('did-finish-load', async () => {
     let serverPort = 3000;
     if (process.env.PROD) {
-      const getServerPort = await import('../../src/background/server.js');
-      serverPort = getServerPort();
+      serverPort = await runServer();
     }
     mainWindow.webContents.send('serverPort', serverPort);
     ipcMain.on('getServerPort', () => {
