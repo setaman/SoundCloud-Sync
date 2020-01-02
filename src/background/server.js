@@ -49,7 +49,6 @@ const runServer = () => new Promise(resolve => {
     resolve(productionPort);
   });
 });
-
 if (process.env.NODE_ENV === 'dev') {
   runServer();
 }

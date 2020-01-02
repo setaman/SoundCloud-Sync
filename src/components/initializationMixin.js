@@ -38,9 +38,11 @@ export default {
       } else {
         this.notifyError(this.msg);
       }
-      setTimeout(() => {
-        this.$router.push('settings');
-      }, 3000);
+      if (this.$route.path !== '/settings') {
+        setTimeout(() => {
+          this.$router.push('settings');
+        }, 3000);
+      }
     },
     [SOCKET_SYNC_STAT_START] () {
       this.msg = 'Checking synchronization status...';
