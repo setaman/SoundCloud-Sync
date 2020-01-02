@@ -1,7 +1,7 @@
 const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-const port = 0;
+const port = process.env.NODE_ENV === 'dev' ? 3000 : 0;
 
 import {
   SOCKET_CONNECTION_ERROR,
@@ -42,8 +42,16 @@ io.on('error', () => io.emit(SOCKET_CONNECTION_ERROR));
 
 app.get('/', (req, res) => res.send('[SoundCloudSync server check]'));
 
-const server = http.listen(port, () => {
-  console.log('listening on localhost:' + server.address().port);
+const runServer = () => new Promise(resolve => {
+  const server = http.listen(port, () => {
+    const productionPort = server.address().port;
+    console.log(`listening on localhost: ${productionPort}`);
+    resolve(productionPort);
+  });
 });
 
-export default () => server.address().port;
+if (process.env.NODE_ENV === 'dev') {
+  runServer();
+}
+
+export default runServer;

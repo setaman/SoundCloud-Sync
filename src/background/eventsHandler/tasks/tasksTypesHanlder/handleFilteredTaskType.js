@@ -7,7 +7,6 @@ const processFilteredTaskType = async (io, task) => {
 
   try {
     itemsToSync = await getUserItems({ ...task.query, userId: task.userFrom.userId });
-    // task.items = itemsToSync;
     task.progress.from = itemsToSync.length;
     processItems(io, { ...task, items: itemsToSync });
   } catch (e) {

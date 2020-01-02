@@ -7,16 +7,6 @@ queue.on('active', () => {
   console.log(`[ QUEUE ]!!! Size: ${queue.size}  Pending: ${queue.pending}`);
 });
 
-(async () => {
-  await queue.onEmpty();
-  console.log('[ QUEUE ]: queue is empty');
-})();
-
-(async () => {
-  await queue.onIdle();
-  console.log('[ QUEUE ]: all task are done!');
-})();
-
 const clearQueue = () => queue.clear();
 
 const addQueueTask = async (io, task, taskMethod) => {

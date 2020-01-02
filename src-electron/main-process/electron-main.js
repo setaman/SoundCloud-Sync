@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-import getServerPort from '../../src/background/server.js';
+import runServer from '../../src/background/server.js';
 
 /**
  * Set `__statics` path to static files in production;
@@ -34,8 +34,15 @@ function createWindow () {
 
   mainWindow.openDevTools();
 
-  mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow.webContents.send('serverPort', getServerPort());
+  mainWindow.webContents.on('did-finish-load', async () => {
+    let serverPort = 3000;
+    if (process.env.PROD) {
+      serverPort = await runServer();
+    }
+    mainWindow.webContents.send('serverPort', serverPort);
+    ipcMain.on('getServerPort', () => {
+      mainWindow.webContents.send('serverPort', serverPort);
+    });
   });
 }
 
@@ -51,8 +58,4 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   }
-});
-
-ipcMain.on('getServerPort', () => {
-  mainWindow.webContents.send('serverPort', getServerPort());
 });
