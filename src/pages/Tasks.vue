@@ -63,7 +63,7 @@ export default {
         done: 0,
         from: task.progress.from
       };
-      this.$socket.emit(SOCKET_TASK_ADD, { ...task, date: new Date(), progress });
+      this.$socket.client.emit(SOCKET_TASK_ADD, { ...task, date: new Date(), progress });
     }
   }
 };

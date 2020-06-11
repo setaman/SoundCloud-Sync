@@ -10,7 +10,7 @@
     :emptyColorFill="options.emptyColorFill"
     fontColor="white"
     legendClass="sync-progress-legend"
-    :animation="{type: 'rs', delay: 1000, duration: 700}">
+    animation="rs 1000 700">
     <span slot="legend-value">
       <slot name="legend-value"></slot>
     </span>
@@ -45,54 +45,50 @@ export default {
   data: () => ({
     options: {
       color: {
-        gradient: {
-          radial: false,
-          colors: [
-            {
-              color: '#b224ef',
-              offset: '0',
-              opacity: '0.6'
-            },
-            {
-              color: '#7579ff',
-              offset: '100',
-              opacity: '0.6'
-            }
-          ]
-        }
+        radial: false,
+        colors: [
+          {
+            color: '#b224ef',
+            offset: '0',
+            opacity: '0.6'
+          },
+          {
+            color: '#7579ff',
+            offset: '100',
+            opacity: '0.6'
+          }
+        ]
       },
       emptyColorFill: {
-        gradient: {
-          radial: true,
-          direction: '',
-          colors: [
-            {
-              color: waveColor,
-              offset: '50',
-              opacity: '0.3'
-            },
-            {
-              color: waveColor,
-              offset: '50',
-              opacity: '0.2'
-            },
-            {
-              color: waveColor,
-              offset: '75',
-              opacity: '0.1'
-            },
-            {
-              color: waveColor,
-              offset: '75',
-              opacity: '0.06'
-            },
-            {
-              color: waveColor,
-              offset: '100',
-              opacity: '0.03'
-            }
-          ]
-        }
+        radial: true,
+        direction: '',
+        colors: [
+          {
+            color: waveColor,
+            offset: '50',
+            opacity: '0.3'
+          },
+          {
+            color: waveColor,
+            offset: '50',
+            opacity: '0.2'
+          },
+          {
+            color: waveColor,
+            offset: '75',
+            opacity: '0.1'
+          },
+          {
+            color: waveColor,
+            offset: '75',
+            opacity: '0.06'
+          },
+          {
+            color: waveColor,
+            offset: '100',
+            opacity: '0.03'
+          }
+        ]
       }
     }
   })

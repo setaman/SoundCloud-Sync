@@ -90,7 +90,7 @@ const getUserPlaylists = async (userId, clientId, token) => {
 };
 
 const getUserById = (userId, clientId) =>
-  axios.get(`https://api.soundcloud.com/users/${userId}`, {
+  axios.get(`https://api-v2.soundcloud.com/users/${userId}`, {
     params: {
       client_id: clientId
     }

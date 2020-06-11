@@ -193,7 +193,7 @@ export default {
     },
     getUserOneItems () {
       this.isLoadingOne = true;
-      this.$socket.emit(SOCKET_ITEMS_GET, {
+      this.$socket.client.emit(SOCKET_ITEMS_GET, {
         userId: this.userOne.userId,
         ...this.filtersOne,
         page: this.pageOne
@@ -201,14 +201,14 @@ export default {
     },
     getUserTwoItems () {
       this.isLoadingTwo = true;
-      this.$socket.emit(SOCKET_ITEMS_GET, {
+      this.$socket.client.emit(SOCKET_ITEMS_GET, {
         userId: this.userTwo.userId,
         ...this.filtersTwo,
         page: this.pageTwo
       });
     },
     getSyncPercent () {
-      this.$socket.emit(SOCKET_SYNC_STAT_GET);
+      this.$socket.client.emit(SOCKET_SYNC_STAT_GET);
     },
     onFiltersChangeOne (filters) {
       const oldFilters = this.filtersOne;
@@ -273,7 +273,7 @@ export default {
       this.getUserTwoItems();
     },
     createTask (taskType, userFrom, userTo, items = [], query = {}) {
-      this.$socket.emit(SOCKET_TASK_ADD, createTask(
+      this.$socket.client.emit(SOCKET_TASK_ADD, createTask(
         taskType,
         this.itemsType,
         items,

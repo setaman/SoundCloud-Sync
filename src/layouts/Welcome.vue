@@ -48,7 +48,7 @@ export default {
         }, 1000);
         return;
       }
-      this.$socket.emit(SOCKET_INITIALIZATION_START, {
+      this.$socket.client.emit(SOCKET_INITIALIZATION_START, {
         userOne: {
           userId: this.userOne.userId,
           token: this.userOne.token,

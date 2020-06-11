@@ -100,7 +100,7 @@ export default {
   },
   methods: {
     createTask () {
-      this.$socket.emit(SOCKET_TASK_ADD, createTask(
+      this.$socket.client.emit(SOCKET_TASK_ADD, createTask(
         TASK_TYPE_SELECTED,
         this.getItemType(),
         [this.item],

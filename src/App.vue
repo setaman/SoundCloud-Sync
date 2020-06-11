@@ -70,10 +70,10 @@ export default {
   },
   methods: {
     connectToServer () {
-      this.$socket.close();
-      this.$socket.disconnect();
-      this.$socket.io.uri = 'http://localhost:' + this.serverPort;
-      this.$socket.connect();
+      this.$socket.client.close();
+      this.$socket.client.disconnect();
+      this.$socket.client.io.uri = 'http://localhost:' + this.serverPort;
+      this.$socket.client.connect();
     },
     reconnectToServer () {
       this.$socket.io.uri = 'http://localhost:' + this.serverPort;
