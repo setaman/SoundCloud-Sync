@@ -3,12 +3,10 @@
     <div id="navigation-container">
       <div id="navigation-items-container" class="flex column wrap justify-between">
         <div>
-          <div class="flex justify-end q-pt-md q-pr-md">
-            <q-btn round size="large" flat @click="toggleOverview">
-              <span class="navigation-burger" :class="{expanded: isOverviewExpanded}">
-              </span>
-                <span class="navigation-burger" :class="{expanded: isOverviewExpanded}">
-              </span>
+          <div class="flex flex-center q-pt-lg">
+            <q-btn round size="large" color="transparent" @click="toggleOverview">
+              <span class="navigation-burger" :class="{expanded: isOverviewExpanded}"></span>
+              <span class="navigation-burger" :class="{expanded: isOverviewExpanded}"></span>
             </q-btn>
           </div>
         </div>
@@ -128,9 +126,11 @@ export default {
 
   .navigation-burger {
     display: block;
-    width: 100%;
-    height: 20px;
+    width: 51%;
+    height: 10px;
+    position: relative;
     &:after, &:before {
+      position: absolute;
       transition: 0.3s;
       display: inline-block;
       content: '';
@@ -139,7 +139,12 @@ export default {
       border-radius: 5px;
       background: transparent;
       border: 2px solid white;
-      margin: 4px;
+    }
+    &:after {
+      left: 0;
+    }
+    &:before {
+      right: 0;
     }
     &.expanded {
       &:after, &:before {
