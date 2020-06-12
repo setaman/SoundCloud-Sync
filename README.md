@@ -11,5 +11,5 @@ The App is built with Electron and Quasar. Currently the registration of new app
 
 ```
 npm run dev-e // run electron app in development mode
-nom run build // build for windows
+npm run build // build for windows
 ```
