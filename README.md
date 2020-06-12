@@ -4,9 +4,12 @@ With this app you can easily synchronize likes, folowings and playlists between 
 
 The App is built with Electron and Quasar. Currently the registration of new apps for SoundCloud API is disabled. And the API-v1 seems to be slowly shut down (that's sad). So the app uses an uncomfortable workaround for user authentication and the app relies on non-public API-v2. No one should ever use this app.
 
+<img src="https://github.com/setaman/SoundCloud-Sync/blob/master/src/assets/demo.png" alt="App demo" width="700"/>
 
-# Development
+
+## Development
 
 ```
-npm run dev-e
+npm run dev-e // run electron app in development mode
+nom run build // build for windows
 ```
